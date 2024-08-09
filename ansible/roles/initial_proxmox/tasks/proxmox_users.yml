@@ -1,0 +1,28 @@
+---
+- name: List groups
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: "pveum group list"
+  register: group_list
+  changed_when: false
+- name: Add admin group
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: pveum group add admin -comment "System Administrators" && pveum acl modify / -group admin -role Administrator
+  when: "'admin' not in group_list.stdout"
+- name: List users
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: "pveum user list"
+  register: user_list
+  changed_when: false
+- name: Add gorgonzola5000
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: "pveum user add gorgonzola5000@pve -password {{ gorgonzola5000_pve_password }} -group admin"
+  when: "'gorgonzola5000@pve' not in user_list.stdout"
+- name: Add terraform
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: "pveum user add terraform@pve -password '{{ terraform_pve_password }}' -group admin"
+  when: "'terraform@pve' not in user_list.stdout"

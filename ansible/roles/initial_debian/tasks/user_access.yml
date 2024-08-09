@@ -1,0 +1,34 @@
+---
+- name: Ensure sudo is installed
+  ansible.builtin.package:
+    name:
+      - sudo
+    state: present
+- name: Ensure group "sudo" exists
+  ansible.builtin.group:
+    name: sudo
+    state: present
+- name: Ensure gorgonzola5000 exists
+  ansible.builtin.user:
+    name: gorgonzola5000
+    create_home: true
+    groups: sudo
+    append: true
+    password: "{{ user_password_hash }}"
+- name: Check if public ssh key is present in authorized_keys
+  ansible.posix.authorized_key:
+    user: "{{ item }}"
+    state: present
+    key: "{{ lookup('url', 'https://github.com/gorgonzola5000.keys') }}"
+  loop:
+    - gorgonzola5000
+    - root
+- name: Disallow SSH password authentication
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+    validate: sshd -t -f %s
+  notify:
+    - restart sshd

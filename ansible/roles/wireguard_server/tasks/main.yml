@@ -1,0 +1,36 @@
+---
+- name: Enable IP forwarding
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: '1'
+    sysctl_set: true
+    state: present
+    reload: true
+  loop:
+    - net.ipv4.ip_forward
+    - net.ipv4.conf.all.forwarding
+- name: Ensure wireguard is installed
+  ansible.builtin.apt:
+    name: wireguard
+    state: present
+- name: Ensure /etc/wireguard/ directory exists
+  ansible.builtin.file:
+    path: /etc/wireguard
+    state: directory
+    mode: '0700'
+- name: Check if wireguard interface configuration file exists
+  ansible.builtin.stat:
+    path: '/etc/wireguard/{{ wg_interface_name }}.conf'
+  register: wg_interface_conf
+- name: Generate wg interface config
+  ansible.builtin.template:
+    dest: '/etc/wireguard/{{ wg_interface_name }}.conf'
+    force: false
+    mode: '0755'
+    src: wg0.conf.j2
+  when: wg_interface_conf.stat.exists == false
+- name: Start and enable wireguard service
+  ansible.builtin.systemd_service:
+    name: 'wg-quick@{{ wg_interface_name }}.service'
+    state: started
+    enabled: true

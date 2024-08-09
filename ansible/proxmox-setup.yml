@@ -1,0 +1,7 @@
+---
+- name: Configure Proxmox Node
+  become: true
+  hosts: proxmox
+  remote_user: root
+  roles:
+    - initial_proxmox

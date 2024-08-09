@@ -1,0 +1,32 @@
+---
+- name: Install Podman
+  ansible.builtin.package:
+    name: podman
+    state: present
+- name: Create directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: gorgonzola5000
+    mode: '0755'
+  loop:
+    - '/home/gorgonzola5000/podman/pihole/etc-pihole'
+    - '/home/gorgonzola5000/podman/pihole/etc-dnsmasq.d'
+- name: Run Pi-hole container
+  containers.podman.podman_container:
+    name: Pi-hole
+    image: docker.io/pihole/pihole:latest
+    state: started
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+    volumes:
+      - "/home/gorgonzola5000/podman/pihole/etc-pihole:/etc/pihole"
+      - "/home/gorgonzola5000/podman/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+    env:
+      TZ: "Europe/Warsaw"
+# 
+# - name: Enable Pi-hole container
+#   ansible.builtin.systemd_service:
+#     name: 

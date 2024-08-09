@@ -1,0 +1,8 @@
+---
+- name: Configure Debian VM
+  become: true
+  hosts: "{{ variable_host | default('debian') }}"
+  roles:
+    #   - initial_debian
+    # - wireguard_server
+    - docker
