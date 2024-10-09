@@ -2,3 +2,5 @@
 - ansible.builtin.import_tasks: unattended_upgrades.yml
 - ansible.builtin.import_tasks: user_access.yml
 - ansible.builtin.import_tasks: proxmox_users.yml
+- ansible.builtin.import_tasks: storage.yml
+- ansible.builtin.import_tasks: terraform.yml

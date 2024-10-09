@@ -1,0 +1,12 @@
+---
+- name: Ensure qemu-guest-agent is installed
+  ansible.builtin.package:
+    name:
+      - qemu-guest-agent
+    state: present
+# ansible hangs on the commented out task. probably due to qemu-guest-agent requireing reboot or something. it's enabled during deployment so who cares
+#- name: Start and enable systemd service
+#  ansible.builtin.service:
+#    name: qemu-guest-agent
+#    state: started
+#    enabled: true

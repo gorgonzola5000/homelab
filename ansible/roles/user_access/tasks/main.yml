@@ -11,17 +11,11 @@
 - name: Ensure gorgonzola5000 exists in PAM realm
   ansible.builtin.user:
     name: gorgonzola5000
+    shell: '/bin/bash'
     create_home: true
     groups: sudo
     append: true
-    password: "{{ user_password_hash }}"
-- name: Ensure terraform user exists in PAM realm
-  ansible.builtin.user:
-    name: terraform
-    create_home: true
-    groups: sudo
-    append: true
-    password: "{{ terraform_password_hash }}"
+    password: "{{ vault_user_password_hash }}"
 - name: Check if public ssh key is present in authorized_keys
   ansible.posix.authorized_key:
     user: "{{ item }}"
@@ -30,7 +24,6 @@
   loop:
     - gorgonzola5000
     - root
-    - terraform
 - name: Disallow SSH password authentication
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config

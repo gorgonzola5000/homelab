@@ -1,8 +1,11 @@
 ---
 - name: Configure Debian VM
   become: true
-  hosts: "{{ variable_host | default('debian') }}"
+  #  hosts: "{{ variable_host | default('debian') }}"
+  hosts: default
   roles:
-    #   - initial_debian
-    # - wireguard_server
-    - docker
+    - debian
+    - common
+    - vm
+    - wireguard_server
+    - podman

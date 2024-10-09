@@ -1,0 +1,9 @@
+---
+- name: Install Podman
+  ansible.builtin.package:
+    name: podman
+    state: present
+- name: Run shit
+  ansible.builtin.include_tasks: '{{ item }}'
+  loop:
+    - 'pihole.yml'

@@ -1,0 +1,10 @@
+---
+- name: Add repositories
+  ansible.builtin.yum_repository:
+    name: epel
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+  when: ansible_facts['os_family'] == 'RedHat'
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ packages }}"
+    state: present

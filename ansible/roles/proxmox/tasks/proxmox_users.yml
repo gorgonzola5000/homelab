@@ -19,10 +19,10 @@
 - name: Add gorgonzola5000
   ansible.builtin.shell:
     executable: /bin/bash
-    cmd: "pveum user add gorgonzola5000@pve -password {{ gorgonzola5000_pve_password }} -group admin"
+    cmd: "pveum user add gorgonzola5000@pve -password {{ vault_gorgonzola5000_pve_password }} -group admin"
   when: "'gorgonzola5000@pve' not in user_list.stdout"
 - name: Add terraform
   ansible.builtin.shell:
     executable: /bin/bash
-    cmd: "pveum user add terraform@pve -password '{{ terraform_pve_password }}' -group admin"
+    cmd: "pveum user add terraform@pve -password '{{ vault_terraform_pve_password }}' -group admin"
   when: "'terraform@pve' not in user_list.stdout"

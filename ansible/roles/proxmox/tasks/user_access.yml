@@ -1,0 +1,14 @@
+---
+- name: Ensure terraform user exists in PAM realm
+  ansible.builtin.user:
+    shell: "/bin/bash"
+    name: terraform
+    create_home: true
+    groups: sudo
+    append: true
+    password: "{{ vault_terraform_password_hash }}"
+- name: Check if public ssh key is present in authorized_keys
+  ansible.posix.authorized_key:
+    user: terraform
+    state: present
+    key: "{{ lookup('url', 'https://github.com/gorgonzola5000.keys') }}"

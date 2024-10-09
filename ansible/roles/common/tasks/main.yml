@@ -1,4 +1,3 @@
 ---
 - ansible.builtin.import_tasks: packages.yml
-- ansible.builtin.import_tasks: unattended_upgrades.yml
 - ansible.builtin.import_tasks: user_access.yml
