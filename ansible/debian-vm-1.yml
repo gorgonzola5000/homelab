@@ -1,0 +1,107 @@
+---
+- name: Configure Debian VM
+  become: true
+  #  hosts: "{{ variable_host | default('debian') }}"
+  hosts: '{{ target | default("default") }}'
+# hosts: default
+  remote_user: root
+  roles:
+    - debian
+    - common
+    - vm
+    - wireguard_server
+  tasks:
+    - name: Install Podman
+      ansible.builtin.package:
+        name: podman
+        state: present
+    # 
+    # Pi-hole
+    - name: Create Pi-Hole user
+      ansible.builtin.user:
+        name: pihole
+        shell: '/bin/bash'
+        create_home: true
+    - name: Ensure directory for pihole is present
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: pihole
+        mode: '0755'
+      loop:
+        - '/home/pihole/etc-pihole'
+        - '/home/pihole/etc-dnsmasq.d'
+    - name: Disable systemd-resolved
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        state: stopped
+        enabled: false
+    - name: Run Pi-hole container
+      containers.podman.podman_container:
+        name: Pi-hole
+        image: docker.io/pihole/pihole:latest
+        state: started
+        user: pihole
+        ports:
+          - "53:53/tcp"
+          - "53:53/udp"
+          - "50001:80/tcp"
+        volumes:
+          - "/home/pihole/etc-pihole:/etc/pihole"
+          - "/home/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+        env:
+          TZ: "Europe/Warsaw"
+    #
+    # nginx, certbot, let's encrypt
+    - name: Install nginx
+      ansible.builtin.apt:
+        name:
+          - nginx
+          - certbot
+          - python3-certbot-dns-cloudflare
+        state: present
+    - name: Ensure ~root/.secrets is present
+      ansible.builtin.file:
+        path: /home/root/.secrets
+        state: directory
+        mode: '0600'
+    - name: Copy nginx config files
+      ansible.builtin.copy:
+        src: ./config_files/debian-vm-1/home/root/.secrets/cloudflare.ini
+        dest: /home/root/.secrets/cloudflare.ini
+        mode: '0400'
+        owner: root
+    - name: Copy nginx config files
+      ansible.builtin.copy:
+        src: ./config_files/debian-vm-1/etc/nginx/
+        dest: /etc/nginx/
+    - name: Get 'certbot certificates' output
+      ansible.builtin.shell:
+        cmd: certbot certificates
+        executable: /bin/bash
+      register: certbot_certificates
+      changed_when: false
+    - name: Acquire Let's Encrypt certificates with Certbot
+      ansible.builtin.shell:
+        cmd: "certbot certonly -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini -d *.home.parents-basement.win -d home.parents-basement.win --preferred-challenges dns-01"
+        executable: /bin/bash
+      when: "'No certificates found' in certbot_certificates.stdout"
+    - name: Ensure certbot.timer is enabled
+      ansible.builtin.systemd_service:
+        unit: certbot.timer
+        state: started
+        enabled: true
+    - name: Create symlink in nginx/sites-enabled
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/home.parents-basement.win
+        dest: /etc/nginx/sites-enabled/home.parents-basement.win
+        state: link
+    - name: Restart nginx
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: restarted
+        enabled: true
+    - name: Set resolv.conf
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: nameserver 10.2.137.1

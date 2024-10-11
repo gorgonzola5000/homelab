@@ -18,8 +18,8 @@ source "qemu" "debian" {
   disk_interface            = "virtio"
   disk_image                = true
   disk_size                 = "5000M"
-  boot_wait                 = "2s"
-  vm_name                   = "debian12-homelab.qcow2"
+  boot_wait                 = "10s"
+  vm_name                   = "debian-vm-1.qcow2"
   format                    = "qcow2"
   headless                  = "true"
   iso_checksum              = "file:https://cloud.debian.org/images/cloud/bookworm/latest/SHA512SUMS"
@@ -33,6 +33,7 @@ source "qemu" "debian" {
   host_port_min             = 2222
   host_port_max             = 2299
   shutdown_timeout          = "1m"
+  shutdown_command          = "shutdown -P now"
   ssh_username              = "root"
   ssh_private_key_file      = "./packer_key"
   ssh_clear_authorized_keys = true
@@ -43,7 +44,7 @@ build {
   sources = ["source.qemu.debian"]
 
   provisioner "ansible" {
-    playbook_file = "../../ansible/debian-setup.yml"
+    playbook_file = "../../ansible/debian-vm-1.yml"
        extra_arguments = [ "--vault-password-file=../../ansible/vault-pass.sh" ]
   }
 }
