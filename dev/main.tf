@@ -13,7 +13,7 @@ resource "proxmox_virtual_environment_vm" "debian_12_homelab" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = "local:iso/debian12-homelab-qcow2.iso"
+    file_id      = "local:iso/debian-vm-1.qcow2.iso"
     interface    = "virtio0"
     size         = 20
   }
@@ -21,11 +21,10 @@ resource "proxmox_virtual_environment_vm" "debian_12_homelab" {
   initialization {
     ip_config {
       ipv4 {
-        address = "10.2.137.10/24"
+        address = "10.2.137.2/24"
         gateway = "10.2.137.1"
       }
     }
-
   }
 
   network_device {

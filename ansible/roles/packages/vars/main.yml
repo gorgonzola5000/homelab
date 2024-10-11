@@ -1,8 +1,0 @@
----
-packages:
- - sudo
- - vim
- - neovim
- - htop
- - man
- - less
