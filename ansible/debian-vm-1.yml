@@ -1,15 +1,26 @@
 ---
+# TODO
+# move wireguard_server here
+# move debian here instead of being a role
 - name: Configure Debian VM
   become: true
   #  hosts: "{{ variable_host | default('debian') }}"
   hosts: '{{ target | default("default") }}'
-# hosts: default
+  #  hosts: default
   remote_user: root
   roles:
     - debian
     - common
     - vm
     - wireguard_server
+    - role: nginx_reverse_proxy
+      vars:
+        nginx_config_files_directory: ./config_files/debian-vm-1/etc/nginx/
+        domains:
+          - home.parents-basement.win
+          - '*.home.parents-basement.win'
+        sites_to_enable:
+          - home.parents-basement.win
   tasks:
     - name: Install Podman
       ansible.builtin.package:
@@ -53,54 +64,7 @@
           TZ: "Europe/Warsaw"
     #
     # nginx, certbot, let's encrypt
-    - name: Install nginx
-      ansible.builtin.apt:
-        name:
-          - nginx
-          - certbot
-          - python3-certbot-dns-cloudflare
-        state: present
-    - name: Ensure ~root/.secrets is present
-      ansible.builtin.file:
-        path: /home/root/.secrets
-        state: directory
-        mode: '0600'
-    - name: Copy nginx config files
-      ansible.builtin.copy:
-        src: ./config_files/debian-vm-1/home/root/.secrets/cloudflare.ini
-        dest: /home/root/.secrets/cloudflare.ini
-        mode: '0400'
-        owner: root
-    - name: Copy nginx config files
-      ansible.builtin.copy:
-        src: ./config_files/debian-vm-1/etc/nginx/
-        dest: /etc/nginx/
-    - name: Get 'certbot certificates' output
-      ansible.builtin.shell:
-        cmd: certbot certificates
-        executable: /bin/bash
-      register: certbot_certificates
-      changed_when: false
-    - name: Acquire Let's Encrypt certificates with Certbot
-      ansible.builtin.shell:
-        cmd: "certbot certonly -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini -d *.home.parents-basement.win -d home.parents-basement.win --preferred-challenges dns-01"
-        executable: /bin/bash
-      when: "'No certificates found' in certbot_certificates.stdout"
-    - name: Ensure certbot.timer is enabled
-      ansible.builtin.systemd_service:
-        unit: certbot.timer
-        state: started
-        enabled: true
-    - name: Create symlink in nginx/sites-enabled
-      ansible.builtin.file:
-        src: /etc/nginx/sites-available/home.parents-basement.win
-        dest: /etc/nginx/sites-enabled/home.parents-basement.win
-        state: link
-    - name: Restart nginx
-      ansible.builtin.systemd_service:
-        name: nginx
-        state: restarted
-        enabled: true
+  post_tasks:
     - name: Set resolv.conf
       ansible.builtin.copy:
         dest: /etc/resolv.conf
