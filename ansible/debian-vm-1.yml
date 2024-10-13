@@ -38,7 +38,6 @@
         path: "{{ item }}"
         state: directory
         owner: pihole
-        group: pihole
         mode: '0755'
       loop:
         - '/home/pihole/etc/pihole'
@@ -49,6 +48,8 @@
         state: stopped
         enabled: false
     - name: Run Pi-hole container
+      become: true
+      become_user: root
       containers.podman.podman_container:
         name: pihole
         image: docker.io/pihole/pihole:latest
@@ -64,39 +65,6 @@
         env:
           TZ: "Europe/Warsaw"
           WEBPASSWORD: "{{ vault_pihole_web_password }}"
-    # 
-    # ddclient
-    - name: Create ddclient user
-      ansible.builtin.user:
-        name: ddclient
-        shell: '/bin/bash'
-        create_home: true
-    - name: Ensure directory for ddclient is present
-      ansible.builtin.file:
-        path: /home/ddclient/config
-        state: directory
-        owner: ddclient
-        group: ddclient
-        mode: '0755'
-    - name: Copy ddclient file
-      ansible.builtin.copy:
-        src: ./config_files/debian-vm-1/home/ddclient/config/ddclient.conf 
-        dest: /home/ddclient/config/ddclient.conf
-        owner: ddclient
-        group: ddclient
-        mode: '0644'
-    - name: Run ddclient container
-      containers.podman.podman_container:
-        name: ddclient
-        image: docker.io/linuxserver/ddclient:latest
-        hostname: ddclient
-        state: started
-        volumes:
-          - "/home/ddclient/config:/config"
-        env:
-          TZ: "Europe/Warsaw"
-          DDCLIENT_PASSWORD: "{{ vault_ddclient_cloudflare_token }}"
-
   post_tasks:
     - name: Set resolv.conf
       ansible.builtin.copy:
