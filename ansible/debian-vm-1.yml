@@ -40,30 +40,31 @@
         owner: pihole
         mode: '0755'
       loop:
-        - '/home/pihole/etc-pihole'
-        - '/home/pihole/etc-dnsmasq.d'
+        - '/home/pihole/etc/pihole'
+        - '/home/pihole/etc/dnsmasq.d'
     - name: Disable systemd-resolved
       ansible.builtin.systemd_service:
         name: systemd-resolved
         state: stopped
         enabled: false
     - name: Run Pi-hole container
+      become: true
+      become_user: root
       containers.podman.podman_container:
-        name: Pi-hole
+        name: pihole
         image: docker.io/pihole/pihole:latest
+        hostname: pi-hole
         state: started
-        user: pihole
         ports:
           - "53:53/tcp"
           - "53:53/udp"
           - "50001:80/tcp"
         volumes:
-          - "/home/pihole/etc-pihole:/etc/pihole"
-          - "/home/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+          - "/home/pihole/etc/pihole:/etc/pihole"
+          - "/home/pihole/etc/dnsmasq.d:/etc/dnsmasq.d"
         env:
           TZ: "Europe/Warsaw"
-    #
-    # nginx, certbot, let's encrypt
+          WEBPASSWORD: "{{ vault_pihole_web_password }}"
   post_tasks:
     - name: Set resolv.conf
       ansible.builtin.copy:
