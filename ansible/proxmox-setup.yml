@@ -6,3 +6,10 @@
   roles:
     - proxmox
     - common
+    - role: nginx_reverse_proxy
+      vars:
+        nginx_config_files_directory: ./config_files/proxmox/etc/nginx/
+        domains:
+          - proxmox.home.parents-basement.win
+        sites_to_enable:
+          - proxmox.home.parents-basement.win
