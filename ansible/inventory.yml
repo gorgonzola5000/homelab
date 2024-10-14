@@ -4,3 +4,6 @@ proxmox:
 debian:
   hosts:
     10.2.137.2
+debian_dev:
+  hosts:
+    10.2.137.8

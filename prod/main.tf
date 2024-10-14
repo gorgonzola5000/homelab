@@ -1,10 +1,10 @@
-resource "proxmox_virtual_environment_vm" "debian_12_dev" {
-  name        = "debian-12-dev"
+resource "proxmox_virtual_environment_vm" "debian_12_homelab" {
+  name        = "debian-12-homelab"
   description = "Managed by Terraform"
   tags        = ["terraform", "debian"]
 
   node_name = "pve"
-  vm_id     = 221
+  vm_id     = 222
 
   agent {
     enabled = true
@@ -21,7 +21,7 @@ resource "proxmox_virtual_environment_vm" "debian_12_dev" {
   initialization {
     ip_config {
       ipv4 {
-        address = "10.2.137.8/24"
+        address = "10.2.137.2/24"
         gateway = "10.2.137.1"
       }
     }
