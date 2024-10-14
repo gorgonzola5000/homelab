@@ -6,6 +6,7 @@
       - nginx
       - certbot
       - python3-certbot-dns-cloudflare
+      - rsync
     state: present
   when: ansible_facts['os_family'] == 'Debian'
 - name: Ensure ~root/.secrets is present
@@ -21,12 +22,10 @@
     owner: root
     group: root
 - name: Copy nginx config files
-  ansible.builtin.copy:
-    src: "{{ nginx_config_files_directory }}"
-    dest: /etc/nginx/
-    owner: root
-    group: root
-    mode: 744
+  ansible.posix.synchronize:
+    src: "{{ nginx_config_files_directory }}/sites-available/"
+    dest: /etc/nginx/sites-available
+  notify: Restart nginx
 - name: Get 'certbot certificates' output
   ansible.builtin.shell:
     cmd: certbot certificates

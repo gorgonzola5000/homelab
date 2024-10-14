@@ -97,6 +97,33 @@
           TZ: "Europe/Warsaw"
           DDCLIENT_PASSWORD: "{{ vault_ddclient_cloudflare_token }}"
 
+    # glance
+    - name: Create glance user
+      ansible.builtin.user:
+        name: glance
+        shell: '/bin/bash'
+        create_home: true
+    - name: Copy config files
+      ansible.builtin.copy:
+        src: ./config_files/debian-vm-1/home/glance/glance.yml
+        dest: /home/glance/glance.yml
+        owner: glance
+        group: glance
+    - name: Run glance container
+      containers.podman.podman_container:
+        name: glance
+        image: docker.io/glanceapp/glance:latest
+        hostname: glance
+        state: started
+        ports:
+          - "50002:8080/tcp"
+          - "50002:8080/udp"
+        volumes:
+          - "/home/glance/glance.yml:/app/glance.yml"
+          - "/etc/timezone:/etc/timezone:ro" 
+          - "/etc/localtime:/etc/localtime:ro"
+        env:
+          DOMAIN: parents-basement.win
   post_tasks:
     - name: Set resolv.conf
       ansible.builtin.copy:
