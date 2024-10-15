@@ -1,0 +1,15 @@
+[Unit]
+Description=ddclient container
+
+[Container]
+Image=docker.io/linuxserver/ddclient:latest
+Volume=/home/ddclient:/config
+Environment="TZ=Europe/Warsaw"
+Secret=DDCLIENT_PASSWORD,type=env
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

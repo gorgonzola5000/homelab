@@ -1,0 +1,26 @@
+---
+- name: Copy systemd unit files
+  ansible.builtin.copy:
+    src: '{{ containers_systemd_directory }}'
+    dest: '/home/{{ service }}/.config/containers/systemd/'
+    mode: '0644'
+    owner: '{{ service }}'
+    group: '{{ service }}'
+- name: Create podman secrets for rootless
+  become: true
+  become_user: '{{ service }}'
+  become_method: community.general.machinectl
+  containers.podman.podman_secret:
+    name: "{{ item.key }}"
+    data: "{{ item.value }}"
+  loop: "{{ lookup('ansible.builtin.dict', podman_secrets, wantlist=True) }}"
+  when: podman_secrets is defined
+- name: Start systemd unit
+  become: true
+  become_user: '{{ service }}'
+  become_method: community.general.machinectl
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    name: '{{ service }}.service'
+    state: started
+    scope: user

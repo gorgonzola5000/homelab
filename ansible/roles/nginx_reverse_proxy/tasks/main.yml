@@ -9,6 +9,15 @@
       - rsync
     state: present
   when: ansible_facts['os_family'] == 'Debian'
+- name: Install nginx
+  ansible.builtin.dnf:
+    name:
+      - nginx
+      - certbot
+      - python3-certbot-dns-cloudflare
+      - rsync
+    state: present
+  when: ansible_facts['os_family'] == 'RedHat'
 - name: Ensure ~root/.secrets is present
   ansible.builtin.file:
     path: /home/root/.secrets
@@ -43,6 +52,11 @@
     unit: certbot.timer
     state: started
     enabled: true
+  ignore_errors: true
+- name: Ensure sites-enabled directory exists
+  ansible.builtin.file:
+    path: "/etc/nginx/sites-enabled/"
+    state: directory
 - name: Create symlinks in /etc/nginx/sites-enabled/
   ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ item }}"

@@ -1,0 +1,12 @@
+[Unit]
+Description=Hello world container
+
+[Container]
+Image=docker.io/hello-world/hello-world
+
+[Service]
+# Restart service when sleep finishes
+Restart=always
+
+[Install]
+WantedBy=multi-user.target, default.target

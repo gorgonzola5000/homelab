@@ -8,6 +8,12 @@
   hosts: '{{ target | default("default") }}'
   #  hosts: default
   remote_user: root
+  pre_tasks:
+    - name: Disable systemd-resolved
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        state: stopped
+        enabled: false
   roles:
     - debian
     - common
@@ -21,33 +27,16 @@
           - '*.home.parents-basement.win'
         sites_to_enable:
           - home.parents-basement.win
+    - role: quadlet
+      vars:
+        service: glance
+        containers_systemd_directory: './config_files/debian-vm-1/glance/containers_systemd/'
+        config_files_directory: './config_files/debian-vm-1/glance/config_files/'
+        rootless: true
+      tags:
+        - glance
   tasks:
-    - name: Install Podman
-      ansible.builtin.package:
-        name: podman
-        state: present
-    # 
     # Pi-hole
-    - name: Create Pi-Hole user
-      ansible.builtin.user:
-        name: pihole
-        shell: '/bin/bash'
-        create_home: true
-    - name: Ensure directory for pihole is present
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        owner: pihole
-        group: pihole
-        mode: '0755'
-      loop:
-        - '/home/pihole/etc/pihole'
-        - '/home/pihole/etc/dnsmasq.d'
-    - name: Disable systemd-resolved
-      ansible.builtin.systemd_service:
-        name: systemd-resolved
-        state: stopped
-        enabled: false
     - name: Run Pi-hole container
       containers.podman.podman_container:
         name: pihole
@@ -64,20 +53,7 @@
         env:
           TZ: "Europe/Warsaw"
           WEBPASSWORD: "{{ vault_pihole_web_password }}"
-    # 
     # ddclient
-    - name: Create ddclient user
-      ansible.builtin.user:
-        name: ddclient
-        shell: '/bin/bash'
-        create_home: true
-    - name: Ensure directory for ddclient is present
-      ansible.builtin.file:
-        path: /home/ddclient/config
-        state: directory
-        owner: ddclient
-        group: ddclient
-        mode: '0755'
     - name: Copy ddclient file
       ansible.builtin.copy:
         src: ./config_files/debian-vm-1/home/ddclient/config/ddclient.conf 
@@ -96,34 +72,6 @@
         env:
           TZ: "Europe/Warsaw"
           DDCLIENT_PASSWORD: "{{ vault_ddclient_cloudflare_token }}"
-
-    # glance
-    - name: Create glance user
-      ansible.builtin.user:
-        name: glance
-        shell: '/bin/bash'
-        create_home: true
-    - name: Copy config files
-      ansible.builtin.copy:
-        src: ./config_files/debian-vm-1/home/glance/glance.yml
-        dest: /home/glance/glance.yml
-        owner: glance
-        group: glance
-    - name: Run glance container
-      containers.podman.podman_container:
-        name: glance
-        image: docker.io/glanceapp/glance:latest
-        hostname: glance
-        state: started
-        ports:
-          - "50002:8080/tcp"
-          - "50002:8080/udp"
-        volumes:
-          - "/home/glance/glance.yml:/app/glance.yml"
-          - "/etc/timezone:/etc/timezone:ro" 
-          - "/etc/localtime:/etc/localtime:ro"
-        env:
-          DOMAIN: parents-basement.win
   post_tasks:
     - name: Set resolv.conf
       ansible.builtin.copy:

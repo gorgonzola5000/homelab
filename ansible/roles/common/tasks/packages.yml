@@ -1,10 +1,23 @@
 ---
 - name: Add repositories
-  ansible.builtin.yum_repository:
-    name: epel
-    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+  ansible.builtin.dnf:
+    name: epel-release
+    state: present
   when: ansible_facts['os_family'] == 'RedHat'
+- name: Full system upgrade RedHat
+  ansible.builtin.dnf:
+    name: "*"
+    update_cache: true
+  ignore_errors: true
+  when: ansible_facts['os_family'] == 'RedHat'
+- name: Full system upgrade Debian
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: "full"
+  when: ansible_facts['os_family'] == 'Debian'
 - name: Install packages
+  debugger: true
   ansible.builtin.package:
     name: "{{ packages }}"
     state: present
+  ignore_errors: true

@@ -1,3 +1,7 @@
 ---
+- name: Set SELinux to permissive
+  ansible.posix.selinux:
+    policy: targeted
+    state: permissive
 - ansible.builtin.import_tasks: packages.yml
 - ansible.builtin.import_tasks: user_access.yml

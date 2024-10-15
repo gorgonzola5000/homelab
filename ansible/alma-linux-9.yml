@@ -1,0 +1,59 @@
+---
+# TODO
+- name: Configure Alma Linux VM
+  become: true
+  # ansible-playbook -i inventory.yml --extra-vars "target=alma" alma-linux-9.yml
+  # ansible-playbook -i inventory.yml --extra-vars "target=alma tags=<tag>" alma-linux-9.yml
+  hosts: '{{ target | default("default") }}'
+  remote_user: root
+  pre_tasks:
+    - name: Disable systemd-resolved
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        state: stopped
+        enabled: false
+      when: ansible_facts['distribution'] == 'Debian'
+  roles:
+    - common
+    - vm
+    - wireguard_server
+    - role: nginx_reverse_proxy
+      vars:
+        nginx_config_files_directory: ./config_files/alma-linux-9/nginx/
+        domains:
+          - home.parents-basement.win
+          - '*.home.parents-basement.win'
+        sites_to_enable:
+          - home.parents-basement.win
+      tags: nginx_reverse_proxy
+      ignore_errors: true
+    - role: quadlet
+      vars:
+        service: pihole
+        containers_systemd_directory: './config_files/alma-linux-9/pihole/containers_systemd/'
+        config_files_directory: './config_files/alma-linux-9/pihole/config_files/'
+        rootful: true
+        podman_secrets:
+          WEBPASSWORD: "{{ vault_pihole_web_password }}"
+      tags: pihole
+    - role: quadlet
+      vars:
+        service: ddclient
+        containers_systemd_directory: './config_files/alma-linux-9/ddclient/containers_systemd/'
+        config_files_directory: './config_files/alma-linux-9/ddclient/config_files/'
+        rootful: false
+        podman_secrets:
+          DDCLIENT_PASSWORD: "{{ vault_ddclient_cloudflare_token }}"
+      tags: ddclient
+    - role: quadlet
+      vars:
+        service: glance
+        containers_systemd_directory: './config_files/alma-linux-9/glance/containers_systemd/'
+        config_files_directory: './config_files/alma-linux-9/glance/config_files/'
+        rootful: false
+      tags: glance
+  post_tasks:
+    - name: Set resolv.conf
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: nameserver 10.2.137.1
