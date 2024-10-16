@@ -1,9 +1,15 @@
 proxmox:
   hosts:
     10.2.137.3
-debian:
+alma:
   hosts:
     10.2.137.2
+#debian:
+#  hosts:
+#    10.2.137.2
 debian_dev:
   hosts:
     10.2.137.8
+alma_dev:
+  hosts:
+    10.2.137.9

@@ -1,0 +1,60 @@
+server {
+    listen 80;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name pihole.home.parents-basement.win;
+
+    ssl_certificate /etc/letsencrypt/live/home.parents-basement.win/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/home.parents-basement.win/privkey.pem; # managed by Certbot
+
+    location = /admin/ {
+      return 301 https://pihole.home.parents-basement.win;
+    }
+
+    location / {
+        proxy_pass http://localhost:50001/admin/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name glance.home.parents-basement.win;
+
+    ssl_certificate /etc/letsencrypt/live/home.parents-basement.win/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/home.parents-basement.win/privkey.pem; # managed by Certbot
+
+    location / {
+        proxy_pass http://localhost:50002;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name homeassistant.home.parents-basement.win;
+
+    ssl_certificate /etc/letsencrypt/live/home.parents-basement.win/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/home.parents-basement.win/privkey.pem; # managed by Certbot
+
+    location / {
+        proxy_pass http://10.2.137.4:8123;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}

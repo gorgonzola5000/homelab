@@ -3,3 +3,4 @@
   ansible.builtin.service:
     name: sshd
     state: restarted
+  listen: restart sshd

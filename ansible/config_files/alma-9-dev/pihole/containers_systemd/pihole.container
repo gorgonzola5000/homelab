@@ -1,0 +1,18 @@
+[Unit]
+Description=Pihole DNS sinkhole container
+
+[Container]
+Image=docker.io/pihole/pihole:latest
+PublishPort=53:53
+PublishPort=50001:80
+Volume=/home/pihole/etc/pihole:/etc/pihole
+Volume=/home/pihole/etc/dnsmasq.d:/etc/dnsmasq.d
+Environment="TZ=Europe/Warsaw"
+Secret=WEBPASSWORD,type=env
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target
