@@ -1,15 +1,20 @@
 proxmox:
+  vars:
+    dry_run: false
   hosts:
     10.2.137.3
 alma:
+  vars:
+    dry_run: false
   hosts:
     10.2.137.2
-#debian:
-#  hosts:
-#    10.2.137.2
 debian_dev:
+  vars:
+    dry_run: true
   hosts:
     10.2.137.8
 alma_dev:
+  vars:
+    dry_run: true
   hosts:
     10.2.137.9
