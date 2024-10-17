@@ -1,0 +1,31 @@
+---
+- name: Ensure user media exists
+  ansible.builtin.user:
+    name: media
+    state: present
+- name: Ensure group media exists
+  ansible.builtin.group:
+    name: media
+    state: present
+- name: "Append group 'media' to users"
+  ansible.builtin.user:
+    name: '{{ item }}'
+    groups: media
+    append: true
+  loop: '{{ media_users }}'
+- name: 'Create media directory structure'
+  ansible.builtin.file:
+    path: '{{ path }}torrents/{{ item }}'
+    state: directory
+    owner: media
+    group: media
+    mode: '0770'
+  loop:
+    - torrents/books
+    - torrents/movies
+    - torrents/music
+    - torrents/tv
+    - media/books
+    - media/movies
+    - media/music
+    - media/tv

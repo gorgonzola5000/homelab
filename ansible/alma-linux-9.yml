@@ -26,7 +26,11 @@
         sites_to_enable:
           - home.parents-basement.win
       tags: nginx_reverse_proxy
-      ignore_errors: true
+    - role: media_folder_structure
+      vars:
+        media_users:
+          - navidrome
+        path: /data
     - role: quadlet
       vars:
         service: pihole
