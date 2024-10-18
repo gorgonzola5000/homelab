@@ -1,5 +1,4 @@
 ---
-# TODO
 - name: Configure Alma Linux VM
   become: true
   # ansible-playbook -i inventory.yml --extra-vars "target=alma" alma-linux-9.yml

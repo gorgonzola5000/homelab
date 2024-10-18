@@ -1,0 +1,42 @@
+---
+- name: Configure GitLab Debian VM
+  become: true
+  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" gitlab.yml
+  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab tags=<tag>" gitlab.yml
+  # this playbook uses install instructions for Debian from GitLab website
+  # installation for RedHat based distributions is different
+  hosts: '{{ target | default("default") }}'
+  remote_user: root
+  roles:
+    - common
+    - vm
+    - role: nginx_reverse_proxy
+      vars:
+        nginx_config_files_directory: ./config_files/gitlab/nginx/
+        domains:
+          - gitlab.home.parents-basement.win
+        sites_to_enable:
+          - gitlab.home.parents-basement.win
+      tags: nginx_reverse_proxy
+  tasks:
+    - name: Install packages needed for GitLab
+      ansible.builtin.apt:
+        name:
+          - curl
+          - openssh-server
+          - ca-certificates
+          - perl
+        state: present
+    - name: Install GitLab package
+      ansible.builtin.shell:
+        cmd: 'curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | /bin/bash'
+        executable: /bin/bash 
+    - name: Install GitLab
+      ansible.builtin.apt:
+        name: gitlab-ce
+        state: present
+  post_tasks:
+    - name: Set resolv.conf
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: nameserver 10.2.137.1

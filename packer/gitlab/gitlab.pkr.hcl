@@ -11,7 +11,7 @@ packer {
   }
 }
 
-source "qemu" "alma" {
+source "qemu" "gitlab" {
   accelerator               = "kvm"
   boot_command              = []
   disk_compression          = true
@@ -19,13 +19,12 @@ source "qemu" "alma" {
   disk_image                = true
   disk_size                 = "20000M"
   boot_wait                 = "10s"
-  vm_name                   = "alma-linux-9.qcow2"
+  vm_name                   = "gitlab.qcow2"
   format                    = "qcow2"
-  cpu_model                 = "host" #no qemu64 support in RHEL9
   memory                    = "2048"
   headless                  = "false"
-  iso_checksum              = "file:https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM"
-  iso_url                   = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
+  iso_checksum              = "file:https://cloud.debian.org/images/cloud/bookworm/latest/SHA512SUMS"
+  iso_url                   = "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
   net_device                = "virtio-net"
   output_directory          = "images"
   cd_files                  = ["./user-data", "./meta-data"]
@@ -43,10 +42,10 @@ source "qemu" "alma" {
 }
 
 build {
-  sources = ["source.qemu.alma"]
+  sources = ["source.qemu.gitlab"]
 
   provisioner "ansible" {
-    playbook_file = "../../ansible/alma-linux-9.yml"
+    playbook_file = "../../ansible/gitlab.yml"
        extra_arguments = [ "--vault-password-file=../../ansible/vault-pass.sh" ]
   }
 }

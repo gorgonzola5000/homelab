@@ -3,6 +3,16 @@ proxmox:
     dry_run: false
   hosts:
     10.2.137.3
+homeassistant:
+  vars:
+    dry_run: false
+  hosts:
+    10.2.137.4
+gitlab:
+  vars:
+    dry_run: true
+  hosts:
+    10.2.137.5
 alma:
   vars:
     dry_run: false

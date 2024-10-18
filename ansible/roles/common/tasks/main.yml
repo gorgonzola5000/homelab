@@ -1,7 +1,17 @@
 ---
-- name: Set SELinux to permissive
-  ansible.posix.selinux:
-    policy: targeted
-    state: permissive
-- ansible.builtin.import_tasks: packages.yml
-- ansible.builtin.import_tasks: user_access.yml
+- name: Include Debian tasks
+  ansible.builtin.import_tasks: debian.yml
+  when: ansible_facts['os_family'] == 'Debian' and not ansible_facts['distribution'] == 'Proxmox'
+
+- name: Include RedHat tasks
+  ansible.builtin.import_tasks: redhat.yml
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Import user_access tasks
+  ansible.builtin.import_tasks: user_access.yml
+
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ packages }}"
+    state: present
+  ignore_errors: true
