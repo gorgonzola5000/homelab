@@ -1,19 +1,28 @@
-resource "proxmox_virtual_environment_vm" "debian_12_homelab" {
-  name        = "debian-12-homelab"
+resource "proxmox_virtual_environment_vm" "alma_linux_9" {
+  name        = "alma-linux-9"
   description = "Managed by Terraform"
-  tags        = ["terraform", "debian"]
+  tags        = ["terraform", "alma"]
 
   node_name = "pve"
-  vm_id     = 222
+  vm_id     = 333
 
   agent {
     enabled = true
   }
   stop_on_destroy = true
 
+  memory {
+    dedicated = 4096
+  }
+
+  cpu {
+    cores = 1
+    type  = "host"
+  }
+
   disk {
     datastore_id = "local-lvm"
-    file_id      = "local:iso/debian-vm-1.qcow2.iso"
+    file_id      = "local:iso/alma-linux-9.qcow2.iso"
     interface    = "virtio0"
     size         = 20
   }

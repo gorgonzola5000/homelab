@@ -3,12 +3,14 @@ Description=Pihole DNS sinkhole container
 
 [Container]
 Image=docker.io/pihole/pihole:latest
-PublishPort=53:53
+PublishPort=53:53/tcp
+PublishPort=53:53/udp
 PublishPort=50001:80
 Volume=/home/pihole/etc-pihole:/etc/pihole
 Volume=/home/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
 Environment="TZ=Europe/Warsaw"
 Secret=WEBPASSWORD,type=env
+AddCapability=CAP_AUDIT_WRITE
 
 [Service]
 Restart=always
