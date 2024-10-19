@@ -45,13 +45,17 @@
   ansible.builtin.shell:
     cmd: "certbot certonly -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini {% for domain in domains %} -d {{ domain }} {% endfor %} --preferred-challenges dns-01"
     executable: /bin/bash
-  when: "'No certificates found' in certbot_certificates.stdout and not dry_run"
+  when:
+    - "'No certificates found' in certbot_certificates.stdout or 'INVALID: TEST_CERT' in certbot_certificates.stdout"
+    - not dry_run
   notify: Restart nginx
 - name: Acquire Let's Encrypt certificates with Certbot - DRY RUN
   ansible.builtin.shell:
     cmd: "certbot certonly --staging -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini {% for domain in domains %} -d {{ domain }} {% endfor %} --preferred-challenges dns-01"
     executable: /bin/bash
-  when: "'No certificates found' in certbot_certificates.stdout and dry_run"
+  when:
+    - "'No certificates found' in certbot_certificates.stdout or 'INVALID: TEST_CERT' in certbot_certificates.stdout"
+    - dry_run
   notify: Restart nginx
 - name: Ensure certbot.timer is enabled
   ansible.builtin.systemd_service:
@@ -73,4 +77,5 @@
 - name: Ensure nginx is enabled
   ansible.builtin.systemd_service:
     name: nginx
+    state: started
     enabled: true

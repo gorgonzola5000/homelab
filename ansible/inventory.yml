@@ -1,30 +1,18 @@
 proxmox:
-  vars:
-    dry_run: false
   hosts:
     10.2.137.3
 homeassistant:
-  vars:
-    dry_run: false
   hosts:
     10.2.137.4
 gitlab:
-  vars:
-    dry_run: true
   hosts:
     10.2.137.5
 alma:
-  vars:
-    dry_run: false
   hosts:
     10.2.137.2
 debian_dev:
-  vars:
-    dry_run: true
   hosts:
     10.2.137.8
 alma_dev:
-  vars:
-    dry_run: true
   hosts:
     10.2.137.9

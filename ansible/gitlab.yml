@@ -3,6 +3,7 @@
   become: true
   # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" gitlab.yml
   # ansible-playbook -i inventory.yml --extra-vars "target=gitlab tags=<tag>" gitlab.yml
+  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" -e "{dry_run: False}" gitlab.yml
   # this playbook uses install instructions for Debian from GitLab website
   # installation for RedHat based distributions is different
   hosts: '{{ target | default("default") }}'
@@ -35,8 +36,41 @@
       ansible.builtin.apt:
         name: gitlab-ce
         state: present
+      when: ansible_facts['os_family'] == 'Debian'
+    - name: Set external_url
+      ansible.builtin.lineinfile:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "^(# )?external_url.*"
+        line: "external_url 'http://gitlab.home.parents-basement.win'"
+      notify: reconfigure gitlab
+    - name: Disable bundled NGINX
+      ansible.builtin.lineinfile:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "^(# )?nginx\\['enable'\\].*"
+        line: "nginx['enable'] = false"
+      notify: reconfigure gitlab
+    - name: Add 'www-data' user to GitLab external users
+      ansible.builtin.lineinfile:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "^(# )?web_server\\['external_users'\\].*"
+        line: "web_server['external_users'] = ['www-data']"
+      when: ansible_facts['os_family'] == 'Debian'
+      notify: reconfigure gitlab
+    - name: Add 'nginx' user to GitLab external users
+      ansible.builtin.lineinfile:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "^(# )?web_server\\['external_users'\\].*"
+        line: "web_server['external_users'] = ['nginx']"
+      when: ansible_facts['os_family'] == 'RedHat'
+      notify: reconfigure gitlab
   post_tasks:
     - name: Set resolv.conf
       ansible.builtin.copy:
         dest: /etc/resolv.conf
         content: nameserver 10.2.137.1
+  handlers:
+    - name: Reconfigure GitLab
+      ansible.builtin.shell:
+        cmd: gitlab-ctl reconfigure
+        executable: /bin/bash
+      listen: reconfigure gitlab
