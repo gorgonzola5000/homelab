@@ -21,7 +21,7 @@ source "qemu" "gitlab" {
   boot_wait                 = "10s"
   vm_name                   = "gitlab.qcow2"
   format                    = "qcow2"
-  memory                    = "2048"
+  memory                    = "8192"
   headless                  = "false"
   iso_checksum              = "file:https://cloud.debian.org/images/cloud/bookworm/latest/SHA512SUMS"
   iso_url                   = "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
@@ -29,7 +29,6 @@ source "qemu" "gitlab" {
   output_directory          = "images"
   cd_files                  = ["./user-data", "./meta-data"]
   cd_label                  = "CIDATA"
-  #  qemuargs                  = [["-m", "1024M"]]
   communicator              = "ssh"
   host_port_min             = 2222
   host_port_max             = 2299
