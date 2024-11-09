@@ -40,3 +40,46 @@ resource "proxmox_virtual_environment_vm" "gitlab" {
     bridge = "vmbr0"
   }
 }
+
+resource "proxmox_virtual_environment_vm" "gitlab-runner" {
+  name        = "gitlab-runner"
+  description = "Managed by Terraform"
+  tags        = ["terraform", "debian"]
+
+  node_name = "pve"
+  vm_id     = 335
+
+  agent {
+    enabled = true
+  }
+  stop_on_destroy = true
+
+  cpu {
+    cores = 1
+    type  = "host"
+  }
+
+  memory {
+    dedicated = 8192
+  }
+
+  disk {
+    datastore_id = "local-lvm"
+    file_id      = "local:iso/gitlab-runner.qcow2.iso"
+    interface    = "virtio0"
+    size         = 20
+  }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "10.2.137.6/24"
+        gateway = "10.2.137.1"
+      }
+    }
+  }
+
+  network_device {
+    bridge = "vmbr0"
+  }
+}

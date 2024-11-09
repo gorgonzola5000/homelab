@@ -1,0 +1,31 @@
+---
+
+- name: Ensure sudo is installed
+  ansible.builtin.package:
+    name:
+      - sudo
+    state: present
+
+- name: Ensure group "sudo" exists
+  ansible.builtin.group:
+    name: sudo
+    state: present
+
+- name: Ensure terraform user exists in PAM realm
+  ansible.builtin.user:
+    shell: "/bin/bash"
+    name: terraform
+    create_home: true
+    groups: sudo
+    append: true
+    password: "{{ vault_terraform_password_hash }}"
+
+- name: Check if public ssh key is present in authorized_keys
+  ansible.posix.authorized_key:
+    user: terraform
+    state: present
+    key: "{{ vault_terraform_public_key }}"
+
+- name: Include Proxmox tasks
+  ansible.builtin.import_tasks: proxmox.yml
+  when: ansible_facts['distribution'] == 'Proxmox'

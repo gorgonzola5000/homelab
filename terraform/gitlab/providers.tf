@@ -9,7 +9,8 @@ provider "proxmox" {
   ssh {
     agent       = false
     username    = "terraform"
-    private_key = file("/home/gorgonzola5000/.ssh/id_ed25519")
+    private_key = var.terraform_private_key
+    #file("/home/gorgonzola5000/.ssh/id_ed25519")
 
     node {
       name    = "pve"
@@ -19,8 +20,14 @@ provider "proxmox" {
 }
 
 variable "virtual_environment_endpoint" {
+  type = string
 }
 variable "virtual_environment_username" {
+  type = string
 }
 variable "virtual_environment_password" {
+  type = string
+}
+variable "terraform_private_key" {
+  type = string
 }
