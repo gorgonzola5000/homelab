@@ -11,7 +11,7 @@ packer {
   }
 }
 
-source "qemu" "gitlab" {
+source "qemu" "gitlab-runner" {
   accelerator               = "kvm"
   boot_command              = []
   disk_compression          = true
@@ -19,9 +19,10 @@ source "qemu" "gitlab" {
   disk_image                = true
   disk_size                 = "20000M"
   boot_wait                 = "10s"
-  vm_name                   = "gitlab.qcow2"
+  vm_name                   = "gitlab-runner.qcow2"
   format                    = "qcow2"
-  memory                    = "8192"
+  cpu_model                 = "host" #no qemu64 support in RHEL9
+  memory                    = "2048"
   headless                  = "false"
   iso_checksum              = "file:https://cloud.debian.org/images/cloud/bookworm/latest/SHA512SUMS"
   iso_url                   = "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
@@ -41,10 +42,11 @@ source "qemu" "gitlab" {
 }
 
 build {
-  sources = ["source.qemu.gitlab"]
+  sources = ["source.qemu.gitlab-runner"]
 
   provisioner "ansible" {
-    playbook_file = "../../ansible/gitlab.yml"
-       extra_arguments = [ "--vault-password-file=../../ansible/vault-pass.sh" ]
+    keep_inventory_file = true
+    playbook_file       = "../../ansible/gitlab-runner.yml"
+       extra_arguments    = [ "--vault-password-file=../../ansible/vault-pass.sh" ]
   }
 }

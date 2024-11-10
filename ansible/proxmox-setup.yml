@@ -6,6 +6,7 @@
   roles:
     - proxmox
     - common
+    - terraform_managed
     - role: nginx_reverse_proxy
       vars:
         nginx_config_files_directory: ./config_files/proxmox/etc/nginx/

@@ -1,0 +1,92 @@
+---
+- name: Configure GitLab Runner Packer Debian VM
+  become: true
+  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" gitlab.yml
+  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab tags=<tag>" gitlab.yml
+  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" -e "{dry_run: False}" gitlab.yml
+  # this playbook uses install instructions for Debian from GitLab website
+  # installation for RedHat based distributions is different
+  hosts: '{{ target | default("default") }}'
+  remote_user: root
+  roles:
+    - common
+    - vm
+  tasks:
+    - name: Ensure terraform user exists in PAM realm
+      ansible.builtin.user:
+        shell: "/bin/bash"
+        name: terraform
+        create_home: true
+        groups: sudo
+        append: true
+        generate_ssh_key: true
+    
+    - name: Set terraform user public key
+      ansible.builtin.copy:
+        content: '{{ vault_terraform_public_key }}'
+        dest: /home/terraform/.ssh/id_ed25519.pub
+        mode: '0622'
+        owner: terraform
+        group: terraform
+        
+    - name: Set terraform user private key
+      ansible.builtin.copy:
+        content: '{{ vault_terraform_private_key }}'
+        dest: /home/terraform/.ssh/id_ed25519
+        mode: '0600'
+        owner: terraform
+        group: terraform
+
+    - name: Install packages needed for GitLab Runner
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - gnupg
+          - curl
+          - openssh-server
+          - ca-certificates
+          - perl
+          - packer
+          - ansible
+        state: present
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Set up OpenTofu repository
+      ansible.builtin.shell:
+        cmd: >-
+          install -m 0755 -d /etc/apt/keyrings
+          && curl -fsSL https://get.opentofu.org/opentofu.gpg | sudo tee /etc/apt/keyrings/opentofu.gpg >/dev/null
+          && curl -fsSL https://packages.opentofu.org/opentofu/tofu/gpgkey | sudo gpg --no-tty --batch --yes --dearmor -o /etc/apt/keyrings/opentofu-repo.gpg >/dev/null
+        executable: /bin/bash
+
+    - name: Create OpenTofu source list
+      ansible.builtin.copy:
+        content: |-
+          deb [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main
+          deb-src [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main
+        dest: /etc/apt/sources.list.d/opentofu.list
+        mode: 'a+r' 
+
+    - name: Install opentofu
+      ansible.builtin.apt:
+        name: tofu
+        state: present
+        update_cache: true
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Setup Gitlab Runner repositories
+      ansible.builtin.shell:
+        cmd: 'curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | sudo bash'
+        executable: /bin/bash 
+
+    - name: Install GitLab Runner
+      ansible.builtin.apt:
+        name: gitlab-runner
+        state: present
+      when: ansible_facts['os_family'] == 'Debian'
+
+  post_tasks:
+    - name: Set resolv.conf
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: nameserver 10.2.137.1

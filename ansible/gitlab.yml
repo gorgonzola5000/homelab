@@ -11,6 +11,10 @@
   roles:
     - common
     - vm
+    - role: geerlingguy.swap
+      vars:
+        swap_file_size_mb: '2048'
+
     - role: nginx_reverse_proxy
       vars:
         nginx_config_files_directory: ./config_files/gitlab/nginx/
@@ -28,27 +32,33 @@
           - ca-certificates
           - perl
         state: present
-    - name: Install GitLab package
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Setup Gitlab repositories
       ansible.builtin.shell:
         cmd: 'curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | /bin/bash'
         executable: /bin/bash 
+
     - name: Install GitLab
       ansible.builtin.apt:
         name: gitlab-ce
         state: present
       when: ansible_facts['os_family'] == 'Debian'
+
     - name: Set external_url
       ansible.builtin.lineinfile:
         path: /etc/gitlab/gitlab.rb
         regexp: "^(# )?external_url.*"
         line: "external_url 'http://gitlab.home.parents-basement.win'"
       notify: reconfigure gitlab
+
     - name: Disable bundled NGINX
       ansible.builtin.lineinfile:
         path: /etc/gitlab/gitlab.rb
         regexp: "^(# )?nginx\\['enable'\\].*"
         line: "nginx['enable'] = false"
       notify: reconfigure gitlab
+
     - name: Add 'www-data' user to GitLab external users
       ansible.builtin.lineinfile:
         path: /etc/gitlab/gitlab.rb
@@ -56,6 +66,7 @@
         line: "web_server['external_users'] = ['www-data']"
       when: ansible_facts['os_family'] == 'Debian'
       notify: reconfigure gitlab
+
     - name: Add 'nginx' user to GitLab external users
       ansible.builtin.lineinfile:
         path: /etc/gitlab/gitlab.rb
@@ -63,6 +74,7 @@
         line: "web_server['external_users'] = ['nginx']"
       when: ansible_facts['os_family'] == 'RedHat'
       notify: reconfigure gitlab
+
   post_tasks:
     - name: Set resolv.conf
       ansible.builtin.copy:
@@ -74,3 +86,5 @@
         cmd: gitlab-ctl reconfigure
         executable: /bin/bash
       listen: reconfigure gitlab
+      environment:
+        GITLAB_ROOT_PASSWORD: "{{ vault_gitlab_root_password }}"
