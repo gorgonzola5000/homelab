@@ -50,7 +50,7 @@ deploy-job:      # This job runs in the deploy stage.
 
 
 include:
-  - component: $CI_SERVER_FQDN/components/opentofu/full-pipeline@0.40.0-rc5
+  - component: gitlab.com/components/opentofu/full-pipeline@0.40.0-rc5
     inputs:
       # The version must currently be specified explicitly as an input,
       # to find the correctly associated images. # This can be removed
