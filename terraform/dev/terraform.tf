@@ -1,4 +1,6 @@
 terraform {
+  backend "http" {
+  }
   required_providers {
     proxmox = {
       version = "0.66.1"
