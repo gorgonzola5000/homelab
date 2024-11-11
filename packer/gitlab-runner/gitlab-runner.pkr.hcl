@@ -47,6 +47,6 @@ build {
   provisioner "ansible" {
     keep_inventory_file = true
     playbook_file       = "../../ansible/gitlab-runner.yml"
-       extra_arguments    = [ "--vault-password-file=../../ansible/vault-pass.sh" ]
+       extra_arguments  = [ "--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default" ]
   }
 }

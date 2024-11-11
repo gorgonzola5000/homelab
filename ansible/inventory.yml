@@ -1,18 +1,15 @@
 proxmox:
   hosts:
-    10.2.137.3
+    proxmox.home.parents-basement.win
 homeassistant:
   hosts:
-    10.2.137.4
+    homeassistant.home.parents-basement.win
 gitlab:
   hosts:
-    10.2.137.5
+    gitlab.home.parents-basement.win
+gitlab-runner:
+  hosts:
+    gitlab-runner.home.parents-basement.win
 alma:
   hosts:
-    10.2.137.2
-debian_dev:
-  hosts:
-    10.2.137.8
-alma_dev:
-  hosts:
-    10.2.137.9
+    alma.home.parents-basement.win

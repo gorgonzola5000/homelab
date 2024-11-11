@@ -6,7 +6,7 @@
   # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" -e "{dry_run: False}" gitlab.yml
   # this playbook uses install instructions for Debian from GitLab website
   # installation for RedHat based distributions is different
-  hosts: '{{ target | default("default") }}'
+  hosts: '{{ target | default("gitlab") }}'
   remote_user: root
   roles:
     - common

@@ -45,6 +45,6 @@ build {
 
   provisioner "ansible" {
     playbook_file = "../../ansible/debian-vm-1.yml"
-       extra_arguments = [ "--vault-password-file=../../ansible/vault-pass.sh" ]
+       extra_arguments = [ "--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default" ]
   }
 }

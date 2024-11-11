@@ -3,7 +3,7 @@
   become: true
   # ansible-playbook -i inventory.yml --extra-vars "target=alma" alma-linux-9.yml
   # ansible-playbook -i inventory.yml --extra-vars "target=alma tags=<tag>" alma-linux-9.yml
-  hosts: '{{ target | default("default") }}'
+  hosts: '{{ target | default("alma") }}'
   remote_user: root
   pre_tasks:
     - name: Disable systemd-resolved

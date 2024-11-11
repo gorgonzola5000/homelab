@@ -4,9 +4,7 @@
 # move debian here instead of being a role
 - name: Configure Debian VM
   become: true
-  #  hosts: "{{ variable_host | default('debian') }}"
-  hosts: '{{ target | default("default") }}'
-  #  hosts: default
+  hosts: '{{ target | default("debian") }}'
   remote_user: root
   pre_tasks:
     - name: Disable systemd-resolved
