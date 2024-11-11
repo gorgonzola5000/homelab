@@ -1,85 +1,46 @@
-# resource "proxmox_virtual_environment_vm" "gitlab" {
-#   name        = "gitlab"
-#   description = "Managed by Terraform"
-#   tags        = ["terraform", "debian"]
-# 
-#   node_name = "pve"
-#   vm_id     = 334
-# 
-#   agent {
-#     enabled = true
-#   }
-#   stop_on_destroy = true
-# 
-#   memory {
-#     dedicated = 4096
-#   }
-# 
-#   disk {
-#     datastore_id = "local-lvm"
-#     file_id      = "local:iso/gitlab.qcow2.iso"
-#     interface    = "virtio0"
-#     size         = 20
-#   }
-# 
-#   initialization {
-#     ip_config {
-#       ipv4 {
-#         address = "10.2.137.5/24"
-#         gateway = "10.2.137.1"
-#       }
-#     }
-#     user_data_file_id = proxmox_virtual_environment_file.cloud_config_apt.id
-#   }
-# 
-#   network_device {
-#     bridge = "vmbr0"
-#   }
-# }
+resource "proxmox_virtual_environment_vm" "alma_9_dev" {
+  name        = "alma-9-dev"
+  description = "Managed by Terraform"
+  tags        = ["terraform", "alma"]
 
-# resource "proxmox_virtual_environment_vm" "alma_9_dev" {
-#   name        = "alma-9-dev"
-#   description = "Managed by Terraform"
-#   tags        = ["terraform", "alma"]
-# 
-#   node_name = "pve"
-#   vm_id     = 220
-# 
-#   agent {
-#     enabled = true
-#   }
-#   stop_on_destroy = true
-# 
-#   memory {
-#     dedicated = 4096
-#   }
-# 
-#   cpu {
-#     cores = 1
-#     type  = "host"
-#   }
-# 
-#   disk {
-#     datastore_id = "local-lvm"
-#     file_id      = "local:iso/AlmaLinux-9-GenericCloud-9.4-20240507.x86_64.qcow2.iso"
-#     interface    = "virtio0"
-#     size         = 20
-#   }
-# 
-#   initialization {
-#     ip_config {
-#       ipv4 {
-#         address = "10.2.137.9/24"
-#         gateway = "10.2.137.1"
-#       }
-#     }
-#     user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
-#   }
-# 
-#   network_device {
-#     bridge = "vmbr0"
-#   }
-# }
+  node_name = "pve"
+  vm_id     = 220
+
+  agent {
+    enabled = true
+  }
+  stop_on_destroy = true
+
+  memory {
+    dedicated = 4096
+  }
+
+  cpu {
+    cores = 1
+    type  = "host"
+  }
+
+  disk {
+    datastore_id = "local-lvm"
+    file_id      = "local:iso/AlmaLinux-9-GenericCloud-9.4-20240507.x86_64.qcow2.iso"
+    interface    = "virtio0"
+    size         = 20
+  }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "10.2.137.10/24"
+        gateway = "10.2.137.1"
+      }
+    }
+    user_data_file_id = proxmox_virtual_environment_file.cloud_config_yum.id
+  }
+
+  network_device {
+    bridge = "vmbr0"
+  }
+}
 
 data "local_file" "ssh_public_key" {
   filename = "/home/gorgonzola5000/.ssh/id_ed25519.pub"

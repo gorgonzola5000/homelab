@@ -11,3 +11,4 @@
   ansible.builtin.dnf:
     name: "*"
     update_cache: true
+    state: latest
