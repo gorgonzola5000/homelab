@@ -2,7 +2,7 @@ packer {
   required_plugins {
     ansible = {
       version = "~> 1"
-      source = "github.com/hashicorp/ansible"
+      source  = "github.com/hashicorp/ansible"
     }
     qemu = {
       version = "~> 1.1.0"
@@ -44,7 +44,7 @@ build {
   sources = ["source.qemu.gitlab"]
 
   provisioner "ansible" {
-    playbook_file = "../../ansible/gitlab.yml"
-       extra_arguments = [ "--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default" ]
+    playbook_file   = "../../ansible/gitlab.yml"
+    extra_arguments = ["--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default", "--user", "root"]
   }
 }

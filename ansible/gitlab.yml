@@ -1,13 +1,9 @@
 ---
 - name: Configure GitLab Debian VM
-  become: true
-  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" gitlab.yml
-  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab tags=<tag>" gitlab.yml
-  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" -e "{dry_run: False}" gitlab.yml
+  # ansible-playbook --extra-vars "{dry_run: False}" gitlab.yml
   # this playbook uses install instructions for Debian from GitLab website
   # installation for RedHat based distributions is different
   hosts: '{{ target | default("gitlab") }}'
-  remote_user: root
   roles:
     - common
     - vm
