@@ -27,7 +27,7 @@ ansible 1/2:       # This job runs in the build stage, which runs first.
     - export ansible_ssh_private_key_file=/home/terraform/.ssh/id_ed25519
     - export HOMELAB_VAULT_KEY=$HOMELAB_VAULT_KEY
     - cd ansible
-    - ansible-playbook proxmox-setup.yml --verbose
+    - ansible-playbook -vvvv proxmox-setup.yml --verbose
 
 ansible 2/2:       # This job runs in the build stage, which runs first.
   stage: build
