@@ -50,11 +50,11 @@ deploy-job:      # This job runs in the deploy stage.
 
 
 include:
-  - component: $CI_SERVER_FQDN/components/opentofu/fmt@<VERSION>
+  - component: $CI_SERVER_FQDN/components/opentofu/fmt@0.40
     inputs:
       # The version must currently be specified explicitly as an input,
       # to find the correctly associated images. # This can be removed
       # once https://gitlab.com/gitlab-org/gitlab/-/issues/438275 is solved.
-      version: <VERSION>
+      version: 0.40
       opentofu_version: 1.6.1
       root_dir: terraform/dev
