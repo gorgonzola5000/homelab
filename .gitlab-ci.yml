@@ -47,3 +47,15 @@ deploy-job:      # This job runs in the deploy stage.
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+
+
+include:
+  - component: $CI_SERVER_FQDN/components/opentofu/full-pipeline@0.40.0-rc5
+    inputs:
+      # The version must currently be specified explicitly as an input,
+      # to find the correctly associated images. # This can be removed
+      # once https://gitlab.com/gitlab-org/gitlab/-/issues/438275 is solved.
+      version: 0.40.0-rc5 # component version
+      opentofu_version: 1.8.5
+
+stages: [validate, test, build, deploy, cleanup]
