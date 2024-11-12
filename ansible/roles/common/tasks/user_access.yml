@@ -4,26 +4,27 @@
     name:
       - sudo
     state: present
+
 - name: Ensure group "sudo" exists
   ansible.builtin.group:
     name: sudo
     state: present
-- name: Ensure gorgonzola5000 exists in PAM realm
+
+- name: "Ensure existance of user {{ vault_admin_username }}"
   ansible.builtin.user:
-    name: gorgonzola5000
+    name: "{{ vault_admin_username }}"
     shell: '/bin/bash'
     create_home: true
     groups: sudo
     append: true
-    password: "{{ vault_user_password_hash }}"
+    password: "{{ vault_admin_pam_password_hash }}"
+
 - name: Check if public ssh key is present in authorized_keys
   ansible.posix.authorized_key:
-    user: "{{ item }}"
+    user: "{{ vault_admin_username }}"
     state: present
-    key: "{{ lookup('url', 'https://github.com/gorgonzola5000.keys') }}"
-  loop:
-    - gorgonzola5000
-    - root
+    key: "{{ vault_admin_public_key }}"
+
 - name: Disallow SSH password authentication
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config

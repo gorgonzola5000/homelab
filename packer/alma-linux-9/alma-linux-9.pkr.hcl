@@ -2,7 +2,7 @@ packer {
   required_plugins {
     ansible = {
       version = "~> 1"
-      source = "github.com/hashicorp/ansible"
+      source  = "github.com/hashicorp/ansible"
     }
     qemu = {
       version = "~> 1.1.0"
@@ -30,7 +30,6 @@ source "qemu" "alma" {
   output_directory          = "images"
   cd_files                  = ["./user-data", "./meta-data"]
   cd_label                  = "CIDATA"
-  #  qemuargs                  = [["-m", "1024M"]]
   communicator              = "ssh"
   host_port_min             = 2222
   host_port_max             = 2299
@@ -46,7 +45,7 @@ build {
   sources = ["source.qemu.alma"]
 
   provisioner "ansible" {
-    playbook_file = "../../ansible/alma-linux-9.yml"
-       extra_arguments = [ "--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default" ]
+    playbook_file   = "../../ansible/alma-linux-9.yml"
+    extra_arguments = ["--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default", "--user", "root"]
   }
 }

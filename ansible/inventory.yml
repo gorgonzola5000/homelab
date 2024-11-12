@@ -7,7 +7,7 @@ homeassistant:
 gitlab:
   hosts:
     gitlab.home.parents-basement.win
-gitlab-runner:
+gitlab_runner:
   hosts:
     gitlab-runner.home.parents-basement.win
 alma:

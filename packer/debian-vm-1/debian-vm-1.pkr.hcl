@@ -2,7 +2,7 @@ packer {
   required_plugins {
     ansible = {
       version = "~> 1"
-      source = "github.com/hashicorp/ansible"
+      source  = "github.com/hashicorp/ansible"
     }
     qemu = {
       version = "~> 1.1.0"
@@ -12,22 +12,22 @@ packer {
 }
 
 source "qemu" "debian" {
-  accelerator               = "kvm"
-  boot_command              = []
-  disk_compression          = true
-  disk_interface            = "virtio"
-  disk_image                = true
-  disk_size                 = "5000M"
-  boot_wait                 = "10s"
-  vm_name                   = "debian-vm-1.qcow2"
-  format                    = "qcow2"
-  headless                  = "true"
-  iso_checksum              = "file:https://cloud.debian.org/images/cloud/bookworm/latest/SHA512SUMS"
-  iso_url                   = "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
-  net_device                = "virtio-net"
-  output_directory          = "images"
-  cd_files                  = ["./user-data", "./meta-data"]
-  cd_label                  = "CIDATA"
+  accelerator      = "kvm"
+  boot_command     = []
+  disk_compression = true
+  disk_interface   = "virtio"
+  disk_image       = true
+  disk_size        = "5000M"
+  boot_wait        = "10s"
+  vm_name          = "debian-vm-1.qcow2"
+  format           = "qcow2"
+  headless         = "true"
+  iso_checksum     = "file:https://cloud.debian.org/images/cloud/bookworm/latest/SHA512SUMS"
+  iso_url          = "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
+  net_device       = "virtio-net"
+  output_directory = "images"
+  cd_files         = ["./user-data", "./meta-data"]
+  cd_label         = "CIDATA"
   #  qemuargs                  = [["-m", "1024M"]]
   communicator              = "ssh"
   host_port_min             = 2222
@@ -44,7 +44,7 @@ build {
   sources = ["source.qemu.debian"]
 
   provisioner "ansible" {
-    playbook_file = "../../ansible/debian-vm-1.yml"
-       extra_arguments = [ "--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default" ]
+    playbook_file   = "../../ansible/debian-vm-1.yml"
+    extra_arguments = ["--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default", "--user", "root"]
   }
 }

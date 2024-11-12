@@ -24,7 +24,7 @@ Constant WIP
   - download the bootable ISO and flash it onto a USB drive
   - install the OS
   - set up your keys (`curl github.com/gorgonzola5000.keys >> authorized_keys`)
-  - on your other PC, run `ansible-playbook -i inventory.yml proxmox-setup.yml`
+  - on your other PC, run `ansible-playbook -u root proxmox.yml`
 2. Set up GitLab and GitLab Runner VMs
   - build both .qcow2 images on your machine
   - transfer them to the Proxmox node, change their names to end with '.iso'

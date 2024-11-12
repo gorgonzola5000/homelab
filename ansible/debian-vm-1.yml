@@ -1,11 +1,6 @@
 ---
-# TODO
-# move wireguard_server here
-# move debian here instead of being a role
 - name: Configure Debian VM
-  become: true
   hosts: '{{ target | default("debian") }}'
-  remote_user: root
   pre_tasks:
     - name: Disable systemd-resolved
       ansible.builtin.systemd_service:

@@ -1,13 +1,9 @@
 ---
 - name: Configure GitLab Runner Packer Debian VM
-  become: true
-  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" gitlab.yml
-  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab tags=<tag>" gitlab.yml
-  # ansible-playbook -i inventory.yml --extra-vars "target=gitlab" -e "{dry_run: False}" gitlab.yml
-  # this playbook uses install instructions for Debian from GitLab website
+  # ansible-playbook --extra-vars "{dry_run: False}" gitlab-runner.yml
+  # this playbook uses install instructions for Debian from the GitLab website
   # installation for RedHat based distributions is different
-  hosts: '{{ target | default("gitlab-runner") }}'
-  remote_user: root
+  hosts: '{{ target | default("gitlab_runner") }}'
   roles:
     - common
     - vm
@@ -20,22 +16,30 @@
         groups: sudo
         append: true
         generate_ssh_key: true
+
+    - name: Ensure /home/gitlab-runner/.ssh exists
+      ansible.builtin.file:
+        path: /home/gitlab-runner/.ssh
+        state: directory
+        owner: gitlab-runner
+        group: gitlab-runner
+        mode: '0755'
     
-    - name: Set terraform user public key
+    - name: Set gitlab-runner user public key
       ansible.builtin.copy:
         content: '{{ vault_terraform_public_key }}'
-        dest: /home/terraform/.ssh/id_ed25519.pub
+        dest: /home/gitlab-runner/.ssh/id_ed25519.pub
         mode: '0622'
-        owner: terraform
-        group: terraform
+        owner: gitlab-runner
+        group: gitlab-runner
         
-    - name: Set terraform user private key
+    - name: Set gitlab-runner user private key
       ansible.builtin.copy:
         content: '{{ vault_terraform_private_key }}'
-        dest: /home/terraform/.ssh/id_ed25519
+        dest: /home/gitlab-runner/.ssh/id_ed25519
         mode: '0600'
-        owner: terraform
-        group: terraform
+        owner: gitlab-runner
+        group: gitlab-runner
 
     - name: Install packages needed for GitLab Runner
       ansible.builtin.apt:

@@ -3,12 +3,19 @@
   ansible.builtin.apt:
     update_cache: true
     upgrade: full
-- name: Ensure unattended_upgrades are present
+
+- name: Ensure unattended_upgrades, debconf are present
   ansible.builtin.package:
-    name: unattended-upgrades
+    name:
+      - debconf
+      - debconf-utils
+      - unattended-upgrades
     state: present
-- name: Configure unattended updates
-  ansible.builtin.shell:
-    executable: /bin/bash
-    cmd: "echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | debconf-set-selections && dpkg-reconfigure -f noninteractive unattended-upgrades"
-    creates: /etc/apt/apt.conf.d/20auto-upgrades
+
+- name: Configure unattended-upgrades
+  ansible.builtin.debconf:
+    name: unattended-upgrades
+    question: unattended-upgrades/enable_auto_updates
+    vtype: boolean
+    value: 'true'
+  notify: dpkg-reconfigure unattended-upgrades

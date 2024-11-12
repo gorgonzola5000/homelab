@@ -1,25 +1,17 @@
 ---
 - name: Allow templates, snippets, ISOs and backups in 'local' pool
-  #  ansible.builtin.blockinfile:
-  #    path: /etc/pve/storage.cfg
-  #    marker_begin: "dir: local"
-  #    marker_end: "lvmthin: local-lvm"
-  #    marker: "{mark}"
-  #    block: |2+
-  #        path /var/lib/vz
-  #        content vztmpl,snippets,iso,backup
-  #
-  #    state: present
   ansible.builtin.blockinfile:
     path: /etc/pve/storage.cfg
     marker_begin: "dir: local"
     marker_end: "lvmthin: local-lvm"
     marker: "{mark}"
     block: "\tpath /var/lib/vz\n\tcontent vztmpl,snippets,iso,backup\n\n"
+    ### ABOVE TRANSLATES TO:
+    #
     # dir: local
     #   path /var/lib/vz
     #   content vztmpl,snippets,iso,backup
     #
     # lvmthin: local-lvm
-    # REST OF THE FILE
+    ### REST OF THE FILE
     state: present
