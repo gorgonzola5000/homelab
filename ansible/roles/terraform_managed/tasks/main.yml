@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure sudo is installed
   ansible.builtin.package:
     name:

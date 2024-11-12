@@ -34,4 +34,3 @@
       terraform ALL=(root) NOPASSWD: /sbin/pvesm
       terraform ALL=(root) NOPASSWD: /sbin/qm
       terraform ALL=(root) NOPASSWD: /usr/bin/tee /var/lib/vz/*
-  when: ansible_facts['distribution'] == 'Proxmox'

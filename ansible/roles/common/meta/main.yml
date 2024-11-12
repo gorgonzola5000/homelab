@@ -1,4 +1,0 @@
----
-dependencies:
-  - role: proxmox
-    when: ansible_facts['distribution'] == 'Proxmox'

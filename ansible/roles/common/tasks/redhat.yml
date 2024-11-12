@@ -3,10 +3,12 @@
   ansible.posix.selinux:
     policy: targeted
     state: permissive
+
 - name: Add repositories
   ansible.builtin.dnf:
     name: epel-release
     state: present
+
 - name: Full system upgrade RedHat
   ansible.builtin.dnf:
     name: "*"
