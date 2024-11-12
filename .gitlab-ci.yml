@@ -26,6 +26,7 @@ ansible 1/2:       # This job runs in the build stage, which runs first.
   variables:
     ANSIBLE_HOST_KEY_CHECKING: False
   script:
+    - export
     - cd ansible
     - ansible-playbook --private-key $ANSIBLE_PRIVATE_KEY proxmox.yml
 
