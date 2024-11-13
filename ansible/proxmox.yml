@@ -1,6 +1,7 @@
 ---
 - name: Configure Proxmox Node
   hosts: '{{ target | default("proxmox") }}' # this lets you override hosts by specifying variable 'target'. Otherwise it targets group 'proxmox'
+  become: true
   roles:
     - proxmox
     - common
