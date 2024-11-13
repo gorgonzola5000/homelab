@@ -9,19 +9,36 @@
     name: sudo
     state: present
 
-- name: Ensure passwordless sudo for user ansible
-  ansible.builtin.copy:
-    dest: /etc/sudoers.d/ansible.conf
-    content: 'ansible ALL=(ALL) NOPASSWD:ALL'
-    mode: '0644'
+- name: Ensure /etc/sudoers.d exists
+  ansible.builtin.file:
+    path: /etc/sudoers.d/
+    state: directory
     owner: root
     group: root
+
+- name: Ensure sudoers.d is included in /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    line: '@includedir /etc/sudoers.d'
+    state: present
+    validate: /usr/sbin/visudo -cf %s
+
+- name: Ensure passwordless sudo for user ansible
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/ansible
+    line: 'ansible ALL=(ALL) NOPASSWD:ALL'
+    mode: '0440'
+    owner: root
+    group: root
+    validate: /usr/sbin/visudo -cf %s
+    create: true
   notify: restart sshd
 
 - name: Ensure user ansible is present
   ansible.builtin.user:
     name: ansible
     create_home: true
+    shell: /bin/bash
     groups: sudo
     append: true
   notify: restart sshd
