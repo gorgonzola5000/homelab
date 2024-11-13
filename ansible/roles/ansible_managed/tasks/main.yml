@@ -15,6 +15,7 @@
     state: directory
     owner: root
     group: root
+    mode: '0750'
 
 - name: Ensure sudoers.d is included in /etc/sudoers
   ansible.builtin.lineinfile:
@@ -22,6 +23,15 @@
     line: '@includedir /etc/sudoers.d'
     state: present
     validate: /usr/sbin/visudo -cf %s
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Ensure sudoers.d is included in /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    line: '#includedir /etc/sudoers.d'
+    state: present
+    validate: /usr/sbin/visudo -cf %s
+  when: ansible_facts['os_family'] == 'RedHat'
 
 - name: Ensure passwordless sudo for user ansible
   ansible.builtin.lineinfile:
