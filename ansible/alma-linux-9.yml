@@ -13,6 +13,7 @@
   roles:
     - common
     - vm
+    - ansible_managed
     - wireguard_server
     - role: nginx_reverse_proxy
       vars:
