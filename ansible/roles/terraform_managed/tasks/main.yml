@@ -25,6 +25,11 @@
     state: present
     key: "{{ vault_terraform_public_key }}"
 
+- name: Check if /etc/pve exists
+  ansible.builtin.stat:
+    path: /etc/pve
+  register: stat_result
+
 - name: Include Proxmox tasks
   ansible.builtin.import_tasks: proxmox.yml
-  when: ansible_facts['distribution'] == 'Proxmox'
+  when: stat_result.stat.exists
