@@ -4,6 +4,7 @@
   # this playbook uses install instructions for Debian from the GitLab website
   # installation for RedHat based distributions is different
   hosts: '{{ target | default("gitlab_runner") }}'
+  become: true
   roles:
     - common
     - vm
