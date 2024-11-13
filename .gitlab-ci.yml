@@ -32,7 +32,7 @@ ansible 1/2:       # This job runs in the build stage, which runs first.
   script:
     - export
     - cd ansible
-    - ansible-playbook $ANSIBLE_PRIVATE_KEY proxmox.yml
+    - ansible-playbook proxmox.yml
 
 ansible 2/2:       # This job runs in the build stage, which runs first.
   stage: build
