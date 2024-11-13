@@ -29,7 +29,8 @@ ansible 1/2:       # This job runs in the build stage, which runs first.
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
     - export
-    - echo "$ANSIBLE_PRIVATE_KEY" | ssh-add -
+    - echo $ANSIBLE_PRIVATE_KEY | base64 -d || ssh-add -
+#    - echo "$ANSIBLE_PRIVATE_KEY" | ssh-add -
 #    - echo "$ANSIBLE_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   script:
     - export
