@@ -15,7 +15,6 @@
     name: "{{ item.key }}"
     data: "{{ item.value }}"
   loop: "{{ lookup('ansible.builtin.dict', podman_secrets, wantlist=True) }}"
-  no_log: true
   when: podman_secrets is defined
   failed_when: false
 
