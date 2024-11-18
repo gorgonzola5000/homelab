@@ -7,9 +7,9 @@ ansible 1/2:       # This job runs in the build stage, which runs first.
   variables:
     ANSIBLE_HOST_KEY_CHECKING: False
   before_script:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
-    - eval $(ssh-agent -s)
-    - echo $ANSIBLE_PRIVATE_KEY | base64 -d | ssh-add -
+    - apk add ansible
+    - mkdir -p ~/.ssh
+    - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519
   script:
     - cd ansible
     - ansible-playbook proxmox.yml
@@ -20,9 +20,9 @@ ansible 2/2:       # This job runs in the build stage, which runs first.
   variables:
     ANSIBLE_HOST_KEY_CHECKING: False
   before_script:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
-    - eval $(ssh-agent -s)
-    - echo $ANSIBLE_PRIVATE_KEY | base64 -d | ssh-add -
+    - apk add ansible
+    - mkdir -p ~/.ssh
+    - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519
   script:
     - cd ansible
     - ansible-playbook alma-linux-9.yml
