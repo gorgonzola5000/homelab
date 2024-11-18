@@ -7,12 +7,12 @@ ansible 1/2:       # This job runs in the build stage, which runs first.
   variables:
     ANSIBLE_HOST_KEY_CHECKING: False
   before_script:
-    - apk add ansible
+    - apk add --no-cache ansible
     - mkdir -p ~/.ssh
     - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519
   script:
-    - cd ansible
-    - ansible-playbook proxmox.yml
+    - cd ansible && pwd
+    - ansible-playbook -i inventory.yml proxmox.yml
 
 ansible 2/2:       # This job runs in the build stage, which runs first.
   image: alpine:3.20
@@ -25,4 +25,4 @@ ansible 2/2:       # This job runs in the build stage, which runs first.
     - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519
   script:
     - cd ansible
-    - ansible-playbook alma-linux-9.yml
+    - ansible-playbook -i inventory.yml alma-linux-9.yml
