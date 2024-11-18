@@ -24,7 +24,7 @@ resource "proxmox_virtual_environment_vm" "gitlab" {
     datastore_id = "local-lvm"
     file_id      = "local:iso/gitlab.qcow2.iso"
     interface    = "virtio0"
-    size         = 20
+    size         = 50
   }
 
   initialization {
