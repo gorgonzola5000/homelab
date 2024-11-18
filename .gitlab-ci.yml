@@ -2,6 +2,7 @@ stages:          # List of stages for jobs, and their order of execution
   - deploy
 
 ansible 1/2:       # This job runs in the build stage, which runs first.
+  image: alpine:3.20
   stage: deploy
   variables:
     ANSIBLE_HOST_KEY_CHECKING: False
@@ -14,6 +15,7 @@ ansible 1/2:       # This job runs in the build stage, which runs first.
     - ansible-playbook proxmox.yml
 
 ansible 2/2:       # This job runs in the build stage, which runs first.
+  image: alpine:3.20
   stage: deploy
   variables:
     ANSIBLE_HOST_KEY_CHECKING: False
