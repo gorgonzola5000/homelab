@@ -16,8 +16,10 @@
       vars:
         nginx_config_files_directory: ./config_files/gitlab/nginx/
         domains:
+          - '*.gitlab.home.parents-basement.win'
           - gitlab.home.parents-basement.win
         sites_to_enable:
+          - registry.gitlab.home.parents-basement.win
           - gitlab.home.parents-basement.win
       tags: nginx_reverse_proxy
   tasks:
@@ -42,11 +44,25 @@
         state: present
       when: ansible_facts['os_family'] == 'Debian'
 
-    - name: Set external_url
+    - name: Set GitLab external_url
       ansible.builtin.lineinfile:
         path: /etc/gitlab/gitlab.rb
         regexp: "^(# )?external_url.*"
-        line: "external_url 'http://gitlab.home.parents-basement.win'"
+        line: "external_url 'https://gitlab.home.parents-basement.win'"
+      notify: reconfigure gitlab
+
+    - name: Set GitLab Registry external_url
+      ansible.builtin.lineinfile:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "^(# )?registry_external_url.*"
+        line: "registry_external_url 'https://registry.gitlab.home.parents-basement.win'"
+      notify: reconfigure gitlab
+
+    - name: Disable Let's encrypt
+      ansible.builtin.lineinfile:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "^(# )?letsencrypt\\['enable'\\].*"
+        line: "letsencrypt['enable'] = false"
       notify: reconfigure gitlab
 
     - name: Disable bundled NGINX
