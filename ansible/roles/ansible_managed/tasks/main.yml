@@ -9,6 +9,11 @@
     name: sudo
     state: present
 
+- name: Ensure group wheel exists
+  ansible.builtin.group:
+    name: wheel
+    state: present
+
 - name: Ensure /etc/sudoers.d exists
   ansible.builtin.file:
     path: /etc/sudoers.d/
@@ -49,7 +54,9 @@
     name: ansible
     create_home: true
     shell: /bin/bash
-    groups: sudo
+    groups:
+      - sudo
+      - wheel
     append: true
   notify: restart sshd
 
