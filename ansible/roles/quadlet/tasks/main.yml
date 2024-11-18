@@ -7,16 +7,19 @@
       - rsync
       - systemd-container
     state: present
+
 - name: 'Create user {{ service }}'
   ansible.builtin.user:
     name: '{{ service }}'
     shell: /bin/bash
     create_home: true
+
 - name: 'Enable lingering for user {{ service }}'
   ansible.builtin.shell:
     cmd: "loginctl enable-linger {{ service }}"
     executable: /bin/bash
     creates: '/var/lib/systemd/linger/{{ service }}'
+
 - name: Copy config files
   ansible.builtin.copy:
     src: '{{ config_files_directory }}'
@@ -24,9 +27,11 @@
     mode: '0644'
     owner: '{{ service }}'
     group: '{{ service }}'
+
 - name: Include tasks for rootful container
   ansible.builtin.include_tasks: rootful.yml
   when: rootful
+
 - name: Include tasks for rootless container
   ansible.builtin.include_tasks: rootless.yml
   when: not rootful
