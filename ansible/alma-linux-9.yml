@@ -50,8 +50,3 @@
         config_files_directory: './config_files/alma-linux-9/glance/config_files/'
         rootful: false
       tags: glance
-  post_tasks:
-    - name: Set resolv.conf
-      ansible.builtin.copy:
-        dest: /etc/resolv.conf
-        content: nameserver 10.2.137.1
