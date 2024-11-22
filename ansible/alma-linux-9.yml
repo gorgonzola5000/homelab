@@ -3,6 +3,9 @@
   # ansible-playbook --extra-vars "tags=<tag>" alma-linux-9.yml
   hosts: '{{ target | default("alma") }}'
   become: true
+  vars:
+    subdomain: home
+    domain: parents-basement.win
   pre_tasks:
     - name: Disable systemd-resolved
       ansible.builtin.systemd_service:
@@ -19,8 +22,8 @@
       vars:
         nginx_config_files_directory: ./config_files/alma-linux-9/nginx/
         domains:
-          - home.parents-basement.win
-          - '*.home.parents-basement.win'
+          - '{{ subdomain }}.{{ domain }}'
+          - '*.{{ subdomain }}.{{ domain }}'
         sites_to_enable:
           - home.parents-basement.win
       tags: nginx_reverse_proxy

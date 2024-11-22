@@ -15,9 +15,11 @@
     name: "{{ vault_admin_username }}"
     shell: '/bin/bash'
     create_home: true
-    groups: sudo
+    groups:
+      - sudo
+      - wheel
     append: true
-    password: "{{ vault_admin_pam_password_hash }}"
+    password: "{{ vault_vm_admin_password_hash }}"
 
 - name: Check if public ssh key is present in authorized_keys
   ansible.posix.authorized_key:
