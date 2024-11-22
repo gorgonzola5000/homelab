@@ -11,6 +11,16 @@ packer {
   }
 }
 
+variable "checksum" {
+  type = string
+  default = "file:https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM"
+}
+
+variable "base_image" {
+  type = string
+  default = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
+}
+
 source "qemu" "alma" {
   accelerator               = "kvm"
   boot_command              = []
@@ -24,8 +34,8 @@ source "qemu" "alma" {
   cpu_model                 = "host" #no qemu64 support in RHEL9
   memory                    = "2048"
   headless                  = "false"
-  iso_checksum              = "file:https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/CHECKSUM"
-  iso_url                   = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
+  iso_checksum              = var.checksum
+  iso_url                   = var.base_image
   net_device                = "virtio-net"
   output_directory          = "images"
   cd_files                  = ["./user-data", "./meta-data"]
@@ -47,5 +57,11 @@ build {
   provisioner "ansible" {
     playbook_file   = "../../ansible/alma-linux-9.yml"
     extra_arguments = ["--vault-password-file=../../ansible/vault-pass.sh", "--extra-vars", "target=default", "--user", "root"]
+  }
+
+  provisioner "shell" {
+    inline = [
+      "cloud-init clean --machine-id --configs all",
+    ]
   }
 }
