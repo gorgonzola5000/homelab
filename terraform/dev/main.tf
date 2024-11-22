@@ -47,7 +47,7 @@ resource "proxmox_virtual_environment_vm" "alma_linux_9" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = "local:iso/alma-linux-9.qcow2.iso"
+    file_id      = "local:iso/alma-test.qcow2.iso"
     interface    = "virtio0"
     size         = 20
   }
