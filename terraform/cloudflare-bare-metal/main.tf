@@ -19,7 +19,7 @@ resource "cloudflare_record" "a_openWRT" {
 resource "cloudflare_record" "cname_Home_Assistant" {
   zone_id = data.cloudflare_zone.domain.id
   name    = "homeassistant.${var.subdomain}"
-  value   = "alma.${var.subdomain}"
+  value   = "alma.${var.subdomain}.${data.cloudflare_zone.domain.name}"
   type    = "CNAME"
   ttl     = 3600
   proxied = false
