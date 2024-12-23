@@ -1,11 +1,11 @@
 ---
 - name: Configure Alma Linux VM
   # ansible-playbook --extra-vars "tags=<tag>" alma-linux-9.yml
-  hosts: '{{ target | default("alma") }}'
-  become: true
   vars:
     subdomain: home
     domain: parents-basement.win
+  hosts: 'alma.{{ environment_name }}.{{ subdomain }}.{{ domain }}'
+  become: true
   pre_tasks:
     - name: Disable systemd-resolved
       ansible.builtin.systemd_service:
