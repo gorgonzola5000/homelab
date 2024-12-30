@@ -8,6 +8,35 @@ variable "domain" {
   default = "parents-basement.win"
 }
 
+data "cloudflare_zone" "domain" {
+  name = var.domain
+}
+
+variable "dns_mappings" {
+  description = <<EOT
+Mapping of IPv4 addresses to domains and their CNAMEs.
+
+Example configuration:
+{
+  "host-name" = {
+    ipv4 = "192.168.1.1"
+    cnames = ["www.xyz", "api.xyz"]
+  }
+}
+
+Results in resources (for dev environment):
+  host-name.dev.subdomain.example.com IN A 192.168.1.1
+  www.host-name.dev.subdomain.example.com IN CNAME host-name.dev.subdomain.example.com
+  api.host-name.dev.subdomain.example.com IN CNAME host-name.dev.subdomain.example.com
+EOT
+
+  type = map(object({
+    ipv4   = string
+    aliases = list(string)
+  }))
+}
+
+
 variable "subdomain" {
   type    = string
   default = "home"
@@ -55,7 +84,7 @@ resource "proxmox_virtual_environment_vm" "alma_linux_9" {
   initialization {
     ip_config {
       ipv4 {
-        address = "dhcp"
+        address = "${var.dns_mappings.alma.ipv4}/24"
       }
     }
     dns {
