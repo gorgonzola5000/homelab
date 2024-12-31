@@ -43,7 +43,7 @@ resource "cloudflare_record" "dns_a_records" {
 
 # this creates CNAME records like this:
 # NAME                                    TYPE    VALUE 
-# some-service.dev.whatever.example.com   CNAME   some-host.whatever.example.com
+# some-service.dev.whatever.example.com   CNAME   some-host.dev.whatever.example.com
 resource "cloudflare_record" "dns_cname_records" {
   for_each = {
     for index, cname_mapping in flatten([
