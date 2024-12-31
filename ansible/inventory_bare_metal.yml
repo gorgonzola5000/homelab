@@ -10,6 +10,3 @@ gitlab:
 gitlab_runner:
   hosts:
     gitlab-runner.home.parents-basement.win
-alma:
-  hosts:
-    alma.home.parents-basement.win
