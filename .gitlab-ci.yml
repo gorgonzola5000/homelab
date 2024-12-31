@@ -19,6 +19,9 @@ include:
     - mkdir -p ~/.ssh
     - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519 && chmod '600' ~/.ssh/id_ed25519
     - cd ansible
+  script:
+    - ansible-playbook -i $INVENTORY --extra-vars "environment_name=$ENVIRONMENT_NAME" $PLAYBOOK
+
 
 
 
@@ -52,22 +55,35 @@ tofu apply prod:
 
 ansible VM dev:
   extends: .ansible
-  script:
-    - ansible-playbook -i inventory_VMs.config --extra-vars "environment_name=dev" alma-linux-9.yml
-
+  variables:
+    INVENTORY: inventory_VMs.config
+    ENVIRONMENT_NAME: dev
+  parallel:
+    matrix:
+      - PLAYBOOK: ['alma-linux-9.yml']
+    
 ansible VM prod:
   extends: .ansible
-  script:
-    - ansible-playbook -i inventory_VMs.config --extra-vars "environment_name=prod" alma-linux-9.yml
+  variables:
+    INVENTORY: inventory_VMs.config
+    ENVIRONMENT_NAME: prod
+  parallel:
+    matrix:
+      - PLAYBOOK: ['alma-linux-9.yml']
   rules:
     - if: $CI_COMMIT_TAG
 
-ansible baremetal:
+ansible VM baremetal:
   extends: .ansible
-  script:
-    - ansible-playbook -i inventory_bare_metal.yml proxmox.yml
+  variables:
+    INVENTORY: inventory_bare_metal.yml
+    ENVIRONMENT_NAME: prod
+  parallel:
+    matrix:
+      - PLAYBOOK: ['proxmox.yml', 'gitlab.yml', 'gitlab-runner.yml']
   rules:
     - if: $CI_COMMIT_TAG
+    
 
 tofu destroy dev:
   extends: [.opentofu:destroy]
