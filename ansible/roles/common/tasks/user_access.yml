@@ -17,7 +17,6 @@
     create_home: true
     groups:
       - sudo
-      - wheel
     append: true
     password: "{{ vault_admin_password_hash }}"
 
