@@ -3,7 +3,7 @@ polkit.addRule(function(action, subject) {
          action.id == "org.freedesktop.machine1.manage-machines" ||
          action.id == "org.freedesktop.machine1.manage-images" ||
          action.id == "org.freedesktop.machine1.login") &&
-	subject.isInGroup("wheel")) {
-	return polkit.Result.YES;
+	       subject.user == "ansible") {
+	    return polkit.Result.YES;
     }
 });
