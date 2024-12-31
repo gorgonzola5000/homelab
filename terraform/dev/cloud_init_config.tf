@@ -49,7 +49,8 @@ resource "proxmox_virtual_environment_file" "cloud_config_yum" {
           - sudo
           - wheel
         shell: /bin/bash
-        chpasswd: {expire: False}
+        chpasswd: 
+          expire: false
         ssh_authorized_keys:
           - ${var.ansible_public_key}
     runcmd:
