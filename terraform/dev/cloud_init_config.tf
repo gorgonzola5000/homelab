@@ -41,6 +41,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_yum" {
   source_raw {
     data = <<-EOF
     #cloud-config
+    allow_public_ssh_keys: true
     users:
       - name: ansible
         sudo: true
@@ -48,6 +49,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_yum" {
           - sudo
           - wheel
         shell: /bin/bash
+        chpasswd: {expire: False}
         ssh_authorized_keys:
           - ${var.ansible_public_key}
     runcmd:

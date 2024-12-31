@@ -3,7 +3,7 @@ environment  = "dev"
 is_prod      = false
 dns_mappings = {
   "alma" = {
-    ipv4    = "10.2.137.200"
-    aliases = ["test.testtt"]
+    ipv4    = "10.2.137.50"
+    aliases = ["pihole"]
   }
 }
