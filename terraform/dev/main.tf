@@ -31,7 +31,7 @@ Results in resources (for dev environment):
 EOT
 
   type = map(object({
-    ipv4   = string
+    ipv4    = string
     aliases = list(string)
   }))
 }

@@ -1,5 +1,5 @@
 variable "is_prod" {
-  type = bool
+  type    = bool
   default = false
 }
 
@@ -11,15 +11,15 @@ resource "cloudflare_record" "dns_cname_to_prod" {
     for index, cname_mapping in flatten([
       for canonical, mapping in var.dns_mappings : [
         for alias in mapping.aliases : {
-          name     = "${alias}.${var.subdomain}"
-          value    = "${canonical}.${var.environment}.${var.subdomain}.${data.cloudflare_zone.domain.name}"
+          name  = "${alias}.${var.subdomain}"
+          value = "${canonical}.${var.environment}.${var.subdomain}.${data.cloudflare_zone.domain.name}"
         }
       ]
     ]) : cname_mapping.name => cname_mapping
     if var.is_prod == true
   }
-  name    = each.value.name
-  value   = each.value.value
+  name  = each.value.name
+  value = each.value.value
 
   zone_id = data.cloudflare_zone.domain.id
   type    = "CNAME"
@@ -49,14 +49,14 @@ resource "cloudflare_record" "dns_cname_records" {
     for index, cname_mapping in flatten([
       for canonical, mapping in var.dns_mappings : [
         for alias in mapping.aliases : {
-          name     = "${alias}.${var.environment}.${var.subdomain}"
-          value    = "${canonical}.${var.environment}.${var.subdomain}.${data.cloudflare_zone.domain.name}"
+          name  = "${alias}.${var.environment}.${var.subdomain}"
+          value = "${canonical}.${var.environment}.${var.subdomain}.${data.cloudflare_zone.domain.name}"
         }
       ]
     ]) : cname_mapping.name => cname_mapping
   }
-  name    = each.value.name
-  value   = each.value.value
+  name  = each.value.name
+  value = each.value.value
 
   zone_id = data.cloudflare_zone.domain.id
   type    = "CNAME"
