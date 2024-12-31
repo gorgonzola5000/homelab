@@ -22,16 +22,16 @@ include:
 
 
 
-fmt:
+tofu fmt:
   extends: [.opentofu:fmt]
 
-validate:
+tofu validate:
   extends: [.opentofu:validate]
 
-plan-dev:
+tofu plan dev:
   extends: [.opentofu:plan]
 
-plan-prod:
+tofu plan prod:
   extends: [.opentofu:plan]
   variables:
     GITLAB_TOFU_VAR_FILE: prod.tfvars
@@ -39,10 +39,10 @@ plan-prod:
   rules:
     - if: $CI_COMMIT_TAG
 
-apply-dev:
+tofu apply dev:
   extends: [.opentofu:apply]
 
-apply-prod:
+tofu apply prod:
   extends: [.opentofu:apply]
   variables:
     GITLAB_TOFU_VAR_FILE: prod.tfvars
@@ -62,7 +62,14 @@ ansible VM prod:
   rules:
     - if: $CI_COMMIT_TAG
 
-destroy-dev:
+ansible baremetal:
+  extends: .ansible
+  script:
+    - ansible-playbook -i inventory_bare_metal.yml proxmox.yml
+  rules:
+    - if: $CI_COMMIT_TAG
+
+tofu destroy dev:
   extends: [.opentofu:destroy]
   rules:
     - when: manual
