@@ -19,7 +19,7 @@
       - sudo
       - wheel
     append: true
-    password: "{{ vault_vm_admin_password_hash }}"
+    password: "{{ vault_admin_password_hash }}"
 
 - name: Check if public ssh key is present in authorized_keys
   ansible.posix.authorized_key:
