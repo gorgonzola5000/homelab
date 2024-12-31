@@ -13,6 +13,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_apt" {
     #cloud-config
     users:
       - name: ansible
+        sudo: true
         groups:
           - sudo
           - wheel
@@ -42,6 +43,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_yum" {
     #cloud-config
     users:
       - name: ansible
+        sudo: true
         groups:
           - sudo
           - wheel
