@@ -85,6 +85,7 @@ resource "proxmox_virtual_environment_vm" "alma_linux_9" {
     ip_config {
       ipv4 {
         address = "${var.dns_mappings.alma.ipv4}/24"
+        gateway = [var.gateway_ip]
       }
     }
     dns {
