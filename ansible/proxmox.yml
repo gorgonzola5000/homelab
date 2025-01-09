@@ -1,6 +1,9 @@
 ---
 - name: Configure Proxmox Node
-  hosts: '{{ target | default("proxmox") }}' # this lets you override hosts by specifying variable 'target'. Otherwise it targets group 'proxmox'
+  vars:
+    subdomain: home
+    domain: parents-basement.win
+  hosts: 'proxmox.{{ subdomain }}.{{ domain }}'
   become: true
   roles:
     - proxmox
@@ -9,8 +12,8 @@
     - ansible_managed
     - role: nginx_reverse_proxy
       vars:
-        nginx_config_files_directory: ./config_files/proxmox/etc/nginx/
+        nginx_config_files_directory: ./config_files/proxmox/nginx/
         domains:
-          - proxmox.home.parents-basement.win
+          - 'proxmox.{{ subdomain }}.{{ domain }}'
         sites_to_enable:
-          - proxmox.home.parents-basement.win
+          - 'proxmox.{{ subdomain }}.{{ domain }}'
