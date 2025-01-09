@@ -1,9 +1,0 @@
-polkit.addRule(function(action, subject) {
-    if ((action.id == "org.freedesktop.machine1.host-shell" ||
-         action.id == "org.freedesktop.machine1.manage-machines" ||
-         action.id == "org.freedesktop.machine1.manage-images" ||
-         action.id == "org.freedesktop.machine1.login") &&
-	       subject.user == "ansible") {
-	    return polkit.Result.YES;
-    }
-});
