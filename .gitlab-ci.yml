@@ -87,49 +87,58 @@ tofu plan dev:
 tofu plan prod:
   extends: [.opentofu:plan]
   variables:
-    GITLAB_TOFU_PLAN_NAME: prod
     GITLAB_TOFU_STATE_NAME: prod
     GITLAB_TOFU_VAR_FILE: prod.tfvars
   rules:
     - if: $CI_COMMIT_TAG
 
-#tofu apply dev:
-#  extends: [.opentofu:apply]
-#  variables:
-#    GITLAB_TOFU_PLAN_NAME: dev
-#
-#tofu apply prod:
-#  extends: [.opentofu:apply]
-#  variables:
-#    GITLAB_TOFU_PLAN_NAME: prod
-#    GITLAB_TOFU_STATE_NAME: prod
-#    GITLAB_TOFU_VAR_FILE: prod.tfvars
-#  rules:
-#    - if: $CI_COMMIT_TAG
-#
-#ansible VM dev:
-#  extends: .ansible
-#  variables:
-#    INVENTORY: inventory_VMs.config
-#    ENVIRONMENT_NAME: dev
-#  parallel:
-#    matrix:
-#      - PLAYBOOK: ['alma-linux-9.yml']
-#
-#ansible VM prod:
-#  extends: .ansible
-#  variables:
-#    INVENTORY: inventory_VMs.config
-#    ENVIRONMENT_NAME: prod
-#  parallel:
-#    matrix:
-#      - PLAYBOOK: ['alma-linux-9.yml']
-#  rules:
-#    - if: $CI_COMMIT_TAG
-#
-#tofu destroy dev:
-#  extends: [.opentofu:destroy]
-#  variables:
-#    GITLAB_TOFU_PLAN_NAME: dev
-#  rules:
-#    - when: manual
+tofu apply dev:
+  extends: [.opentofu:apply]
+  variables:
+    GITLAB_TOFU_PLAN_NAME: dev
+    GITLAB_TOFU_VAR_FILE: dev.tfvars
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
+
+tofu apply prod:
+  extends: [.opentofu:apply]
+  variables:
+    GITLAB_TOFU_STATE_NAME: prod
+    GITLAB_TOFU_VAR_FILE: prod.tfvars
+  rules:
+    - if: $CI_COMMIT_TAG
+
+ansible VM dev:
+  extends: .ansible
+  variables:
+    INVENTORY: inventory_VMs.config
+    ENVIRONMENT_NAME: dev
+  parallel:
+    matrix:
+      - PLAYBOOK: ['alma-linux-9.yml']
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
+
+ansible VM prod:
+  extends: .ansible
+  variables:
+    INVENTORY: inventory_VMs.config
+    ENVIRONMENT_NAME: prod
+  parallel:
+    matrix:
+      - PLAYBOOK: ['alma-linux-9.yml']
+  rules:
+    - if: $CI_COMMIT_TAG
+
+tofu destroy dev:
+  extends: [.opentofu:destroy]
+  variables:
+    GITLAB_TOFU_PLAN_NAME: dev
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: manual
