@@ -1,5 +1,8 @@
 stages: [baremetal-config, validate, build, deploy, configure, cleanup]
 
+variables:
+    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+
 include:
   - component: $CI_SERVER_FQDN/components/opentofu/job-templates@0.48.0
     inputs:
@@ -75,7 +78,6 @@ tofu plan dev:
   variables:
     GITLAB_TOFU_STATE_NAME: dev
     GITLAB_TOFU_VAR_FILE: dev.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
   rules:
     - if: $CI_COMMIT_TAG
       when: never
@@ -86,7 +88,6 @@ tofu plan prod:
   variables:
     GITLAB_TOFU_STATE_NAME: prod
     GITLAB_TOFU_VAR_FILE: prod.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
   rules:
     - if: $CI_COMMIT_TAG
 
