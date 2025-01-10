@@ -82,6 +82,7 @@ tofu plan dev:
   rules:
     - if: $CI_COMMIT_TAG
       when: never
+    - when: on_success
 
 tofu plan prod:
   extends: [.opentofu:plan]
