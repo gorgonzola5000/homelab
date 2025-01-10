@@ -63,8 +63,9 @@ ansible bare metal:
 #      - PLAYBOOK: ['gitlab.yml', 'gitlab-runner.yml']
 #  rules:
 #    - if: $CI_COMMIT_TAG
-script:
-  - export
+export job:
+  script:
+    - export
 
 tofu fmt:
   extends: [.opentofu:fmt]
