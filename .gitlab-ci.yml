@@ -54,18 +54,18 @@ ansible bare metal:
   rules:
     - if: $CI_COMMIT_TAG
 
-ansible gitlab:
-  stage: baremetal-config
-  needs: ['ansible bare metal']
-  extends: .ansible
-  variables:
-    INVENTORY: inventory_gitlab.config
-    ENVIRONMENT_NAME: gitlab
-  parallel:
-    matrix:
-      - PLAYBOOK: ['gitlab.yml', 'gitlab-runner.yml']
-  rules:
-    - if: $CI_COMMIT_TAG
+#ansible gitlab:
+#  stage: baremetal-config
+#  needs: ['ansible bare metal']
+#  extends: .ansible
+#  variables:
+#    INVENTORY: inventory_gitlab.config
+#    ENVIRONMENT_NAME: gitlab
+#  parallel:
+#    matrix:
+#      - PLAYBOOK: ['gitlab.yml', 'gitlab-runner.yml']
+#  rules:
+#    - if: $CI_COMMIT_TAG
 
 tofu fmt:
   extends: [.opentofu:fmt]
@@ -103,7 +103,7 @@ ansible VM dev:
   parallel:
     matrix:
       - PLAYBOOK: ['alma-linux-9.yml']
-    
+
 ansible VM prod:
   extends: .ansible
   variables:
