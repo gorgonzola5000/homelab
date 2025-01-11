@@ -41,5 +41,3 @@ roles/terraform_managed internal-error
 roles/terraform_managed/tasks/proxmox.yml no-changed-when
 roles/vm internal-error
 roles/vm/tasks/main.yml yaml[comments]
-roles/wireguard_server internal-error
-roles/wireguard_server/vars/main.yml var-naming[no-role-prefix]

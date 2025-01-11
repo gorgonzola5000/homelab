@@ -1,2 +1,2 @@
 ---
-wg_interface_name: WhonnockVPN
+wireguard_server_wg_interface_name: WhonnockVPN

@@ -2,8 +2,8 @@
 PrivateKey = {{ vault_wg_private_key }}
 Address = 192.168.69.1/24
 ListenPort = 51820
-PostUp = iptables -A FORWARD -i {{ wg_interface_name }} -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i {{ wg_interface_name }} -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+PostUp = iptables -A FORWARD -i {{ wireguard_server_wg_interface_name }} -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i {{ wireguard_server_wg_interface_name }} -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 
 [Peer]
 # Computer
