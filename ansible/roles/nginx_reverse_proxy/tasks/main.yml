@@ -9,6 +9,7 @@
       - rsync
     state: present
   when: ansible_facts['os_family'] == 'Debian'
+
 - name: Install nginx
   ansible.builtin.dnf:
     name:
@@ -18,11 +19,13 @@
       - rsync
     state: present
   when: ansible_facts['os_family'] == 'RedHat'
+
 - name: Ensure ~root/.secrets is present
   ansible.builtin.file:
     path: /home/root/.secrets
     state: directory
     mode: '0600'
+
 - name: Ensure cloudflare.ini is present
   ansible.builtin.template:
     src: cloudflare.ini.j2
@@ -30,24 +33,36 @@
     mode: '0400'
     owner: root
     group: root
+
+- name: Ensure /etc/nginx/conf.d/ directory exists
+  ansible.builtin.file:
+    path: '/etc/nginx/conf.d'
+    state: directory
+
 - name: Copy nginx config files
-  ansible.posix.synchronize:
-    src: "{{ nginx_config_files_directory }}/sites-available/"
-    dest: /etc/nginx/sites-available
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/conf.d/{{ item }}"
+    owner: root
+    mode: '0644'
+  with_fileglob:
+    - "{{ nginx_config_files_directory }}/conf.d/*"
   notify: Restart nginx
+
 - name: Get 'certbot certificates' output
   ansible.builtin.shell:
     cmd: certbot certificates
     executable: /bin/bash
   register: certbot_certificates
   changed_when: false
+
 - name: Acquire Let's Encrypt certificates with Certbot
   ansible.builtin.shell:
     cmd: "certbot certonly -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini {% for domain in domains %} -d {{ domain }} {% endfor %} --preferred-challenges dns-01"
     executable: /bin/bash
   when:
     - not dry_run
-  notify: Restart nginx
+
 - name: Acquire Let's Encrypt certificates with Certbot - DRY RUN
   ansible.builtin.shell:
     cmd: "certbot certonly --staging -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini {% for domain in domains %} -d {{ domain }} {% endfor %} --preferred-challenges dns-01"
@@ -56,24 +71,16 @@
     #    - "'No certificates found' in certbot_certificates.stdout or 'INVALID: TEST_CERT' in certbot_certificates.stdout"
     - dry_run
   notify: Restart nginx
+  changed_when: false
+
 - name: Ensure certbot.timer is enabled
   ansible.builtin.systemd_service:
     unit: certbot.timer
     state: started
     enabled: true
   ignore_errors: true
-- name: Ensure sites-enabled directory exists
-  ansible.builtin.file:
-    path: "/etc/nginx/sites-enabled/"
-    state: directory
-- name: Create symlinks in /etc/nginx/sites-enabled/
-  ansible.builtin.file:
-    src: "/etc/nginx/sites-available/{{ item }}"
-    dest: "/etc/nginx/sites-enabled/{{ item }}"
-    state: link
-  loop: "{{ sites_to_enable }}"
-  notify: Restart nginx
-- name: Ensure nginx is enabled
+
+- name: Ensure nginx is started and enabled
   ansible.builtin.systemd_service:
     name: nginx
     state: started
