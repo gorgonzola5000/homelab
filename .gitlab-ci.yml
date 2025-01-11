@@ -16,11 +16,10 @@ include:
   variables:
     ANSIBLE_HOST_KEY_CHECKING: False
     ANSIBLE_CONFIG: ansible.cfg
-  before_script:
+  script:
     - mkdir -p ~/.ssh
     - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519 && chmod '600' ~/.ssh/id_ed25519
     - cd ansible
-  script:
     - ansible-playbook -i $INVENTORY --extra-vars "environment_name=$ENVIRONMENT_NAME" $PLAYBOOK
 
 #tofu fmt baremetal:
