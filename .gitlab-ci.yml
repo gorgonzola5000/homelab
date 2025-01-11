@@ -80,6 +80,7 @@ ansible lint:
   stage: validate
   extends: .ansible
   script:
+    - apk install ansible-lint
     - cd ansible
     - ansible-lint
 
