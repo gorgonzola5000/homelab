@@ -49,14 +49,13 @@
     mode: '0644'
   with_fileglob:
     - "{{ nginx_config_files_directory }}/conf.d/*"
-  notify: Restart nginx
+  notify:
+    - Restart nginx
 
-- name: Get 'certbot certificates' output
-  ansible.builtin.shell:
-    cmd: certbot certificates
-    executable: /bin/bash
-  register: certbot_certificates
-  changed_when: false
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  register: letsencrypt_cert
 
 - name: Acquire Let's Encrypt certificates with Certbot
   ansible.builtin.shell:
@@ -64,23 +63,33 @@
     executable: /bin/bash
   when:
     - not dry_run
+    - not letsencrypt_cert.stat.exists
+  notify:
+    - Restart nginx
 
 - name: Acquire Let's Encrypt certificates with Certbot - DRY RUN
   ansible.builtin.shell:
     cmd: "certbot certonly --staging -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini {% for domain in domains %} -d {{ domain }} {% endfor %} --preferred-challenges dns-01"
     executable: /bin/bash
   when:
-    #    - "'No certificates found' in certbot_certificates.stdout or 'INVALID: TEST_CERT' in certbot_certificates.stdout"
     - dry_run
-  notify: Restart nginx
-  changed_when: false
+    - not letsencrypt_cert.stat.exists
+  notify:
+    - Restart nginx
 
 - name: Ensure certbot.timer is enabled
   ansible.builtin.systemd_service:
     unit: certbot.timer
     state: started
     enabled: true
-  ignore_errors: true
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: Ensure certbot-renew.timer is enabled
+  ansible.builtin.systemd_service:
+    unit: certbot-renew.timer
+    state: started
+    enabled: true
+  when: ansible_facts['os_family'] == 'RedHat'
 
 - name: Ensure nginx is started and enabled
   ansible.builtin.systemd_service:
