@@ -16,11 +16,12 @@ include:
   variables:
     ANSIBLE_HOST_KEY_CHECKING: False
     ANSIBLE_CONFIG: ansible.cfg
+    DRY_RUN: 'true'
   script:
     - mkdir -p ~/.ssh
     - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519 && chmod '600' ~/.ssh/id_ed25519
     - cd ansible
-    - ansible-playbook -i $INVENTORY --extra-vars "environment_name=$ENVIRONMENT_NAME" $PLAYBOOK
+    - ansible-playbook -i $INVENTORY --extra-vars '{"environment_name":"$ENVIRONMENT_NAME","dry_run":$DRY_RUN}' $PLAYBOOK
 
 #tofu fmt baremetal:
 #  stage: baremetal-config
@@ -150,6 +151,7 @@ ansible VM prod:
   variables:
     INVENTORY: inventory_VMs.config
     ENVIRONMENT_NAME: prod
+    DRY_RUN: 'true'
   parallel:
     matrix:
       - PLAYBOOK: ['alma-linux-9.yml']
