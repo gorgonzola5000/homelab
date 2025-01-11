@@ -107,6 +107,7 @@ tofu apply dev:
   variables:
     GITLAB_TOFU_STATE_NAME: dev
     GITLAB_TOFU_VAR_FILE: dev.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/dev/
   rules:
     - if: $CI_COMMIT_TAG
       when: never
@@ -117,6 +118,7 @@ tofu apply prod:
   variables:
     GITLAB_TOFU_STATE_NAME: prod
     GITLAB_TOFU_VAR_FILE: prod.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/dev/
   rules:
     - if: $CI_COMMIT_TAG
 
@@ -148,6 +150,8 @@ tofu destroy dev:
   extends: [.opentofu:destroy]
   variables:
     GITLAB_TOFU_PLAN_NAME: dev
+    GITLAB_TOFU_VAR_FILE: dev.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/dev/
   rules:
     - if: $CI_COMMIT_TAG
       when: never
