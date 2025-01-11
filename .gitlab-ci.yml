@@ -48,7 +48,7 @@ include:
 
 ansible bare metal:
   stage: baremetal-config
-  needs: ['tofu apply baremetal']
+  #needs: ['tofu apply baremetal']
   extends: .ansible
   variables:
     INVENTORY: inventory_bare_metal.config
