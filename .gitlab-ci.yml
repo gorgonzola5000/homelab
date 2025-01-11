@@ -4,7 +4,6 @@ include:
   - component: $CI_SERVER_FQDN/components/opentofu/job-templates@0.48.0
     inputs:
       version: 0.48.0
-      root_dir: terraform/dev
 
 .ansible:
   image: alpine:3.20
@@ -23,25 +22,33 @@ include:
 #tofu fmt baremetal:
 #  stage: baremetal-config
 #  extends: [.opentofu:fmt]
+#  variables:
+#    GITLAB_TOFU_ROOT_DIR: terraform/cloudflare-bare-metal
 #
 #tofu validate baremetal:
 #  stage: baremetal-config
 #  extends: [.opentofu:validate]
 #  needs: ['tofu fmt baremetal']
+#  variables:
+#    GITLAB_TOFU_ROOT_DIR: terraform/cloudflare-bare-metal
 #
 #tofu plan baremetal:
 #  stage: baremetal-config
 #  extends: [.opentofu:plan]
 #  needs: ['tofu validate baremetal']
+#  variables:
+#    GITLAB_TOFU_ROOT_DIR: terraform/cloudflare-bare-metal
 #
 #tofu apply baremetal:
 #  stage: baremetal-config
 #  extends: [.opentofu:apply]
 #  needs: ['tofu plan baremetal']
+#  variables:
+#    GITLAB_TOFU_ROOT_DIR: terraform/cloudflare-bare-metal
 
 ansible bare metal:
   stage: baremetal-config
-  #  needs: ['tofu apply baremetal']
+  needs: ['tofu apply baremetal']
   extends: .ansible
   variables:
     INVENTORY: inventory_bare_metal.config
@@ -67,35 +74,47 @@ ansible bare metal:
 
 tofu fmt:
   extends: [.opentofu:fmt]
+  variables:
+    GITLAB_TOFU_ROOT_DIR: terraform/dev/
 
 tofu validate:
   extends: [.opentofu:validate]
+  variables:
+    GITLAB_TOFU_ROOT_DIR: terraform/dev/
 
 tofu plan dev:
   extends: [.opentofu:plan]
   variables:
-    GITLAB_TOFU_PLAN_NAME: dev
     GITLAB_TOFU_STATE_NAME: dev
     GITLAB_TOFU_VAR_FILE: dev.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
 
 tofu plan prod:
   extends: [.opentofu:plan]
   variables:
-    GITLAB_TOFU_PLAN_NAME: prod
     GITLAB_TOFU_STATE_NAME: prod
     GITLAB_TOFU_VAR_FILE: prod.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/dev/
   rules:
     - if: $CI_COMMIT_TAG
 
 tofu apply dev:
   extends: [.opentofu:apply]
   variables:
-    GITLAB_TOFU_PLAN_NAME: dev
+    GITLAB_TOFU_STATE_NAME: dev
+    GITLAB_TOFU_VAR_FILE: dev.tfvars
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
 
 tofu apply prod:
   extends: [.opentofu:apply]
   variables:
-    GITLAB_TOFU_PLAN_NAME: prod
     GITLAB_TOFU_STATE_NAME: prod
     GITLAB_TOFU_VAR_FILE: prod.tfvars
   rules:
@@ -109,6 +128,10 @@ ansible VM dev:
   parallel:
     matrix:
       - PLAYBOOK: ['alma-linux-9.yml']
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: on_success
 
 ansible VM prod:
   extends: .ansible
@@ -126,4 +149,6 @@ tofu destroy dev:
   variables:
     GITLAB_TOFU_PLAN_NAME: dev
   rules:
+    - if: $CI_COMMIT_TAG
+      when: never
     - when: manual

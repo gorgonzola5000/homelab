@@ -9,7 +9,7 @@
 
 - name: Ensure a polkit rule exists for user 'ansible'
   ansible.builtin.copy:
-    dest: /etc/polkit-1/rules.d/60-machinectl-fast-user-auth.rules
+    dest: /etc/polkit-1/rules.d/48-machinectl-fast-user-auth.rules
     src: 48-machinectl-fast-user-auth.rules
     mode: '0600'
 
