@@ -21,7 +21,7 @@ include:
     - mkdir -p ~/.ssh
     - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519 && chmod '600' ~/.ssh/id_ed25519
     - cd ansible
-    - ansible-playbook -i $INVENTORY --extra-vars '{"environment_name":$ENVIRONMENT_NAME,"dry_run":$DRY_RUN}' $PLAYBOOK
+    - ansible-playbook -i $INVENTORY --extra-vars '{"environment_name":"'$ENVIRONMENT_NAME'","dry_run":"'$DRY_RUN'"}' $PLAYBOOK
 
 #tofu fmt baremetal:
 #  stage: baremetal-config
