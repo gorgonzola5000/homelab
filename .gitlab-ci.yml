@@ -149,10 +149,12 @@ ansible VM prod:
 tofu destroy dev:
   extends: [.opentofu:destroy]
   variables:
-    GITLAB_TOFU_PLAN_NAME: dev
+    GITLAB_TOFU_STATE_NAME: dev
     GITLAB_TOFU_VAR_FILE: dev.tfvars
     GITLAB_TOFU_ROOT_DIR: terraform/dev/
   rules:
     - if: $CI_COMMIT_TAG
       when: never
     - when: manual
+
+
