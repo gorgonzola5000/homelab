@@ -25,15 +25,6 @@ resource "cloudflare_record" "cname_Home_Assistant" {
   proxied = false
 }
 
-resource "cloudflare_record" "a_alma" {
-  zone_id = data.cloudflare_zone.domain.id
-  name    = "alma.${var.subdomain}"
-  value   = "10.2.137.2"
-  type    = "A"
-  ttl     = 3600
-  proxied = false
-}
-
 resource "cloudflare_record" "a_gitlab" {
   zone_id = data.cloudflare_zone.domain.id
   name    = "gitlab.${var.subdomain}"
