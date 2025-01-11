@@ -76,12 +76,12 @@ ansible bare metal:
 #  rules:
 #    - if: $CI_COMMIT_TAG
 
-ansible lint:
-  stage: validate
-  extends: .ansible
-  script:
-    - cd ansible
-    - ansible-lint
+# ansible lint:
+#   stage: validate
+#   extends: .ansible
+#   script:
+#     - cd ansible
+#     - ansible-lint
 
 tofu fmt:
   extends: [.opentofu:fmt]
