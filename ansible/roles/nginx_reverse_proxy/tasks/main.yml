@@ -53,8 +53,8 @@
     - Restart nginx
 
 - name: Check if certificate already exists.
-  stat:
-    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  ansible.builtin.stat:
+    path: /etc/letsencrypt/live/{{ domains | first | replace('*.', '') }}/cert.pem
   register: letsencrypt_cert
 
 - name: Acquire Let's Encrypt certificates with Certbot
