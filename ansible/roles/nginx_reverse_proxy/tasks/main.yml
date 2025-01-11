@@ -38,11 +38,13 @@
   ansible.builtin.file:
     path: '/etc/nginx/conf.d'
     state: directory
+    mode: '0644'
+    owner: root
 
 - name: Copy nginx config files
   ansible.builtin.template:
     src: "{{ item }}"
-    dest: "/etc/nginx/conf.d/{{ item }}"
+    dest: "/etc/nginx/conf.d/"
     owner: root
     mode: '0644'
   with_fileglob:
