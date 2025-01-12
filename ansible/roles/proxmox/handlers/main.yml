@@ -1,0 +1,6 @@
+---
+- name: Refresh initramfs
+  ansible.builtin.shell:
+    cmd: "update-initramfs -u -k all"
+    executable: /bin/bash
+

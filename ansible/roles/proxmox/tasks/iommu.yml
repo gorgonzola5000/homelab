@@ -1,0 +1,9 @@
+---
+- name: Ensure proper kernel modules
+  ansible.builtin.blockinfile:
+    path: /etc/modules
+    block: |
+      vfio
+      vfio_iommu_type1
+      vfio_pci
+  notify: Refresh initramfs
