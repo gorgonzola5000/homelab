@@ -4,3 +4,8 @@
     cmd: "update-initramfs -u -k all"
     executable: /bin/bash
 
+- name: Regenerate grub.cfg
+  ansible.builtin.shell:
+    cmd: "grub-mkconfig"
+    executable: /bin/bash
+

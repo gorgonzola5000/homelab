@@ -6,4 +6,13 @@
       vfio
       vfio_iommu_type1
       vfio_pci
+      vfio_virqfd
   notify: Refresh initramfs
+
+- name: Edit grub config
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: 'GRUB_CMDLINE_LINUX_DEFAULT.*'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"'
+  notify: Regenerate grub.cfg
+	
