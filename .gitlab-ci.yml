@@ -61,7 +61,7 @@ ansible bare metal:
     matrix:
       - PLAYBOOK: ['proxmox.yml']
   rules:
-    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG
 
 #ansible gitlab:
 #  stage: baremetal-config
@@ -104,6 +104,15 @@ tofu plan dev:
       when: never
     - when: on_success
 
+tofu plan test:
+  extends: [.opentofu:plan]
+  variables:
+    GITLAB_TOFU_STATE_NAME: test
+    GITLAB_TOFU_VAR_FILE: test.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
 tofu plan prod:
   extends: [.opentofu:plan]
   variables:
@@ -111,7 +120,7 @@ tofu plan prod:
     GITLAB_TOFU_VAR_FILE: prod.tfvars
     GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
-    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG
 
 tofu apply dev:
   extends: [.opentofu:apply]
@@ -124,6 +133,15 @@ tofu apply dev:
       when: never
     - when: on_success
 
+tofu apply test:
+  extends: [.opentofu:apply]
+  variables:
+    GITLAB_TOFU_STATE_NAME: test
+    GITLAB_TOFU_VAR_FILE: test.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
 tofu apply prod:
   extends: [.opentofu:apply]
   variables:
@@ -131,7 +149,7 @@ tofu apply prod:
     GITLAB_TOFU_VAR_FILE: prod.tfvars
     GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
-    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG
 
 ansible VM dev:
   extends: .ansible-playbook
@@ -146,17 +164,28 @@ ansible VM dev:
       when: never
     - when: on_success
 
+ansible VM test:
+  extends: .ansible-playbook
+  variables:
+    INVENTORY: inventory_VMs.config
+    ENVIRONMENT_NAME: test
+  parallel:
+    matrix:
+      - PLAYBOOK: ['alma-linux-9.yml']
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
 ansible VM prod:
   extends: .ansible-playbook
   variables:
     INVENTORY: inventory_VMs.config
     ENVIRONMENT_NAME: prod
-    DRY_RUN: 'true'
+    DRY_RUN: 'false'
   parallel:
     matrix:
       - PLAYBOOK: ['alma-linux-9.yml']
   rules:
-    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG
 
 tofu destroy dev:
   extends: [.opentofu:destroy]
