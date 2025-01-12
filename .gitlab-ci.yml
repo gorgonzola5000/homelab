@@ -86,19 +86,19 @@ ansible bare metal:
 tofu fmt:
   extends: [.opentofu:fmt]
   variables:
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
 
 tofu validate:
   extends: [.opentofu:validate]
   variables:
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
 
 tofu plan dev:
   extends: [.opentofu:plan]
   variables:
     GITLAB_TOFU_STATE_NAME: dev
     GITLAB_TOFU_VAR_FILE: dev.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
     - if: $CI_COMMIT_TAG
       when: never
@@ -109,7 +109,7 @@ tofu plan prod:
   variables:
     GITLAB_TOFU_STATE_NAME: prod
     GITLAB_TOFU_VAR_FILE: prod.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
     - if: $CI_COMMIT_TAG
 
@@ -118,7 +118,7 @@ tofu apply dev:
   variables:
     GITLAB_TOFU_STATE_NAME: dev
     GITLAB_TOFU_VAR_FILE: dev.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
     - if: $CI_COMMIT_TAG
       when: never
@@ -129,7 +129,7 @@ tofu apply prod:
   variables:
     GITLAB_TOFU_STATE_NAME: prod
     GITLAB_TOFU_VAR_FILE: prod.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
     - if: $CI_COMMIT_TAG
 
@@ -163,7 +163,7 @@ tofu destroy dev:
   variables:
     GITLAB_TOFU_STATE_NAME: dev
     GITLAB_TOFU_VAR_FILE: dev.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/dev/
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
     - if: $CI_COMMIT_TAG
       when: never
