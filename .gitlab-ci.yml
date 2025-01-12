@@ -102,6 +102,8 @@ tofu plan dev:
   rules:
     - if: $CI_COMMIT_TAG
       when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
     - when: on_success
 
 tofu plan test:
@@ -130,6 +132,8 @@ tofu apply dev:
     GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
     - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - when: on_success
 
@@ -161,6 +165,8 @@ ansible VM dev:
       - PLAYBOOK: ['alma-linux-9.yml']
   rules:
     - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - when: on_success
 
@@ -195,5 +201,7 @@ tofu destroy dev:
     GITLAB_TOFU_ROOT_DIR: terraform/vm/
   rules:
     - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
     - when: manual
