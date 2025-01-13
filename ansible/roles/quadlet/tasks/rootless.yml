@@ -23,6 +23,7 @@
   loop: "{{ lookup('ansible.builtin.dict', podman_secrets, wantlist=True) }}"
   no_log: true
   when: podman_secrets is defined
+  notify: Restart container
 
 - name: Start systemd unit
   become: true
