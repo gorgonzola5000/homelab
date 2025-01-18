@@ -1,13 +1,23 @@
 ---
-- name: Copy systemd unit files
-  ansible.builtin.copy:
-    src: '{{ containers_systemd_directory }}'
-    dest: '/etc/containers/systemd/'
+- name: Rootful - Ensure /etc/containers/systemd directory exists
+  ansible.builtin.file:
+    path: /etc/containers/systemd
+    state: directory
     mode: '0644'
-    owner: '{{ service }}'
-    group: '{{ service }}'
+    owner: root
+    group: root
 
-- name: Create podman secrets for rootful
+- name: Rootful - Copy systemd unit files for {{ service }}
+  ansible.builtin.template:
+    src: '{{ item.src }}'
+    dest: '/etc/containers/systemd/{{ item.path }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  with_community.general.filetree: '{{ containers_systemd_directory }}'
+  when: item.state == 'file'
+
+- name: Rootful - Create podman secrets for {{ service }}
   containers.podman.podman_secret:
     name: "{{ item.key }}"
     data: "{{ item.value }}"
@@ -16,7 +26,7 @@
   when: podman_secrets is defined
   notify: Restart container
 
-- name: Start systemd unit
+- name: Rootful - Start systemd unit {{ service }}
   ansible.builtin.systemd_service:
     daemon_reload: true
     name: '{{ service }}.service'

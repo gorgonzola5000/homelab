@@ -1,19 +1,29 @@
 ---
-- name: Copy systemd unit files
-  ansible.builtin.copy:
-    src: '{{ containers_systemd_directory }}'
-    dest: '/home/{{ service }}/.config/containers/systemd/'
-    mode: '0644'
+- name: Rootless - Ensure /home/<service>/.config/containers/systemd exists for {{ service }}
+  ansible.builtin.file:
+    path: '/home/{{ service }}/.config/containers/systemd/'
+    state: directory
+    mode: '0700'
     owner: '{{ service }}'
     group: '{{ service }}'
 
-- name: Ensure a polkit rule exists for user 'ansible'
+- name: Rootless - Copy systemd unit files for {{ service }}
+  ansible.builtin.template:
+    src: '{{ item.src }}'
+    dest: '/home/{{ service }}/.config/containers/systemd/{{ item.path }}'
+    owner: '{{ service }}'
+    group: '{{ service }}'
+    mode: '0644'
+  with_community.general.filetree: '{{ containers_systemd_directory }}'
+  when: item.state == 'file'
+
+- name: Rootless - Ensure a polkit rule exists for user 'ansible'
   ansible.builtin.copy:
     dest: /etc/polkit-1/rules.d/48-machinectl-fast-user-auth.rules
     src: 48-machinectl-fast-user-auth.rules
     mode: '0644'
 
-- name: Create podman secrets for rootless
+- name: Rootless - Create podman secrets for {{ service }}
   become: true
   become_user: '{{ service }}'
   become_method: community.general.machinectl
@@ -25,7 +35,7 @@
   when: podman_secrets is defined
   notify: Restart container
 
-- name: Start systemd unit
+- name: Rootless - Start systemd unit {{ service }}
   become: true
   become_user: '{{ service }}'
   become_method: community.general.machinectl
