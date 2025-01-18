@@ -52,6 +52,12 @@
     - role: quadlet
       vars:
         service: prometheus
-        config_files_directory: './config_files/alma-linux-9/prometheus/'
+        config_files_directory: './config_files/alma-linux-9/prometheus'
         rootful: false
       tags: prometheus
+    - role: quadlet
+      vars:
+        service: grafana
+        config_files_directory: './config_files/alma-linux-9/grafana'
+        rootful: false
+      tags: grafana
