@@ -1,15 +1,25 @@
 ---
-- name: Set SELinux to permissive
+- name: Redhat - Set SELinux to permissive
   ansible.posix.selinux:
     policy: targeted
     state: permissive
 
-- name: Add repositories
+- name: Redhat - Add repositories
   ansible.builtin.dnf:
     name: epel-release
     state: present
 
-- name: Full system upgrade RedHat
+- name: Redhat - Install dnf-automatic
+  ansible.builtin.dnf:
+    name: dnf-automatic
+    state: present
+
+- name: Redhat - Ensure dnf-autoamtic timer is enabled
+  ansible.builtin.systemd_service:
+    name: dnf-automatic.timer
+    enabled: true
+
+- name: Redhat - Full system upgrade
   ansible.builtin.dnf:
     name: "*"
     update_cache: true
