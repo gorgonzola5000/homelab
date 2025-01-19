@@ -11,6 +11,7 @@
     executable: /bin/bash
     cmd: pveum group add admin -comment "System Administrators" && pveum acl modify / -group admin -role Administrator
   when: "'admin' not in group_list.stdout"
+  changed_when: true
 
 - name: List users
   ansible.builtin.shell:
@@ -24,4 +25,5 @@
     executable: /bin/bash
     cmd: "pveum user add {{ vault_admin_username }}@pve -password {{ vault_admin_pve_password }} -group admin"
   when: 'vault_admin_username | string not in user_list.stdout'
-  #when: "'{{ vault_admin_username }}@pve' not in user_list.stdout"
+  changed_when: true
+  # when: "'{{ vault_admin_username }}@pve' not in user_list.stdout"
