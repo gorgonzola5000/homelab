@@ -56,4 +56,7 @@
         service: monitoring-pod
         config_files_directory: './config_files/alma-linux-9/monitoring-pod/'
         rootful: false
+        podman_secrets:
+          GF_SECURITY_ADMIN_USER: "{{ vault_admin_username }}"
+          GF_SECURITY_ADMIN_PASSWORD: "{{ vault_grafana_admin_password }}"
       tags: monitoring-pod
