@@ -4,6 +4,6 @@ is_prod      = true
 dns_mappings = {
   "alma" = {
     ipv4    = "10.2.137.2"
-    aliases = ["pihole", "glance"]
+    aliases = ["homeassistant", "pihole", "glance", "prometheus", "grafana"]
   }
 }

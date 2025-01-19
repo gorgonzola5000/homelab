@@ -5,6 +5,6 @@
   become_method: community.general.machinectl
   ansible.builtin.systemd_service:
     daemon_reload: true
-    name: '{{ service }}.service'
+    name: '{{ service }}'
     state: restarted
     scope: user

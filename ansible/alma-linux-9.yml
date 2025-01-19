@@ -24,38 +24,36 @@
         domains:
           - '{{ subdomain }}.{{ domain }}'
           - '*.{{ subdomain }}.{{ domain }}'
-        sites_to_enable:
-          - home.parents-basement.win
       tags: nginx_reverse_proxy
+
     - role: quadlet
       vars:
         service: pihole
-        containers_systemd_directory: './config_files/alma-linux-9/pihole/containers_systemd/'
-        config_files_directory: './config_files/alma-linux-9/pihole/config_files/'
+        config_files_directory: './config_files/alma-linux-9/pihole'
         rootful: true
         podman_secrets:
           WEBPASSWORD: "{{ vault_pihole_web_password }}"
       tags: pihole
+
     - role: quadlet
       vars:
         service: ddclient
-        containers_systemd_directory: './config_files/alma-linux-9/ddclient/containers_systemd/'
-        config_files_directory: './config_files/alma-linux-9/ddclient/config_files/'
+        config_files_directory: './config_files/alma-linux-9/ddclient'
         rootful: false
         podman_secrets:
           DDCLIENT_PASSWORD: "{{ vault_ddclient_cloudflare_token }}"
       tags: ddclient
+
     - role: quadlet
       vars:
         service: glance
-        containers_systemd_directory: './config_files/alma-linux-9/glance/containers_systemd/'
-        config_files_directory: './config_files/alma-linux-9/glance/config_files/'
+        config_files_directory: './config_files/alma-linux-9/glance'
         rootful: false
       tags: glance
+
     - role: quadlet
       vars:
-        service: prometheus
-        containers_systemd_directory: './config_files/alma-linux-9/prometheus/containers_systemd/'
-        config_files_directory: './config_files/alma-linux-9/prometheus/config_files/'
+        service: monitoring-pod
+        config_files_directory: './config_files/alma-linux-9/monitoring-pod/'
         rootful: false
-      tags: prometheus
+      tags: monitoring-pod
