@@ -2,9 +2,11 @@
 Description=Prometheus - systems and service monitoring system
 
 [Container]
+ContainerName=prometheus
+Pod=monitoring.pod
+
 Image=quay.io/prometheus/prometheus:v3.1.0
-PublishPort=9090:9090
-Volume=/home/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+Volume=/home/monitoring-pod/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 Volume=prometheus-data.volume:/prometheus
 
 [Service]

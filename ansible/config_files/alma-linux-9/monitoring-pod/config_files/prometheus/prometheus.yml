@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 30s
+  external_labels:
+    monitor: 'codelab-monitor'
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'proxmox'
+    static_configs:
+      - targets: ['proxmox.home.parents-basement.win:9100']
