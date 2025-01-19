@@ -19,19 +19,7 @@
     executable: /bin/bash
     creates: '/var/lib/systemd/linger/{{ service }}'
 
-- name: 'Copy container config files for {{ service }}'
-  ansible.builtin.copy:
-    src: '{{ item.src }}'
-    dest: '/home/{{ service }}/{{ item.path }}'
-    mode: '0644'
-    owner: '{{ service }}'
-    group: '{{ service }}'
-  with_community.general.filetree:
-    - '{{ config_files_directory }}/config_files_copy'
-  when: item.state == 'file'
-  notify: Restart container
-
-- name: 'Create necessary directories for templated files for {{ service }}'
+- name: 'Create necessary directories for {{ service }}'
   ansible.builtin.file:
     dest: '/home/{{ service }}/{{ item.path }}'
     state: directory
@@ -40,7 +28,17 @@
     mode: '0700'
   with_community.general.filetree:
     - '{{ config_files_directory }}/config_files_template'
+    - '{{ config_files_directory }}/config_files_copy'
   when: item.state == 'directory'
+
+- name: 'Copy container config files for {{ service }}'
+  ansible.builtin.copy:
+    src: '{{ config_files_directory }}/config_files_copy'
+    dest: '/home/{{ service }}'
+    mode: '0644'
+    owner: '{{ service }}'
+    group: '{{ service }}'
+  notify: Restart container
 
 - name: 'Template container config files for {{ service }}'
   ansible.builtin.template:
