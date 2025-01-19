@@ -10,6 +10,7 @@
     - common
     - terraform_managed
     - ansible_managed
+    - prometheus_monitored
     - role: nginx_reverse_proxy
       vars:
         nginx_config_files_directory: ./config_files/proxmox/nginx/
