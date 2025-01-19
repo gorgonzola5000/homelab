@@ -1,10 +1,10 @@
 ---
-- name: Full system upgrade
+- name: Debian - Full system upgrade
   ansible.builtin.apt:
     update_cache: true
     upgrade: full
 
-- name: Ensure unattended_upgrades, debconf are present
+- name: Debian - Ensure unattended_upgrades, debconf are present
   ansible.builtin.package:
     name:
       - debconf
@@ -12,7 +12,7 @@
       - unattended-upgrades
     state: present
 
-- name: Configure unattended-upgrades
+- name: Debian - Configure unattended-upgrades
   ansible.builtin.debconf:
     name: unattended-upgrades
     question: unattended-upgrades/enable_auto_updates

@@ -10,6 +10,16 @@
     name: sudo
     state: present
 
+- name: Add admin to sudoers
+  ansible.builtin.lineinfile:
+    path: '/etc/sudoers.d/{{ vault_admin_username }}'
+    line: '{{ vault_admin_username }}  ALL=(ALL:ALL) ALL'
+    mode: '0440'
+    owner: root
+    group: root
+    validate: /usr/sbin/visudo -cf %s
+    create: true
+
 - name: "Ensure existance of user {{ vault_admin_username }}"
   ansible.builtin.user:
     name: "{{ vault_admin_username }}"

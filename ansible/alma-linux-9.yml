@@ -53,3 +53,10 @@
         config_files_directory: './config_files/alma-linux-9/glance/config_files/'
         rootful: false
       tags: glance
+    - role: quadlet
+      vars:
+        service: prometheus
+        containers_systemd_directory: './config_files/alma-linux-9/prometheus/containers_systemd/'
+        config_files_directory: './config_files/alma-linux-9/prometheus/config_files/'
+        rootful: false
+      tags: prometheus
