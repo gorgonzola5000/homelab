@@ -7,7 +7,7 @@
     owner: '{{ service }}'
     group: '{{ service }}'
 
-- name: Rootless - Copy systemd unit files for {{ service }}
+- name: Rootless - Template systemd unit files for {{ service }}
   ansible.builtin.template:
     src: '{{ item.src }}'
     dest: '/home/{{ service }}/.config/containers/systemd/{{ item.path }}'

@@ -6,7 +6,7 @@ ContainerName=grafana
 Pod=monitoring.pod
 
 Image=docker.io/grafana/grafana:11.4.0
-Volume=grafana-storage.volume:/var/lib/grafana
+Volume=/home/monitoring-pod/grafana/dashboards-json:/var/lib/grafana/dashboards:U
 Volume=/home/monitoring-pod/grafana/provisioning:/etc/grafana/provisioning:U
 Environment=GF_SERVER_ROOT_URL=http://grafana.{{ environment_name }}.{{ subdomain }}.{{ domain }}/
 Secret=GF_SECURITY_ADMIN_USER,type=env

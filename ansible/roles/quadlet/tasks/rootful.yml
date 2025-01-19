@@ -7,7 +7,7 @@
     owner: root
     group: root
 
-- name: Rootful - Copy systemd unit files for {{ service }}
+- name: Rootful - Template systemd unit files for {{ service }}
   ansible.builtin.template:
     src: '{{ item.src }}'
     dest: '/etc/containers/systemd/{{ item.path }}'
