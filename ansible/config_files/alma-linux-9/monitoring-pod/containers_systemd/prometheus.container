@@ -1,0 +1,17 @@
+[Unit]
+Description=Prometheus - systems and service monitoring system
+
+[Container]
+ContainerName=prometheus
+Pod=monitoring.pod
+
+Image=quay.io/prometheus/prometheus:v3.1.0
+Volume=/home/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+Volume=prometheus-data.volume:/prometheus
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

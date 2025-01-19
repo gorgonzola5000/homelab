@@ -1,0 +1,4 @@
+[Pod]
+PodName=monitoring
+PublishPort=3000
+PublishPort=9090
