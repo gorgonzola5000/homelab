@@ -16,10 +16,19 @@ resource "cloudflare_record" "a_openWRT" {
   proxied = false
 }
 
-resource "cloudflare_record" "cname_Home_Assistant" {
+resource "cloudflare_record" "cname_Home_Assistant_prod" {
   zone_id = data.cloudflare_zone.domain.id
   name    = "homeassistant.${var.subdomain}"
-  value   = "alma.${var.subdomain}.${data.cloudflare_zone.domain.name}"
+  value   = "alma.prod.${var.subdomain}.${data.cloudflare_zone.domain.name}"
+  type    = "CNAME"
+  ttl     = 3600
+  proxied = false
+}
+
+resource "cloudflare_record" "cname_Home_Assistant_dev" {
+  zone_id = data.cloudflare_zone.domain.id
+  name    = "homeassistant.dev.${var.subdomain}"
+  value   = "alma.dev.${var.subdomain}.${data.cloudflare_zone.domain.name}"
   type    = "CNAME"
   ttl     = 3600
   proxied = false

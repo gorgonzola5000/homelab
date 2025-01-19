@@ -27,7 +27,6 @@
         sites_to_enable:
           - home.parents-basement.win
       tags: nginx_reverse_proxy
-      ignore_errors: true
     - role: quadlet
       vars:
         service: pihole
