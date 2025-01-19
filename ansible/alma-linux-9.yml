@@ -24,8 +24,6 @@
         domains:
           - '{{ subdomain }}.{{ domain }}'
           - '*.{{ subdomain }}.{{ domain }}'
-        sites_to_enable:
-          - 'home.{{ subdomain }}.{{ domain }}'
       tags: nginx_reverse_proxy
     - role: quadlet
       vars:

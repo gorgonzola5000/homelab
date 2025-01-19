@@ -1,9 +1,9 @@
 ---
 - name: Configure GitLab Debian VM
-  # ansible-playbook --extra-vars "{dry_run: False}" gitlab.yml
-  # this playbook uses install instructions for Debian from GitLab website
-  # installation for RedHat based distributions is different
-  hosts: '{{ target | default("gitlab") }}'
+  vars:
+    subdomain: home
+    domain: parents-basement.win
+  hosts: 'gitlab.{{ subdomain }}.{{ domain }}'
   become: true
   roles:
     - common
@@ -16,11 +16,8 @@
       vars:
         nginx_config_files_directory: ./config_files/gitlab/nginx/
         domains:
-          - '*.gitlab.home.parents-basement.win'
-          - gitlab.home.parents-basement.win
-        sites_to_enable:
-          - registry.gitlab.home.parents-basement.win
-          - gitlab.home.parents-basement.win
+          - '*.gitlab.{{ subdomain }}.{{ domain }}'
+          - 'gitlab.{{ subdomain }}.{{ domain }}'
       tags: nginx_reverse_proxy
   tasks:
     - name: Install packages needed for GitLab
