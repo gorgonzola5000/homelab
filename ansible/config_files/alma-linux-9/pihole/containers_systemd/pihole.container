@@ -6,8 +6,8 @@ Image=docker.io/pihole/pihole:2024.07.0
 PublishPort=53:53/tcp
 PublishPort=53:53/udp
 PublishPort=50001:80
-Volume=/home/pihole/etc-pihole:/etc/pihole
-Volume=/home/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+Volume=etc-pihole.volume:/etc/pihole
+Volume=etc-dnsmasq.d.volume:/etc/dnsmasq.d
 Environment="TZ=Europe/Warsaw"
 Secret=WEBPASSWORD,type=env
 AddCapability=CAP_AUDIT_WRITE
