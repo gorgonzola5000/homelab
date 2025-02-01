@@ -9,6 +9,7 @@ PublishPort=50001:80
 Volume=etc-pihole.volume:/etc/pihole
 Volume=etc-dnsmasq.d.volume:/etc/dnsmasq.d
 Environment="TZ=Europe/Warsaw"
+Environment="DNSMASQ_LISTENING=all"
 Secret=WEBPASSWORD,type=env
 AddCapability=CAP_AUDIT_WRITE
 
