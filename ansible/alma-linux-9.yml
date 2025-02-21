@@ -13,6 +13,13 @@
         state: stopped
         enabled: false
       when: ansible_facts['distribution'] == 'Debian'
+    - name: Mount NFS
+      ansible.posix.mount:
+        src: 10.2.137.7:/mnt/volume
+        path: /mnt/volume
+        boot: true
+        state: mounted
+        fstype: nfs
   roles:
     - common
     - vm
@@ -24,8 +31,6 @@
         domains:
           - '{{ subdomain }}.{{ domain }}'
           - '*.{{ subdomain }}.{{ domain }}'
-        sites_to_enable:
-          - home.parents-basement.win
       tags: nginx_reverse_proxy
     - role: quadlet
       vars:
@@ -52,3 +57,10 @@
         config_files_directory: './config_files/alma-linux-9/glance/config_files/'
         rootful: false
       tags: glance
+    - role: quadlet
+      vars:
+        service: jellyfin
+        containers_systemd_directory: './config_files/alma-linux-9/jellyfin/containers_systemd/'
+        config_files_directory: './config_files/alma-linux-9/jellyfin/config_files/'
+        rootful: false
+      tags: jellyfin

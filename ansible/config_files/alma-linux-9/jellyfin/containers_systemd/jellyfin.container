@@ -1,0 +1,18 @@
+[Unit]
+Description=Jellyfin - The Free Software Media System
+
+[Container]
+Image=docker.io/jellyfin/jellyfin:latest
+PublishPort=8096:8096/tcp
+UserNS=keep-id
+Volume=jellyfin-config.volume:/config:Z
+Volume=jellyfin-cache.volume:/cache:Z
+Volume=/mnt/volume/data/media:/media:Z
+
+[Service]
+# Inform systemd of additional exit status
+SuccessExitStatus=0 143
+
+[Install]
+# Start by default on boot
+WantedBy=default.target
