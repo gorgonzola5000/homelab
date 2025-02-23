@@ -9,3 +9,4 @@
   ansible.builtin.shell:
     cmd: dpkg-reconfigure -f noninteractive unattended-upgrades
   listen: dpkg-reconfigure unattended-upgrades
+  changed_when: true

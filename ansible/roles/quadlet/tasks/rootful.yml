@@ -1,23 +1,18 @@
 ---
-- name: 'Rootful -  Copy systemd unit files for {{ service }}'
+- name: Rootful - Copy systemd unit files - {{ service }}
   ansible.builtin.copy:
     src: '{{ containers_systemd_directory }}'
     dest: '/etc/containers/systemd/'
     mode: '0644'
     owner: '{{ service }}'
     group: '{{ service }}'
+  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
 
-- name: 'Rootful - Create podman secrets for {{ service }}'
+- name: Rootful - Create podman secrets - {{ service }}
   containers.podman.podman_secret:
     name: "{{ item.key }}"
     data: "{{ item.value }}"
   loop: "{{ lookup('ansible.builtin.dict', podman_secrets, wantlist=True) }}"
   no_log: true
   when: podman_secrets is defined
-  notify: Restart container
-
-- name: 'Rootful - Start systemd unit {{ service }}'
-  ansible.builtin.systemd_service:
-    daemon_reload: true
-    name: '{{ service }}.service'
-    state: started
+  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'

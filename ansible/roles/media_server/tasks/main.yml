@@ -7,10 +7,12 @@
 
 - name: Create media directory structure
   ansible.builtin.file:
-    path: /mnt/volume/{{ item.path }}
+    path: '/mnt/volume/{{ item.path }}'
     state: directory
     mode: '775'
     owner: root
     group: media-server
   with_community.general.filetree: media-directory-structure/
   when: item.state == 'directory'
+  loop_control:
+    label: '{{ item.path }}'
