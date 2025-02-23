@@ -7,7 +7,7 @@
 
 - name: Rootless - Copy systemd unit files - {{ service }}
   ansible.builtin.copy:
-    src: '{{ containers_systemd_directory }}'
+    src: './{{ node_name }}/{{ service }}/containers_systemd/'
     dest: '/home/{{ service }}/.config/containers/systemd/'
     mode: '0644'
     owner: '{{ service }}'

@@ -1,13 +1,13 @@
 ---
 - name: Rootful - Enable lingering for root - {{ service }}
   ansible.builtin.shell:
-    cmd: "loginctl enable-linger {{ service }}"
+    cmd: "loginctl enable-linger root"
     executable: /bin/bash
-    creates: '/var/lib/systemd/linger/{{ service }}'
+    creates: '/var/lib/systemd/linger/root'
 
 - name: Rootful - Copy systemd unit files - {{ service }}
   ansible.builtin.copy:
-    src: '{{ containers_systemd_directory }}'
+    src: './{{ node_name }}/{{ service }}/containers_systemd/'
     dest: '/etc/containers/systemd/'
     mode: '0644'
     owner: '{{ service }}'
@@ -29,4 +29,3 @@
     daemon_reload: true
     name: '{{ service }}.service'
     state: restarted
-    scope: user

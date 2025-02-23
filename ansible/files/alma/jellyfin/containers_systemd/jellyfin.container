@@ -5,8 +5,8 @@ Description=Jellyfin - The Free Software Media System
 Image=docker.io/jellyfin/jellyfin:latest
 PublishPort=8096:8096/tcp
 UserNS=keep-id
-Volume=jellyfin-config.volume:/config:Z
-Volume=jellyfin-cache.volume:/cache:Z
+Volume=/home/%u/config:/config
+Volume=/home/%u/cache:/cache
 Volume=/mnt/volume/data/media:/media
 
 [Service]

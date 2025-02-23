@@ -1,9 +1,10 @@
 ---
 - name: Configure GitLab Runner Packer Debian VM
-  # ansible-playbook --extra-vars "{dry_run: False}" gitlab-runner.yml
-  # this playbook uses install instructions for Debian from the GitLab website
-  # installation for RedHat based distributions is different
-  hosts: '{{ target | default("gitlab_runner") }}'
+  vars:
+    node_name: gitlab-runner
+    subdomain: home
+    domain: parents-basement.win
+  hosts: '{{ node_name }}.{{ subdomain }}.{{ domain }}'
   become: true
   roles:
     - common

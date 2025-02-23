@@ -161,7 +161,7 @@ ansible VM dev:
     ENVIRONMENT_NAME: dev
   parallel:
     matrix:
-      - PLAYBOOK: ['alma-linux-9.yml']
+      - PLAYBOOK: ['alma.yml']
   rules:
     - if: $CI_COMMIT_TAG
       when: never
@@ -176,7 +176,7 @@ ansible VM test:
     ENVIRONMENT_NAME: test
   parallel:
     matrix:
-      - PLAYBOOK: ['alma-linux-9.yml']
+      - PLAYBOOK: ['alma.yml']
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
@@ -187,7 +187,7 @@ ansible VM prod:
     ENVIRONMENT_NAME: prod
   parallel:
     matrix:
-      - PLAYBOOK: ['alma-linux-9.yml']
+      - PLAYBOOK: ['alma.yml']
   rules:
     - if: $CI_COMMIT_TAG
 
