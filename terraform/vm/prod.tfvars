@@ -4,7 +4,7 @@ is_prod      = true
 dns_mappings = {
   "alma" = {
     ipv4    = "10.2.137.2"
-    aliases = ["homeassistant", "pihole", "glance", "jellyfin"]
+    aliases = ["homeassistant", "pihole", "glance", "jellyfin", "sonarr", "qbittorrent"]
   }
 }
-media_disk_size = 800
+media_disk_size = 600

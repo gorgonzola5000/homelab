@@ -75,6 +75,7 @@
         containers_systemd_directory: './config_files/alma-linux-9/jellyfin/containers_systemd/'
         config_files_directory: './config_files/alma-linux-9/jellyfin/config_files/'
         rootful: false
+        quadlet_append_groups: media-server
       tags: jellyfin
 
     - role: quadlet
@@ -85,3 +86,18 @@
         rootful: false
         quadlet_append_groups: media-server
       tags: sonarr
+
+    - role: quadlet
+      vars:
+        service: qbit-pod
+        containers_systemd_directory: './config_files/alma-linux-9/qbit-pod/containers_systemd/'
+        config_files_directory: './config_files/alma-linux-9/qbit-pod/config_files/'
+        rootful: true
+        quadlet_append_groups: media-server
+        podman_secrets:
+          WIREGUARD_PRIVATE_KEY: "{{ vault_vpn_private_key }}"
+          WIREGUARD_PRESHARED_KEY: "{{ vault_vpn_preshared_key }}"
+          WIREGUARD_ADDRESSES: "{{ vault_vpn_addresses }}"
+          SERVER_COUNTRIES: "{{ vault_vpn_server_countries }}"
+          FIREWALL_VPN_INPUT_PORTS: "{{ vault_vpn_input_ports }}"
+      tags: qbit-pod

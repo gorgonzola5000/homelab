@@ -1,24 +1,16 @@
 ---
-- name: Create media directory structure
-  ansible.builtin.file:
-    path: /mnt/volume/{{ item.path }}
-    state: directory
-    mode: '755'
-    owner: root
-  with_community.general.filetree: media-directory-structure/
-  when: item.state == 'directory'
-
 - name: Create media-server group
   ansible.builtin.group:
     name: media-server
     gid: 2137
     state: present
 
-- name: Change /mnt/volume permissions
+- name: Create media directory structure
   ansible.builtin.file:
-    path: /mnt/volume
+    path: /mnt/volume/{{ item.path }}
     state: directory
-    recurse: true
+    mode: '775'
     owner: root
     group: media-server
-    mode: '775'
+  with_community.general.filetree: media-directory-structure/
+  when: item.state == 'directory'
