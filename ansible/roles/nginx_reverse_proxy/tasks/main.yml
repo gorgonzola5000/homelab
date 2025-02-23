@@ -1,5 +1,4 @@
 ---
-# nginx, certbot, let's encrypt
 - name: Install nginx
   ansible.builtin.apt:
     name:
@@ -48,7 +47,8 @@
     owner: root
     mode: '0644'
   with_fileglob:
-    - "{{ nginx_config_files_directory }}/conf.d/*"
+    - "{{ node_name }}/nginx/conf.d/*"
+    #    - "{{ nginx_config_files_directory }}/conf.d/*"
   notify:
     - Restart nginx
 
@@ -66,6 +66,7 @@
     - not letsencrypt_cert.stat.exists
   notify:
     - Restart nginx
+  changed_when: true
 
 - name: Acquire Let's Encrypt certificates with Certbot - DRY RUN
   ansible.builtin.shell:
@@ -76,6 +77,7 @@
     - not letsencrypt_cert.stat.exists
   notify:
     - Restart nginx
+  changed_when: true
 
 - name: Ensure certbot.timer is enabled
   ansible.builtin.systemd_service:

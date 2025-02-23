@@ -7,17 +7,11 @@
 
 - name: Rootless - Copy systemd unit files - {{ service }}
   ansible.builtin.copy:
-    src: '{{ containers_systemd_directory }}'
+    src: './{{ node_name }}/{{ service }}/containers_systemd/'
     dest: '/home/{{ service }}/.config/containers/systemd/'
     mode: '0644'
     owner: '{{ service }}'
     group: '{{ service }}'
-
-- name: Rootless - Ensure a polkit rule exists for user 'ansible' - {{ service }}
-  ansible.builtin.copy:
-    dest: /etc/polkit-1/rules.d/48-machinectl-fast-user-auth.rules
-    src: 48-machinectl-fast-user-auth.rules
-    mode: '0644'
 
 - name: Rootless - Create podman secrets - {{ service }}
   become: true

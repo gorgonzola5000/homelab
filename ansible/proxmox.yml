@@ -1,9 +1,10 @@
 ---
 - name: Configure Proxmox Node
   vars:
+    node_name: proxmox
     subdomain: home
     domain: parents-basement.win
-  hosts: 'proxmox.{{ subdomain }}.{{ domain }}'
+  hosts: '{{ node_name }}.{{ subdomain }}.{{ domain }}'
   become: true
   roles:
     - proxmox
@@ -12,8 +13,5 @@
     - ansible_managed
     - role: nginx_reverse_proxy
       vars:
-        nginx_config_files_directory: ./config_files/proxmox/nginx/
         domains:
-          - 'proxmox.{{ subdomain }}.{{ domain }}'
-        sites_to_enable:
-          - 'proxmox.{{ subdomain }}.{{ domain }}'
+          - '{{ node_name }}.{{ subdomain }}.{{ domain }}'
