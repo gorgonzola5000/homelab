@@ -52,6 +52,11 @@ variable "vm_id_schema" {
   description = "eg. vm_id_schema = 2 --> vm_ids in this env are 2XX"
 }
 
+variable "media_disk_size" {
+  type        = number
+  description = "size of the disk for storing media in GB"
+}
+
 resource "proxmox_virtual_environment_vm" "alma_linux_9" {
   name        = "alma-linux-9-${var.environment}"
   tags        = ["terraform", "alma"]
@@ -79,6 +84,13 @@ resource "proxmox_virtual_environment_vm" "alma_linux_9" {
     file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
     interface    = "virtio0"
     size         = 20
+  }
+
+  disk {
+    datastore_id = "zshare"
+    interface    = "virtio1"
+    file_format  = "raw"
+    size         = var.media_disk_size
   }
 
   initialization {

@@ -13,6 +13,15 @@
     shell: /bin/bash
     create_home: true
 
+- name: Add user to groups - user {{ service }}
+  ansible.builtin.user:
+    name: '{{ service }}'
+    shell: /bin/bash
+    create_home: true
+    groups: '{{ quadlet_append_groups }}'
+    append: true
+  when: quadlet_append_groups is defined
+
 - name: Enable lingering for user {{ service }}
   ansible.builtin.shell:
     cmd: "loginctl enable-linger {{ service }}"

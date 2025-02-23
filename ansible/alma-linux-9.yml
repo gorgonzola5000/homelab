@@ -7,19 +7,24 @@
   hosts: 'alma.{{ environment_name }}.{{ subdomain }}.{{ domain }}'
   become: true
   pre_tasks:
-    - name: Disable systemd-resolved
-      ansible.builtin.systemd_service:
-        name: systemd-resolved
-        state: stopped
-        enabled: false
-      when: ansible_facts['distribution'] == 'Debian'
-    - name: Mount NFS
-      ansible.posix.mount:
-        src: 10.2.137.7:/mnt/volume
+    - name: Partition media disk
+      community.general.parted:
+        device: /dev/vdb
+        number: 1
+        state: present
+
+    - name: Create an xfs filesystem on /dev/vdb1
+      community.general.filesystem:
+        fstype: xfs
+        state: present
+        dev: /dev/vdb1
+
+    - name: Perform the mounting on the mount device
+      ansible.builtin.mount:
+        fstype: xfs
+        src: /dev/vdb1
         path: /mnt/volume
-        boot: true
         state: mounted
-        fstype: nfs
   roles:
     - common
     - vm
@@ -32,6 +37,7 @@
           - '{{ subdomain }}.{{ domain }}'
           - '*.{{ subdomain }}.{{ domain }}'
       tags: nginx_reverse_proxy
+
     - role: quadlet
       vars:
         service: pihole
@@ -41,6 +47,7 @@
         podman_secrets:
           WEBPASSWORD: "{{ vault_pihole_web_password }}"
       tags: pihole
+
     - role: quadlet
       vars:
         service: ddclient
@@ -50,6 +57,7 @@
         podman_secrets:
           DDCLIENT_PASSWORD: "{{ vault_ddclient_cloudflare_token }}"
       tags: ddclient
+
     - role: quadlet
       vars:
         service: glance
@@ -57,6 +65,10 @@
         config_files_directory: './config_files/alma-linux-9/glance/config_files/'
         rootful: false
       tags: glance
+
+    - role: media_server
+      tags: media_server
+
     - role: quadlet
       vars:
         service: jellyfin
@@ -64,3 +76,12 @@
         config_files_directory: './config_files/alma-linux-9/jellyfin/config_files/'
         rootful: false
       tags: jellyfin
+
+    - role: quadlet
+      vars:
+        service: sonarr
+        containers_systemd_directory: './config_files/alma-linux-9/sonarr/containers_systemd/'
+        config_files_directory: './config_files/alma-linux-9/sonarr/config_files/'
+        rootful: false
+        quadlet_append_groups: media-server
+      tags: sonarr

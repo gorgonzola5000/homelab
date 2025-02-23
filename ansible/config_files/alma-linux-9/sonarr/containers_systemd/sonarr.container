@@ -1,0 +1,15 @@
+[Unit]
+Description=PVR for usenet and bittorrent users for shows
+
+[Container]
+Image=quay.io/linuxserver.io/sonarr:4.0.13
+PublishPort=8989:8989
+Volume=/home/%u/config:/config
+Volume=/mnt/volume/data:/data
+Environment=TZ=Europe/Warsaw
+Environment=PUID=%U
+Environment=PGID=2137
+
+[Install]
+# Start by default on boot
+WantedBy=default.target

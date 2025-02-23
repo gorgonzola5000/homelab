@@ -7,3 +7,4 @@ dns_mappings = {
     aliases = ["homeassistant", "pihole", "glance", "jellyfin"]
   }
 }
+media_disk_size = 800

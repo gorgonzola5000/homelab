@@ -1,16 +1,17 @@
 ---
 - name: Include Debian tasks
-  ansible.builtin.import_tasks: debian.yml
+  ansible.builtin.include_tasks: debian.yml
   when: ansible_facts['os_family'] == 'Debian'
 
 - name: Include RedHat tasks
-  ansible.builtin.import_tasks: redhat.yml
+  ansible.builtin.include_tasks: redhat.yml
   when: ansible_facts['os_family'] == 'RedHat'
 
 - name: Import user_access tasks
-  ansible.builtin.import_tasks: user_access.yml
+  ansible.builtin.include_tasks: user_access.yml
 
-- name: Install packages # not important, only QoL packages, can fail due to different names in repos
+# not important, only QoL packages, can fail due to different names in repos
+- name: Install packages
   ansible.builtin.package:
     name: "{{ packages }}"
     state: present
