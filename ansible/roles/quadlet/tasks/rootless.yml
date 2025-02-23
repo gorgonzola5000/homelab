@@ -1,4 +1,10 @@
 ---
+- name: Rootless - Enable lingering - {{ service }}
+  ansible.builtin.shell:
+    cmd: "loginctl enable-linger {{ service }}"
+    executable: /bin/bash
+    creates: '/var/lib/systemd/linger/{{ service }}'
+
 - name: Rootless - Copy systemd unit files - {{ service }}
   ansible.builtin.copy:
     src: '{{ containers_systemd_directory }}'
@@ -6,7 +12,6 @@
     mode: '0644'
     owner: '{{ service }}'
     group: '{{ service }}'
-  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
 
 - name: Rootless - Ensure a polkit rule exists for user 'ansible' - {{ service }}
   ansible.builtin.copy:
@@ -24,4 +29,13 @@
   loop: "{{ lookup('ansible.builtin.dict', podman_secrets, wantlist=True) }}"
   no_log: true
   when: podman_secrets is defined
-  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
+
+- name: Restart rootless container - {{ service }}
+  become: true
+  become_user: '{{ service }}'
+  become_method: community.general.machinectl
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    name: '{{ service }}.service'
+    state: restarted
+    scope: user

@@ -6,14 +6,12 @@
       - slirp4netns
       - systemd-container
     state: present
-  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
 
 - name: Create user - {{ service }}
   ansible.builtin.user:
     name: '{{ service }}'
     shell: /bin/bash
     create_home: true
-  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
 
 - name: Add user to groups - {{ service }}
   ansible.builtin.user:
@@ -23,14 +21,6 @@
     groups: '{{ quadlet_append_groups }}'
     append: true
   when: quadlet_append_groups is defined
-  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
-
-- name: Enable lingering - {{ service }}
-  ansible.builtin.shell:
-    cmd: "loginctl enable-linger {{ service }}"
-    executable: /bin/bash
-    creates: '/var/lib/systemd/linger/{{ service }}'
-  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
 
 - name: Copy config files - {{ service }}
   ansible.builtin.copy:
@@ -39,7 +29,6 @@
     mode: '0644'
     owner: '{{ service }}'
     group: '{{ service }}'
-  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
 
 - name: Template config files - {{ service }}
   ansible.builtin.template:
@@ -47,7 +36,6 @@
     dest: '/home/{{ service }}/{{ item.path | splitext | first }}'
     mode: '0644'
   with_community.general.filetree: '{{ template_config_files_directory }}/'
-  notify: 'Restart {{ "rootful" if rootful else "rootless" }} container'
   loop_control:
     label: '{{ item.path }}'
   when:
@@ -61,7 +49,3 @@
 - name: Rootless - include tasks - {{ service }}
   ansible.builtin.include_tasks: rootless.yml
   when: not rootful
-
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
-  changed_when: false
