@@ -3,11 +3,11 @@ Description=Jellyfin - The Free Software Media System
 
 [Container]
 Image=docker.io/jellyfin/jellyfin:latest
-PublishPort=8096:8096/tcp
 UserNS=keep-id
-Volume=/home/%u/config:/config
-Volume=/home/%u/cache:/cache
+Volume=/home/%u/jellyfin-config:/config:Z
+Volume=/home/%u/jellyfin-cache:/cache:Z
 Volume=/mnt/volume/data/media:/media
+Pod=jelly.pod
 
 [Service]
 # Inform systemd of additional exit status

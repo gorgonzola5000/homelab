@@ -13,12 +13,6 @@
     owner: '{{ service }}'
     group: '{{ service }}'
 
-- name: Rootless - Ensure a polkit rule exists for user 'ansible' - {{ service }}
-  ansible.builtin.copy:
-    dest: /etc/polkit-1/rules.d/48-machinectl-fast-user-auth.rules
-    src: 48-machinectl-fast-user-auth.rules
-    mode: '0644'
-
 - name: Rootless - Create podman secrets - {{ service }}
   become: true
   become_user: '{{ service }}'

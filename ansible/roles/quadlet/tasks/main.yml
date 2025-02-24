@@ -22,11 +22,17 @@
     append: true
   when: quadlet_append_groups is defined
 
+- name: Ensure a polkit rule exists for user 'ansible' - {{ service }}
+  ansible.builtin.copy:
+    dest: /etc/polkit-1/rules.d/48-machinectl-fast-user-auth.rules
+    src: 48-machinectl-fast-user-auth.rules
+    mode: '0644'
+
 - name: Copy config files - {{ service }}
   ansible.builtin.copy:
     src: './{{ node_name }}/{{ service }}/copy_config_files/'
     dest: '/home/{{ service }}/'
-    mode: '0644'
+    mode: '0640'
     owner: '{{ service }}'
     group: '{{ service }}'
 
@@ -34,12 +40,13 @@
   ansible.builtin.template:
     src: '{{ item.src }}'
     dest: '/home/{{ service }}/{{ item.path | splitext | first }}'
-    mode: '0644'
+    mode: '0640'
+    owner: '{{ service }}'
+    group: '{{ service }}'
   with_community.general.filetree: './{{ node_name }}/{{ service }}/template_config_files/'
   loop_control:
     label: '{{ item.path }}'
   when:
-    - template_config_files_directory is defined
     - item.state == 'file'
 
 - name: Rootful - include tasks - {{ service }}

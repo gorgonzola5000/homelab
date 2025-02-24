@@ -64,13 +64,6 @@
 
     - role: quadlet
       vars:
-        service: jellyfin
-        rootful: false
-        quadlet_append_groups: media-server
-      tags: jellyfin
-
-    - role: quadlet
-      vars:
         service: sonarr
         rootful: false
         quadlet_append_groups: media-server
@@ -78,15 +71,8 @@
 
     - role: quadlet
       vars:
-        service: jellyseerr
-        rootful: false
-        quadlet_append_groups: media-server
-      tags: jellyseerr
-
-    - role: quadlet
-      vars:
         service: qbit-pod
-        rootful: true
+        rootful: false
         quadlet_append_groups: media-server
         podman_secrets:
           WIREGUARD_PRIVATE_KEY: "{{ vault_vpn_private_key }}"
@@ -95,3 +81,10 @@
           SERVER_COUNTRIES: "{{ vault_vpn_server_countries }}"
           FIREWALL_VPN_INPUT_PORTS: "{{ vault_vpn_input_ports }}"
       tags: qbit-pod
+
+    - role: quadlet
+      vars:
+        service: jelly-pod
+        rootful: false
+        quadlet_append_groups: media-server
+      tags: jelly-pod

@@ -9,25 +9,25 @@
   loop:
     - net.ipv4.ip_forward
     - net.ipv4.conf.all.forwarding
-- name: Ensure wireguard is installed
-  ansible.builtin.dnf:
-    name: wireguard-tools
+
+- name: Ensure wireguard and iptables-nft are installed
+  ansible.builtin.package:
+    name:
+      - wireguard-tools
+      - iptables-nft
     state: present
-  when: ansible_facts['os_family'] == 'RedHat'
-- name: Ensure wireguard is installed
-  ansible.builtin.apt:
-    name: wireguard
-    state: present
-  when: ansible_facts['os_family'] == 'Debian'
+
 - name: Ensure /etc/wireguard/ directory exists
   ansible.builtin.file:
     path: /etc/wireguard
     state: directory
     mode: '0700'
+
 - name: Check if wireguard interface configuration file exists
   ansible.builtin.stat:
     path: '/etc/wireguard/{{ wireguard_server_wg_interface_name }}.conf'
   register: wg_interface_conf
+
 - name: Generate wg interface config
   ansible.builtin.template:
     dest: '/etc/wireguard/{{ wireguard_server_wg_interface_name }}.conf'
@@ -35,7 +35,12 @@
     mode: '0755'
     src: wg0.conf.j2
   when: not wg_interface_conf.stat.exists
+
 - name: Start and enable wireguard service
+  become: true
+  become_user: root
   ansible.builtin.systemd_service:
+    daemon_reload: true
     name: 'wg-quick@{{ wireguard_server_wg_interface_name }}.service'
     enabled: true
+    state: started
