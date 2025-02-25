@@ -2,9 +2,13 @@ vm_id_schema = 2
 environment  = "dev"
 is_prod      = false
 dns_mappings = {
-  "alma" = {
+  "speak-to-me" = {
+    ipv4    = "10.2.137.21"
+    aliases = ["homeassistant", "pihole", "glance"]
+  }
+  "breathe" = {
     ipv4    = "10.2.137.22"
-    aliases = ["homeassistant", "pihole", "glance", "jellyfin", "sonarr", "qbittorrent", "jellyseerr"]
+    aliases = ["qbittorrent", "gluetun", "prowlarr", "sonarr", "radarr", "jellyseerr", "jellyfin"]
   }
 }
 media_disk_size = 20

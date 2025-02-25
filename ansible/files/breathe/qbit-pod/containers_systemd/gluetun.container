@@ -1,0 +1,26 @@
+[Unit]
+Description=Lightweight swiss-army-knife-like VPN client to multiple VPN service providers
+
+[Container]
+Image=docker.io/qmcgaw/gluetun@sha256:39e125079b0226e0f3f4ce0822a1498d191e1caf35c8abb6fba1068c5842e9dd
+
+
+AddCapability=NET_ADMIN
+
+AddDevice=/dev/net/tun
+
+Environment=TZ=Europe/Warsaw
+Environment=VPN_SERVICE_PROVIDER=airvpn
+Environment=VPN_TYPE=wireguard
+
+Secret=WIREGUARD_PRIVATE_KEY,type=env
+Secret=WIREGUARD_PRESHARED_KEY,type=env
+Secret=WIREGUARD_ADDRESSES,type=env
+Secret=SERVER_COUNTRIES,type=env
+Secret=FIREWALL_VPN_INPUT_PORTS,type=env
+
+Pod=qbit.pod
+
+[Install]
+# Start by default on boot
+WantedBy=default.target

@@ -1,0 +1,19 @@
+[Unit]
+Description=Media Discovery Simple Request Management
+
+[Container]
+Image=docker.io/fallenbagel/jellyseerr:2.3.0
+
+Volume=/home/jelly-pod/jellyseerr-config:/app/config
+
+User=1111
+Group=1111
+
+Environment=TZ=Europe/Warsaw
+Environment=PORT=5055
+
+Pod=jelly.pod
+
+[Install]
+# Start by default on boot
+WantedBy=default.target
