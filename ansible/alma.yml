@@ -64,16 +64,8 @@
 
     - role: quadlet
       vars:
-        service: sonarr
-        rootful: false
-        quadlet_append_groups: media-server
-      tags: sonarr
-
-    - role: quadlet
-      vars:
         service: qbit-pod
-        rootful: false
-        quadlet_append_groups: media-server
+        rootful: true
         podman_secrets:
           WIREGUARD_PRIVATE_KEY: "{{ vault_vpn_private_key }}"
           WIREGUARD_PRESHARED_KEY: "{{ vault_vpn_preshared_key }}"
@@ -85,6 +77,5 @@
     - role: quadlet
       vars:
         service: jelly-pod
-        rootful: false
-        quadlet_append_groups: media-server
+        rootful: true
       tags: jelly-pod

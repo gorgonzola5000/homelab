@@ -2,13 +2,16 @@
 Description=PVR for usenet and bittorrent users for shows
 
 [Container]
-Image=quay.io/linuxserver.io/sonarr:4.0.13
-PublishPort=8989:8989
-Volume=/home/%u/config:/config
+Image=quay.io/linuxserver.io/radarr:5.18.4
+
+Volume=/home/jelly-pod/radarr-config:/config
 Volume=/mnt/volume/data:/data
+
 Environment=TZ=Europe/Warsaw
-Environment=PUID=%U
+Environment=PUID=1000
 Environment=PGID=2137
+
+Pod=arr.pod
 
 [Install]
 # Start by default on boot

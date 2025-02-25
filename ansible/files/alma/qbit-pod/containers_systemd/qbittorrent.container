@@ -2,14 +2,15 @@
 Description=Open-source software alternative to uTorrent
 
 [Container]
-Image=quay.io/linuxserver.io/qbittorrent:5.0.4
+Image=ghcr.io/onedr0p/qbittorrent:sha256:3b7e6671b4e6b8ab1366ca8a038776638c77cc8110dc74c257eb14568d43c614
+
 Volume=/home/qbit-pod/config:/config
 Volume=/mnt/volume/data:/data
-Environment=TZ=Europe/Warsaw
-Environment=WEBUI_PORT=8080
-Environment=PUID=1005
-Environment=PGID=2137
-Environment=UMASK=002
+
+#Environment=TZ=Europe/Warsaw
+#Environment=WEBUI_PORT=8080
+#Environment=PUID=1000
+#Environment=PGID=2137
 
 Pod=qbit.pod
 
