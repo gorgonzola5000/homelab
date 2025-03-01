@@ -34,6 +34,7 @@ renovate:
     RENOVATE_ENDPOINT: $GL_API_URL
     RENOVATE_TOKEN: $GL_TOKEN
     RENOVATE_AUTODISCOVER: 'true'
+    LOG_LEVEL: debug
 
 #tofu fmt baremetal:
 #  stage: baremetal-config
