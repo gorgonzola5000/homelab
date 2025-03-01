@@ -23,7 +23,7 @@
         service: pihole
         rootful: true
         podman_secrets:
-          WEBPASSWORD: "{{ vault_pihole_web_password }}"
+          FTLCONF_webserver_api_password: "{{ vault_pihole_web_password }}"
       tags: pihole
 
     - role: quadlet

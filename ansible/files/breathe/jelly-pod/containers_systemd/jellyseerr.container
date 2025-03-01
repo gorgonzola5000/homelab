@@ -2,7 +2,7 @@
 Description=Media Discovery Simple Request Management
 
 [Container]
-Image=docker.io/fallenbagel/jellyseerr:2.3.0
+Image=docker.io/fallenbagel/jellyseerr@sha256:54dbb8d97c52039ff94efe3be9de2f44833cdee72b0b5d49ca9e30d2ecca0cee
 
 Volume=/home/jelly-pod/jellyseerr-config:/app/config
 

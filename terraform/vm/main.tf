@@ -4,7 +4,7 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
   description = "VPN server, ddclient, pihole, dashboard"
 
   node_name = "pve"
-  vm_id     = tonumber("${var.vm_id_schema}20")
+  vm_id     = tonumber("${var.vm_id_schema}21")
 
   agent {
     enabled = true
@@ -53,7 +53,7 @@ resource "proxmox_virtual_environment_vm" "breathe" {
   description = "qbittorrent, gluetun, prowlarr, sonarr, radarr, jellyseerr, jellyfin"
 
   node_name = "pve"
-  vm_id     = tonumber("${var.vm_id_schema}21")
+  vm_id     = tonumber("${var.vm_id_schema}22")
 
   agent {
     enabled = true

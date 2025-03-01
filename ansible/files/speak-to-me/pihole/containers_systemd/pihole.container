@@ -2,15 +2,17 @@
 Description=Pihole DNS sinkhole container
 
 [Container]
-Image=docker.io/pihole/pihole:2024.07.0
+Image=docker.io/pihole/pihole@sha256:16182d525693103d5b356173b0405be348b9494eb69ec0b4585d51b3c14b61dd
 PublishPort=53:53/tcp
 PublishPort=53:53/udp
 PublishPort=50001:80
+
 Volume=etc-pihole.volume:/etc/pihole
-Volume=etc-dnsmasq.d.volume:/etc/dnsmasq.d
+
 Environment="TZ=Europe/Warsaw"
-Environment="DNSMASQ_LISTENING=all"
-Secret=WEBPASSWORD,type=env
+Environment="FTLCONF_dns_listeningMode=all"
+Secret=FTLCONF_webserver_api_password,type=env
+
 AddCapability=CAP_AUDIT_WRITE
 
 [Service]
