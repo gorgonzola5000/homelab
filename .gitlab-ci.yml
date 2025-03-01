@@ -31,7 +31,7 @@ renovate:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
   variables:
     RENOVATE_PLATFORM: 'gitlab'
-    RENOVATE_ENDPOINT: $GL_API_URL
+    RENOVATE_ENDPOINT: $CI_API_V4_URL
     RENOVATE_TOKEN: $GL_TOKEN
     RENOVATE_AUTODISCOVER: 'true'
     LOG_LEVEL: debug
