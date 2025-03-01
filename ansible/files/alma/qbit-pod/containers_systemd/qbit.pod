@@ -1,4 +1,0 @@
-[Pod]
-PublishPort=8080:8080
-PublishPort=6881:6881
-PublishPort=6881:6881/udp

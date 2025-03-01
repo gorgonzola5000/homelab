@@ -41,6 +41,8 @@
     src: '{{ item.src }}'
     dest: '/home/{{ service }}/{{ item.path | splitext | first }}'
     mode: '0640'
+    owner: '{{ service }}'
+    group: '{{ service }}'
   with_community.general.filetree: './{{ node_name }}/{{ service }}/template_config_files/'
   loop_control:
     label: '{{ item.path }}'

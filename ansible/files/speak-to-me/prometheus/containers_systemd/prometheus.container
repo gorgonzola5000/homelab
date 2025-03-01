@@ -1,0 +1,15 @@
+[Unit]
+Description=Prometheus - systems and service monitoring system
+
+[Container]
+Image=quay.io/prometheus/prometheus@sha256:6927e0919a144aa7616fd0137d4816816d42f6b816de3af269ab065250859a62
+PublishPort=9090:9090
+Volume=/home/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+Volume=prometheus-data.volume:/prometheus
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target

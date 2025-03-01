@@ -1,0 +1,58 @@
+---
+- name: Configure Breathe VM
+  vars:
+    node_name: breathe
+    subdomain: home
+    domain: parents-basement.win
+  hosts: '{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}'
+  become: true
+  pre_tasks:
+    - name: Partition media disk
+      community.general.parted:
+        device: /dev/vdb
+        number: 1
+        state: present
+
+    - name: Create an xfs filesystem on /dev/vdb1
+      community.general.filesystem:
+        fstype: xfs
+        state: present
+        dev: /dev/vdb1
+
+    - name: Perform the mounting on the mount device
+      ansible.builtin.mount:
+        fstype: xfs
+        src: /dev/vdb1
+        path: /mnt/volume
+        state: mounted
+  roles:
+    - common
+    - vm
+    - ansible_managed
+    - role: nginx_reverse_proxy
+      vars:
+        domains:
+          - '{{ subdomain }}.{{ domain }}'
+          - '*.{{ subdomain }}.{{ domain }}'
+      tags: nginx_reverse_proxy
+
+    - role: media_server
+      tags: media_server
+
+    - role: quadlet
+      vars:
+        service: qbit-pod
+        rootful: true
+        podman_secrets:
+          WIREGUARD_PRIVATE_KEY: "{{ vault_vpn_private_key }}"
+          WIREGUARD_PRESHARED_KEY: "{{ vault_vpn_preshared_key }}"
+          WIREGUARD_ADDRESSES: "{{ vault_vpn_addresses }}"
+          SERVER_COUNTRIES: "{{ vault_vpn_server_countries }}"
+          FIREWALL_VPN_INPUT_PORTS: "{{ vault_vpn_input_ports }}"
+      tags: qbit-pod
+
+    - role: quadlet
+      vars:
+        service: jelly-pod
+        rootful: true
+      tags: jelly-pod

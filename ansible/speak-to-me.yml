@@ -1,0 +1,41 @@
+---
+- name: Configure Speak to Me VM
+  vars:
+    node_name: speak-to-me
+    subdomain: home
+    domain: parents-basement.win
+  hosts: '{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}'
+  become: true
+  roles:
+    - common
+    - vm
+    - ansible_managed
+    - wireguard_server
+    - role: nginx_reverse_proxy
+      vars:
+        domains:
+          - '{{ subdomain }}.{{ domain }}'
+          - '*.{{ subdomain }}.{{ domain }}'
+      tags: nginx_reverse_proxy
+
+    - role: quadlet
+      vars:
+        service: pihole
+        rootful: true
+        podman_secrets:
+          FTLCONF_webserver_api_password: "{{ vault_pihole_web_password }}"
+      tags: pihole
+
+    - role: quadlet
+      vars:
+        service: ddclient
+        rootful: false
+        podman_secrets:
+          DDCLIENT_PASSWORD: "{{ vault_ddclient_cloudflare_token }}"
+      tags: ddclient
+
+    - role: quadlet
+      vars:
+        service: glance
+        rootful: false
+      tags: glance

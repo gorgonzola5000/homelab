@@ -1,0 +1,17 @@
+[Unit]
+Description=PVR for usenet and bittorrent users for shows
+
+[Container]
+Image=ghcr.io/onedr0p/sonarr@sha256:b2217e5c81155ba002e0497932c2de197b8f5c1ac9c9fff7210e9a6381caab41
+
+Volume=/home/jelly-pod/sonarr-config:/config
+Volume=/mnt/volume/data:/data
+
+User=1111
+Group=1111
+
+Pod=jelly.pod
+
+[Install]
+# Start by default on boot
+WantedBy=default.target

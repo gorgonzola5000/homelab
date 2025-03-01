@@ -1,3 +1,0 @@
-[Pod]
-PublishPort=8096:8096/tcp
-PublishPort=5055:5055/tcp
