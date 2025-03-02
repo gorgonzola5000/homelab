@@ -4,8 +4,8 @@
     "config:recommended"
   ],
   "bumpVersion": "patch",
-  "commitMessagePrefix": "🚧 Renovate:",
-  "commitMessageExtra": "from {{{currentVersion}}} to {{{newVersion}}}",
-  "labels": ["🤖_renovate"],
-  "prHourlyLimit": 0
+  "pinDigests": true,
+  "dockerfile": {
+    "fileMatch": ["(^|/).+\\.env$"]
+  }
 }
