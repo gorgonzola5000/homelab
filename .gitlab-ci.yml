@@ -34,6 +34,7 @@ renovate:
     RENOVATE_ENDPOINT: $CI_API_V4_URL
     RENOVATE_TOKEN: $GL_TOKEN
     RENOVATE_AUTODISCOVER: 'true'
+    GITHUB_COM_TOKEN: $GH_RO_TOKEN
     LOG_LEVEL: debug
 
 #tofu fmt baremetal:
