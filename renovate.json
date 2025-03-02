@@ -4,8 +4,16 @@
     "config:recommended"
   ],
   "bumpVersion": "patch",
-  "commitMessagePrefix": "🚧 Renovate:",
-  "commitMessageExtra": "from {{{currentVersion}}} to {{{newVersion}}}",
-  "labels": ["🤖_renovate"],
-  "prHourlyLimit": 0
+  "pinDigests": true,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["(^|/).+\\.container$"],
+      "matchStrings": [
+        "Image=\s*\"?(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?\"?"
+      ],
+      "autoReplaceStringTemplate": "Image={{{depName}}}:{{{newValue}}}@{{{newDigest}}}",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "semver"
+    }
 }
