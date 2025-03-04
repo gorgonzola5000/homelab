@@ -24,7 +24,7 @@ include:
 
 renovate:
   stage: renovate
-  image: ghcr.io/renovatebot/renovate@sha256:c186f5db05148fa5fd0bba339c09012762c31138163ebac947e782546d5158b0
+  image: ghcr.io/renovatebot/renovate@sha256:dabdf3bef207feb831b031e13f7a088166f4872216b32bafa49d898c4e6ccaf3
   script:
     - renovate
   rules:
