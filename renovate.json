@@ -1,18 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended", ":disableDependencyDashboard"
   ],
-  "bumpVersion": "patch",
   "pinDigests": true,
+  "recreateWhen": "always",
   "customManagers": [
     {
       "customType": "regex",
       "fileMatch": ["(^|/).+\\.container$"],
       "matchStrings": [
-        "/Image=(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?(?:@(?<currentDigest>sha256:[a-zA-Z0-9]+))?/gm"
+        "Image=(?<depName>[^\\s:@\"]+)(?::(?<currentValue>[-a-zA-Z0-9.]+))?"
       ],
-      "autoReplaceStringTemplate": "Image={{{depName}}}:{{{newValue}}}@{{{newDigest}}}",
       "datasourceTemplate": "docker"
     }
   ]

@@ -2,7 +2,7 @@
 Description=Jellyfin - The Free Software Media System
 
 [Container]
-Image=docker.io/jellyfin/jellyfin@sha256:49063785395eea4ced06bb62af77c15eb3763d47280b3d90508f27f9a0760634
+Image=docker.io/jellyfin/jellyfin:10.10.6
 
 Volume=/home/jelly-pod/jellyfin-config:/config
 Volume=/home/jelly-pod/jellyfin-cache:/cache

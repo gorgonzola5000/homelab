@@ -2,7 +2,7 @@
 Description=Lightweight swiss-army-knife-like VPN client to multiple VPN service providers
 
 [Container]
-Image=docker.io/qmcgaw/gluetun@sha256:39e125079b0226e0f3f4ce0822a1498d191e1caf35c8abb6fba1068c5842e9dd
+Image=docker.io/qmcgaw/gluetun:v3.40.0
 
 
 AddCapability=NET_ADMIN
