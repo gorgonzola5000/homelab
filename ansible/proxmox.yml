@@ -11,7 +11,7 @@
     - common
     - terraform_managed
     - ansible_managed
-    #    - role: nginx_reverse_proxy
-    #      vars:
-    #        domains:
-    #          - '{{ node_name }}.{{ subdomain }}.{{ domain }}'
+    - role: nginx_reverse_proxy
+      vars:
+        domains:
+          - '{{ node_name }}.{{ subdomain }}.{{ domain }}'
