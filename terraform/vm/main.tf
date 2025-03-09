@@ -3,7 +3,7 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
   tags        = ["terraform", "alma"]
   description = "VPN server, ddclient, pihole, dashboard"
 
-  node_name = "pve"
+  node_name = "proxmox"
   vm_id     = tonumber("${var.vm_id_schema}21")
 
   agent {
@@ -52,7 +52,7 @@ resource "proxmox_virtual_environment_vm" "breathe" {
   tags        = ["terraform", "alma"]
   description = "qbittorrent, gluetun, prowlarr, sonarr, radarr, jellyseerr, jellyfin"
 
-  node_name = "pve"
+  node_name = "proxmox"
   vm_id     = tonumber("${var.vm_id_schema}22")
 
   agent {
@@ -77,8 +77,9 @@ resource "proxmox_virtual_environment_vm" "breathe" {
   }
 
   disk {
-    datastore_id = "zshare"
+    datastore_id = "local-lvm"
     interface    = "virtio1"
+    backup       = false
     file_format  = "raw"
     size         = var.media_disk_size
   }
@@ -106,7 +107,7 @@ resource "proxmox_virtual_environment_vm" "breathe" {
 resource "proxmox_virtual_environment_download_file" "alma_9_qcow2" {
   content_type = "iso"
   datastore_id = "local"
-  node_name    = "pve"
+  node_name    = "proxmox"
   url          = "https://repo.almalinux.org/almalinux/9.4/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
   file_name    = "${var.environment}-AlmaLinux-9-GenericCloud-9.4.x86_64.qcow2.iso"
 }

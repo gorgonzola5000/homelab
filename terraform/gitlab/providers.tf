@@ -12,7 +12,7 @@ provider "proxmox" {
     private_key = var.terraform_private_key
 
     node {
-      name    = "pve"
+      name    = "proxmox"
       address = "10.2.137.3"
     }
   }

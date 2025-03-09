@@ -11,6 +11,7 @@
     executable: /bin/bash
     cmd: pveum group add admin -comment "System Administrators" && pveum acl modify / -group admin -role Administrator
   when: "'admin' not in group_list.stdout"
+  changed_when: always
 
 - name: List users
   ansible.builtin.shell:
@@ -24,12 +25,17 @@
     executable: /bin/bash
     cmd: "pveum user add terraform@pve -password '{{ vault_terraform_pve_password }}' -group admin"
   when: "'terraform@pve' not in user_list.stdout"
+  changed_when: always
 
 - name: Ensure NOPASSWD for certain proxmox commands
   ansible.builtin.blockinfile:
     state: present
     path: "/etc/sudoers.d/terraform"
     validate: /usr/sbin/visudo -cf %s
+    create: true
+    owner: root
+    group: root
+    mode: '0400'
     block: |
       terraform ALL=(root) NOPASSWD: /sbin/pvesm
       terraform ALL=(root) NOPASSWD: /sbin/qm

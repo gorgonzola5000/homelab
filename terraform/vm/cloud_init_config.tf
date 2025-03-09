@@ -6,7 +6,7 @@ variable "ansible_public_key" {
 resource "proxmox_virtual_environment_file" "cloud_config_apt" {
   content_type = "snippets"
   datastore_id = "local"
-  node_name    = "pve"
+  node_name    = "proxmox"
 
   source_raw {
     data = <<-EOF
@@ -36,7 +36,7 @@ resource "proxmox_virtual_environment_file" "cloud_config_apt" {
 resource "proxmox_virtual_environment_file" "cloud_config_yum" {
   content_type = "snippets"
   datastore_id = "local"
-  node_name    = "pve"
+  node_name    = "proxmox"
 
   source_raw {
     data = <<-EOF

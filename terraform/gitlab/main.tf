@@ -3,7 +3,7 @@ resource "proxmox_virtual_environment_vm" "gitlab" {
   description = "Managed by Terraform"
   tags        = ["terraform", "debian"]
 
-  node_name = "pve"
+  node_name = "proxmox"
   vm_id     = 334
 
   agent {
@@ -46,7 +46,7 @@ resource "proxmox_virtual_environment_vm" "gitlab-runner" {
   description = "Managed by Terraform"
   tags        = ["terraform", "debian"]
 
-  node_name = "pve"
+  node_name = "proxmox"
   vm_id     = 335
 
   agent {
