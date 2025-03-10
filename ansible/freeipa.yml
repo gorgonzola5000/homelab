@@ -1,0 +1,29 @@
+---
+- name: Configure FreeIPA VM
+  vars:
+    node_name: freeipa
+    subdomain: home
+    domain: parents-basement.win
+  hosts: '{{ node_name }}.{{ subdomain }}.{{ domain }}'
+  become: true
+  roles:
+    - common
+    - vm
+    - ansible_managed
+    - role: freeipa.ansible_freeipa.ipaserver
+      vars:
+        ipaserver_setup_dns: true
+        ipaserver_auto_forwarders: true
+        ipaserver_no_reverse: true
+        ipaserver_domain: home.parents-basement.win
+        ipaserver_realm: HOME.PARENTS-BASEMENT.WIN
+        state: present
+  tasks:
+  - name: Create user {{ vault_admin_username }}
+    freeipa.ansible_freeipa.ipauser:
+      ipaadmin_password: "{{ ipaadmin_password }}"
+      name: "{{ vault_admin_username }}"
+      first: "{{ vault_admin_username }}"
+      last: "{{ vault_admin_username }}"
+      password: "{{ vault_admin_password }}"
+      update_password: on_create
