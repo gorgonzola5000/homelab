@@ -4,3 +4,4 @@ PublishPort=5055:5055/tcp
 PublishPort=8989:8989
 PublishPort=9696:9696
 PublishPort=7878:7878
+PublishPort=8686:8686
