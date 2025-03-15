@@ -2,9 +2,12 @@
 Description=PVR for usenet and bittorrent users for shows
 
 [Container]
-Image=ghcr.io/onedr0p/prowlarr:1.31.2
+Image=quay.io/linuxserver.io/lidarr:2.9.6
 
-Volume=/home/jelly-pod/prowlarr-config:/config
+Volume=/home/jelly-pod/lidarr-config:/config
+Volume=/mnt/volume/data:/data
+
+Environment=TZ=Europe/Warsaw
 
 User=1111
 Group=1111
