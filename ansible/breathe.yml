@@ -56,3 +56,9 @@
         service: jelly-pod
         rootful: true
       tags: jelly-pod
+
+    - role: quadlet
+      vars:
+        service: navidrome
+        rootful: true
+      tags: navidrome

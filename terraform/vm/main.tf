@@ -16,7 +16,7 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
   }
 
   cpu {
-    cores = 1
+    cores = 2
     type  = "host"
   }
 
@@ -65,7 +65,7 @@ resource "proxmox_virtual_environment_vm" "breathe" {
   }
 
   cpu {
-    cores = 1
+    cores = 4
     type  = "host"
   }
 

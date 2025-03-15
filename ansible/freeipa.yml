@@ -32,7 +32,14 @@
           password: "{{ vault_admin_password }}"
           update_password: on_create
           sshpubkey: "{{ vault_admin_public_key }}"
-    
+
+      - name: Create user kamil
+        freeipa.ansible_freeipa.ipauser:
+          ipaadmin_password: "{{ ipaadmin_password }}"
+          name: kamil
+          first: kamil
+          last: kamil
+
       - name: Create user keycloak-functional
         freeipa.ansible_freeipa.ipauser:
           ipaadmin_password: "{{ ipaadmin_password }}"
@@ -41,7 +48,7 @@
           last: keycloak-functional
           password: "{{ vault_freeipa_keycloak_functional_password }}"
           update_password: on_create
-    
+
       - name: Create user opnsense-functional
         freeipa.ansible_freeipa.ipauser:
           ipaadmin_password: "{{ ipaadmin_password }}"
@@ -50,7 +57,7 @@
           last: opnsense-functional
           password: "{{ vault_freeipa_opnsense_functional_password }}"
           update_password: on_create
-    
+
       - name: Create user jellyfin-functional
         freeipa.ansible_freeipa.ipauser:
           ipaadmin_password: "{{ ipaadmin_password }}"
@@ -84,7 +91,8 @@
           user:
           - "{{ vault_admin_username }}"
           - jellyseerr-functional
-    
+          - kamil
+
       - name: Create group jellyfin_admins
         freeipa.ansible_freeipa.ipagroup:
           ipaadmin_password: "{{ ipaadmin_password }}"
@@ -92,3 +100,10 @@
           user:
           - "{{ vault_admin_username }}"
           - jellyseerr-functional
+
+      - name: Create group opnsense_admins
+        freeipa.ansible_freeipa.ipagroup:
+          ipaadmin_password: "{{ ipaadmin_password }}"
+          name: opnsense_admins
+          user:
+          - "{{ vault_admin_username }}"

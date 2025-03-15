@@ -7,3 +7,9 @@ ipaclients:
 keycloak:
   hosts:
     keycloak.home.parents-basement.win:
+openwrt:
+  hosts:
+    openwrt.home.parents-basement.win:
+opnsense:
+  hosts:
+    opnsense.home.parents-basement.win:

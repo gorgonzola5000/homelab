@@ -8,7 +8,7 @@ dns_mappings = {
   }
   "breathe" = {
     ipv4    = "10.2.137.12"
-    aliases = ["qbittorrent", "gluetun", "prowlarr", "sonarr", "radarr", "jellyseerr", "jellyfin"]
+    aliases = ["qbittorrent", "gluetun", "prowlarr", "sonarr", "radarr", "jellyseerr", "jellyfin", "lidarr"]
   }
 }
 media_disk_size = 600
