@@ -1,3 +1,12 @@
+resource "cloudflare_record" "a_OPNsense" {
+  zone_id = data.cloudflare_zone.domain.id
+  name    = "opnsense.${var.subdomain}"
+  value   = "10.2.137.1"
+  type    = "A"
+  ttl     = 3600
+  proxied = false
+}
+
 resource "cloudflare_record" "a_proxmox" {
   zone_id = data.cloudflare_zone.domain.id
   name    = "proxmox.${var.subdomain}"
@@ -10,7 +19,7 @@ resource "cloudflare_record" "a_proxmox" {
 resource "cloudflare_record" "a_openWRT" {
   zone_id = data.cloudflare_zone.domain.id
   name    = "openwrt.${var.subdomain}"
-  value   = "10.2.137.1"
+  value   = "10.2.137.2"
   type    = "A"
   ttl     = 3600
   proxied = false

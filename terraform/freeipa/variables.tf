@@ -19,5 +19,10 @@ variable "gateway_ip" {
 
 variable "freeipa-ipv4" {
   type = string
-  default = "10.2.137.2"
+  default = "10.2.137.7"
+}
+
+variable "keycloak-ipv4" {
+  type = string
+  default = "10.2.137.8"
 }

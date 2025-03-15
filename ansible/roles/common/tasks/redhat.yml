@@ -2,7 +2,7 @@
 - name: RedHat - Set SELinux to permissive
   ansible.posix.selinux:
     policy: targeted
-    state: permissive
+    state: disabled
 
 - name: RedHat - Add repositories
   ansible.builtin.dnf:

@@ -1,0 +1,9 @@
+ipaservers:
+  hosts:
+    freeipa.home.parents-basement.win:
+ipaclients:
+  hosts:
+    proxmox.home.parents-basement.win:
+keycloak:
+  hosts:
+    keycloak.home.parents-basement.win:

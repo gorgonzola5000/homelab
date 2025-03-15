@@ -15,3 +15,7 @@
       vars:
         domains:
           - '{{ node_name }}.{{ subdomain }}.{{ domain }}'
+    - role: freeipa.ansible_freeipa.ipaclient
+      vars:
+        state: present
+        ipaclient_domain: '{{ subdomain }}.{{ domain }}'
