@@ -1,0 +1,18 @@
+[Unit]
+Description=Open-source software alternative to uTorrent
+
+[Container]
+Image=docker.io/deluan/navidrome:0.55.1
+
+Volume=/mnt/volume/data/media/music:/mnt/media/music
+Volume=/home/navidrome/data:/data
+
+Environment=ND_SCANSCHEDULE=1h
+Environment=ND_LOGLEVEL=info
+Environment=ND_SESSIONTIMEOUT=24h
+
+PublishPort=4533:4533
+
+[Install]
+# Start by default on boot
+WantedBy=default.target
