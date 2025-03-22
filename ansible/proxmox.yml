@@ -11,11 +11,20 @@
     - common
     - terraform_managed
     - ansible_managed
-    - role: nginx_reverse_proxy
-      vars:
-        domains:
-          - '{{ node_name }}.{{ subdomain }}.{{ domain }}'
     - role: freeipa.ansible_freeipa.ipaclient
       vars:
         state: present
         ipaclient_domain: '{{ subdomain }}.{{ domain }}'
+
+    - role: linux-system-roles.certificate
+      vars:
+        certificate_requests:
+          - name: proxmox-ssl
+            ca: ipa
+            dns: "{{ inventory_hostname }}"
+            principal: HTTP/{{ inventory_hostname }}@HOME.PARENTS-BASEMENT.WIN
+    - role: nginx
+      tags: nginx
+  tasks:
+    - name: Install externally provided certificate
+      ansible.builtin.shell: pvenode cert set /etc/ssl/certs/proxmox-ssl.crt /etc/ssl/private/proxmox-ssl.key --force --restart

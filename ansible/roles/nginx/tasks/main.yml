@@ -1,0 +1,31 @@
+---
+- name: Install nginx
+  ansible.builtin.package:
+    name:
+      - nginx
+    state: present
+
+- name: Ensure /etc/nginx/conf.d/ directory exists
+  ansible.builtin.file:
+    path: '/etc/nginx/conf.d'
+    state: directory
+    mode: '0644'
+    owner: root
+
+- name: Copy nginx config files
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/conf.d/"
+    owner: root
+    mode: '0644'
+  with_fileglob:
+    - "{{ inventory_hostname }}/conf.d/*"
+    #- "{{ node_name }}/nginx/conf.d/*"
+  notify:
+    - Restart nginx
+
+- name: Ensure nginx is started and enabled
+  ansible.builtin.systemd_service:
+    name: nginx
+    state: started
+    enabled: true
