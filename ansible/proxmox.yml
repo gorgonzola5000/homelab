@@ -15,6 +15,9 @@
       vars:
         state: present
         ipaclient_domain: '{{ subdomain }}.{{ domain }}'
+        ipaclient_all_ip_addresses: true
+        ipasssd_enable_dns_updates: true
+        ipaclient_force_join: yes
 
     - role: linux-system-roles.certificate
       vars:
