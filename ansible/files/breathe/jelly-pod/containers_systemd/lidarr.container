@@ -2,7 +2,7 @@
 Description=PVR for usenet and bittorrent users for shows
 
 [Container]
-Image=quay.io/linuxserver.io/lidarr:2.9.6
+Image=quay.io/linuxserver.io/lidarr:2.10.3
 
 Volume=/home/jelly-pod/lidarr-config:/config
 Volume=/mnt/volume/data:/data
