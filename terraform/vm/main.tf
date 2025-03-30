@@ -39,7 +39,7 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
       domain  = "${var.environment}.${var.subdomain}.${var.domain}"
     }
 
-    user_data_file_id = proxmox_virtual_environment_file.cloud_config_yum.id
+    user_data_file_id = proxmox_virtual_environment_file.speak_to_me_cloud_config.id
   }
 
   network_device {
@@ -96,7 +96,7 @@ resource "proxmox_virtual_environment_vm" "breathe" {
       domain  = "${var.environment}.${var.subdomain}.${var.domain}"
     }
 
-    user_data_file_id = proxmox_virtual_environment_file.cloud_config_yum.id
+    user_data_file_id = proxmox_virtual_environment_file.breathe_cloud_config.id
   }
 
   network_device {
@@ -108,6 +108,6 @@ resource "proxmox_virtual_environment_download_file" "alma_9_qcow2" {
   content_type = "iso"
   datastore_id = "local"
   node_name    = "proxmox"
-  url          = "https://repo.almalinux.org/almalinux/9.4/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
-  file_name    = "${var.environment}-AlmaLinux-9-GenericCloud-9.4.x86_64.qcow2.iso"
+  url          = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
+  file_name    = "${var.environment}-AlmaLinux-9-GenericCloud.x86_64.qcow2.iso"
 }
