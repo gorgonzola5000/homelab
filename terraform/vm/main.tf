@@ -39,7 +39,7 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
       domain  = "${var.environment}.${var.subdomain}.${var.domain}"
     }
 
-    user_data_file_id = proxmox_virtual_environment_file.speak_to_me_cloud_config.id
+    user_data_file_id = proxmox_virtual_environment_file.cloud_config_yum.id
   }
 
   network_device {
@@ -96,7 +96,7 @@ resource "proxmox_virtual_environment_vm" "breathe" {
       domain  = "${var.environment}.${var.subdomain}.${var.domain}"
     }
 
-    user_data_file_id = proxmox_virtual_environment_file.breathe_cloud_config.id
+    user_data_file_id = proxmox_virtual_environment_file.cloud_config_yum.id
   }
 
   network_device {
