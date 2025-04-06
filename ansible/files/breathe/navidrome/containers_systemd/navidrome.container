@@ -2,7 +2,7 @@
 Description=Open-source software alternative to uTorrent
 
 [Container]
-Image=docker.io/deluan/navidrome:0.55.1
+Image=docker.io/deluan/navidrome:0.55.2
 
 Volume=/mnt/volume/data/media/music:/mnt/media/music
 Volume=/home/navidrome/data:/data
