@@ -2,7 +2,7 @@
 Description=PVR for usenet and bittorrent users for shows
 
 [Container]
-Image=ghcr.io/onedr0p/sonarr:4.0.13
+Image=ghcr.io/home-operations/sonarr:4.0.13
 
 Volume=/home/jelly-pod/sonarr-config:/config
 Volume=/mnt/volume/data:/data
