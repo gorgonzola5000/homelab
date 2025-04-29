@@ -22,9 +22,10 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
-    interface    = "virtio0"
-    size         = 20
+    file_id      = "local:iso/${var.environment}-AlmaLinux-9-GenericCloud.x86_64.qcow2.iso"
+    #file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
+    interface = "virtio0"
+    size      = 20
   }
 
   initialization {
@@ -44,6 +45,15 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
 
   network_device {
     bridge = "vmbr0"
+  }
+
+  protection = var.is_prod
+
+  lifecycle {
+    ignore_changes = [
+      initialization,
+      disk
+    ]
   }
 }
 
@@ -71,9 +81,10 @@ resource "proxmox_virtual_environment_vm" "breathe" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
-    interface    = "virtio0"
-    size         = 20
+    file_id      = "local:iso/${var.environment}-AlmaLinux-9-GenericCloud.x86_64.qcow2.iso"
+    #file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
+    interface = "virtio0"
+    size      = 20
   }
 
   disk {
@@ -102,12 +113,21 @@ resource "proxmox_virtual_environment_vm" "breathe" {
   network_device {
     bridge = "vmbr0"
   }
+
+  protection = var.is_prod
+
+  lifecycle {
+    ignore_changes = [
+      initialization,
+      disk
+    ]
+  }
 }
 
-resource "proxmox_virtual_environment_download_file" "alma_9_qcow2" {
-  content_type = "iso"
-  datastore_id = "local"
-  node_name    = "proxmox"
-  url          = "https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
-  file_name    = "${var.environment}-AlmaLinux-9-GenericCloud.x86_64.qcow2.iso"
-}
+#resource "proxmox_virtual_environment_download_file" "alma_9_qcow2" {
+#  content_type = "iso"
+#  datastore_id = "local"
+#  node_name    = "proxmox"
+#  url          = "https://repo.almalinux.org/almalinux/9.5/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
+#  file_name    = "${var.environment}-AlmaLinux-9-GenericCloud.x86_64.qcow2.iso"
+#}
