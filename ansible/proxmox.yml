@@ -26,6 +26,7 @@
             ca: ipa
             dns: "{{ inventory_hostname }}"
             principal: HTTP/{{ inventory_hostname }}@HOME.PARENTS-BASEMENT.WIN
+
     - role: nginx
       tags: nginx
   tasks:
