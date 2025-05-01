@@ -2,7 +2,7 @@
 Description=open-source SSO
 
 [Container]
-Image=quay.io/keycloak/keycloak:26.1.4
+Image=quay.io/keycloak/keycloak:26.2.2
 PublishPort=8443:8080
 
 Secret=KC_BOOTSTRAP_ADMIN_USERNAME,type=env
