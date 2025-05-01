@@ -1,35 +1,15 @@
-stages: [renovate, baremetal-config, validate, build, deploy, configure, cleanup]
+stages: [renovate, validate, deploy]
 
 include:
   - component: $CI_SERVER_FQDN/components/opentofu/job-templates@1.1.0
     inputs:
       version: 1.1.0
 
-.ansible:
-  image: alpine:3.21.3@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c
-  before_script:
-    - apk add --no-cache ansible bash openssh-client ansible-lint
-
-.ansible-playbook:
-  extends: .ansible
-  stage: configure
-  variables:
-    ANSIBLE_HOST_KEY_CHECKING: False
-    ANSIBLE_CONFIG: ansible.cfg
-  script:
-    - mkdir -p ~/.ssh
-    - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519 && chmod '600' ~/.ssh/id_ed25519
-    - cd ansible
-    - ansible-galaxy install -r requirements.yml
-    - ansible-playbook -i $INVENTORY --extra-vars '{"environment_name":"'$ENVIRONMENT_NAME'"}' $PLAYBOOK
-
 renovate:
   stage: renovate
   image: ghcr.io/renovatebot/renovate@sha256:7b0d46acb24520e4c093cdf0fa691d53f6b1820c3bd4aedb36e9aed069b2634c
   script:
     - renovate
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
   variables:
     RENOVATE_PLATFORM: 'gitlab'
     RENOVATE_ENDPOINT: $CI_API_V4_URL
@@ -37,22 +17,8 @@ renovate:
     RENOVATE_AUTODISCOVER: 'true'
     GITHUB_COM_TOKEN: $GH_RO_TOKEN
     LOG_LEVEL: debug
-
-# configure stuff that needs to be provisioned before the rest
-# eg. baremetal hosts, IdM server
-
-ansible bare metal:
-  stage: baremetal-config
-  #needs: ['tofu apply baremetal']
-  extends: .ansible-playbook
-  variables:
-    INVENTORY: inventory_baremetal.yml
-    ENVIRONMENT_NAME: baremetal
-  parallel:
-    matrix:
-      - PLAYBOOK: ['proxmox.yml', 'freeipa.yml']
   rules:
-    - if: $CI_COMMIT_TAG
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
 
 # ansible lint:
 #   stage: validate
@@ -71,127 +37,26 @@ tofu validate:
   variables:
     GITLAB_TOFU_ROOT_DIR: terraform/vm/
 
-#
-# pipeline for dev start
-#
-
-tofu plan dev:
-  extends: [.opentofu:plan]
-  variables:
-    GITLAB_TOFU_STATE_NAME: dev
-    GITLAB_TOFU_VAR_FILE: dev.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/vm/
-  before_script:
-    - apk add --no-cache ca-certificates
-    - mkdir -p /usr/local/share/ca-certificates/
-    - cp "$CUSTOM_CA" /usr/local/share/ca-certificates/custom-ca.pem
-    - update-ca-certificates
+deploy dev:
+  stage: deploy
+  trigger:
+    include: deploy-dev.gitlab-ci.yml
+    strategy: depend
+  resource_group: homelab-dev
+  environment: dev
   rules:
     - if: $CI_COMMIT_TAG
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - when: on_success
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: always
+    - when: never
 
-tofu apply dev:
-  extends: [.opentofu:apply]
-  variables:
-    GITLAB_TOFU_STATE_NAME: dev
-    GITLAB_TOFU_VAR_FILE: dev.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/vm/
-  before_script:
-    - apk add --no-cache ca-certificates
-    - mkdir -p /usr/local/share/ca-certificates/
-    - cp "$CUSTOM_CA" /usr/local/share/ca-certificates/custom-ca.pem
-    - update-ca-certificates
+deploy prod:
+  stage: deploy
+  trigger:
+    include: deploy-prod.gitlab-ci.yml
+    strategy: depend
+  resource_group: homelab-prod
+  environment: prod
   rules:
     - if: $CI_COMMIT_TAG
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - when: on_success
-
-ansible VM dev:
-  extends: .ansible-playbook
-  variables:
-    INVENTORY: inventory_VMs.config
-    ENVIRONMENT_NAME: dev
-  parallel:
-    matrix:
-      - PLAYBOOK: ['speak-to-me.yml', 'breathe.yml']
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - when: on_success
-
-tofu destroy dev:
-  extends: [.opentofu:destroy]
-  variables:
-    GITLAB_TOFU_STATE_NAME: dev
-    GITLAB_TOFU_VAR_FILE: dev.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/vm/
-  before_script:
-    - apk add --no-cache ca-certificates
-    - mkdir -p /usr/local/share/ca-certificates/
-    - cp "$CUSTOM_CA" /usr/local/share/ca-certificates/custom-ca.pem
-    - update-ca-certificates
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - when: manual
-
-#
-# pipeline for dev end
-#
-
-#
-# pipeline for prod start
-#
-
-tofu plan prod:
-  extends: [.opentofu:plan]
-  variables:
-    GITLAB_TOFU_STATE_NAME: prod
-    GITLAB_TOFU_VAR_FILE: prod.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/vm/
-  before_script:
-    - apk add --no-cache ca-certificates
-    - mkdir -p /usr/local/share/ca-certificates/
-    - cp "$CUSTOM_CA" /usr/local/share/ca-certificates/custom-ca.pem
-    - update-ca-certificates
-  rules:
-    - if: $CI_COMMIT_TAG
-
-tofu apply prod:
-  extends: [.opentofu:apply]
-  variables:
-    GITLAB_TOFU_STATE_NAME: prod
-    GITLAB_TOFU_VAR_FILE: prod.tfvars
-    GITLAB_TOFU_ROOT_DIR: terraform/vm/
-  before_script:
-    - apk add --no-cache ca-certificates
-    - mkdir -p /usr/local/share/ca-certificates/
-    - cp "$CUSTOM_CA" /usr/local/share/ca-certificates/custom-ca.pem
-    - update-ca-certificates
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: manual
-
-ansible VM prod:
-  extends: .ansible-playbook
-  variables:
-    INVENTORY: inventory_VMs.config
-    ENVIRONMENT_NAME: prod
-  parallel:
-    matrix:
-      - PLAYBOOK: ['speak-to-me.yml', 'breathe.yml']
-  rules:
-    - if: $CI_COMMIT_TAG
-
-#
-# pipeline for prod end
-#

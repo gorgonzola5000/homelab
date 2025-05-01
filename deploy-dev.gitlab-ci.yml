@@ -1,0 +1,65 @@
+stages: [build, deploy, configure, cleanup]
+
+include:
+  - component: $CI_SERVER_FQDN/components/opentofu/job-templates@1.1.0
+    inputs:
+      version: 1.1.0
+
+.ansible:
+  image: alpine:3.21.3@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c
+  before_script:
+    - apk add --no-cache ansible bash openssh-client ansible-lint
+
+.ansible-playbook:
+  extends: .ansible
+  stage: configure
+  variables:
+    ANSIBLE_HOST_KEY_CHECKING: False
+    ANSIBLE_CONFIG: ansible.cfg
+  script:
+    - mkdir -p ~/.ssh
+    - echo $ANSIBLE_PRIVATE_KEY | base64 -d >> ~/.ssh/id_ed25519 && chmod '600' ~/.ssh/id_ed25519
+    - cd ansible
+    - ansible-galaxy install -r requirements.yml
+    - ansible-playbook -i $INVENTORY --extra-vars '{"environment_name":"'$ENVIRONMENT_NAME'"}' $PLAYBOOK
+
+
+
+tofu plan dev:
+  extends: [.opentofu:plan]
+  variables:
+    GITLAB_TOFU_STATE_NAME: dev
+    GITLAB_TOFU_VAR_FILE: dev.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
+  before_script:
+    - apk add --no-cache ca-certificates
+    - mkdir -p /usr/local/share/ca-certificates/
+    - cp "$CUSTOM_CA" /usr/local/share/ca-certificates/custom-ca.pem
+    - update-ca-certificates
+  rules:
+    - when: on_success
+
+tofu apply dev:
+  extends: [.opentofu:apply]
+  variables:
+    GITLAB_TOFU_STATE_NAME: dev
+    GITLAB_TOFU_VAR_FILE: dev.tfvars
+    GITLAB_TOFU_ROOT_DIR: terraform/vm/
+  before_script:
+    - apk add --no-cache ca-certificates
+    - mkdir -p /usr/local/share/ca-certificates/
+    - cp "$CUSTOM_CA" /usr/local/share/ca-certificates/custom-ca.pem
+    - update-ca-certificates
+  rules:
+    - when: on_success
+
+ansible VM dev:
+  extends: .ansible-playbook
+  variables:
+    INVENTORY: inventory_VMs.config
+    ENVIRONMENT_NAME: dev
+  parallel:
+    matrix:
+      - PLAYBOOK: ['speak-to-me.yml', 'breathe.yml']
+  rules:
+    - when: on_success
