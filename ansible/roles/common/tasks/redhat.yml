@@ -1,5 +1,5 @@
 ---
-- name: RedHat - Set SELinux to permissive
+- name: RedHat - Set SELinux to disabled
   ansible.posix.selinux:
     policy: targeted
     state: disabled

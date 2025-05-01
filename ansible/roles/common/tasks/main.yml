@@ -16,3 +16,9 @@
     name: "{{ packages }}"
     state: present
   ignore_errors: true
+
+- name: Include linux-system-roles.journald
+  ansible.builtin.include_role:
+    name: linux-system-roles.journald
+  vars:
+    journald_persistent: true

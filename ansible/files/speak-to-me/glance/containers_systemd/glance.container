@@ -3,10 +3,14 @@ Description=Glance dashboard container
 
 [Container]
 Image=docker.io/glanceapp/glance:v0.7.8
+
 PublishPort=50002:8080
-Volume=/home/glance/glance.yml:/app/glance.yml
-Volume=/home/glance/timezone:/etc/timezone:ro
-Volume=/etc/localtime:/etc/localtime:ro
+
+Volume=/home/glance/config/:/app/config
+Volume=/home/glance/assets/:/app/assets
+
+#Volume=/home/glance/timezone:/etc/timezone:ro
+#Volume=/etc/localtime:/etc/localtime:ro
 
 [Service]
 Restart=always
