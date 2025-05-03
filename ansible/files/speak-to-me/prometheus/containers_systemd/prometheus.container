@@ -2,7 +2,7 @@
 Description=Prometheus - systems and service monitoring system
 
 [Container]
-Image=quay.io/prometheus/prometheus:v3.2.1
+Image=quay.io/prometheus/prometheus:v3.3.1
 PublishPort=9090:9090
 Volume=/home/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 Volume=prometheus-data.volume:/prometheus
