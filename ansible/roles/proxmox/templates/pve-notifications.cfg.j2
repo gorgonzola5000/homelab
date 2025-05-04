@@ -1,0 +1,12 @@
+sendmail: mail-to-root
+       comment Send mails to root@pam's email address
+       mailto-user root@pam
+
+matcher: default-matcher
+       comment Route all notifications to all targets
+       mode all
+       target mail-to-root
+       target Gotify
+
+gotify: Gotify
+       server https://gotify.{{ subdomain }}.{{ domain }}

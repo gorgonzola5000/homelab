@@ -39,3 +39,11 @@
         service: glance
         rootful: false
       tags: glance
+
+    - role: quadlet
+      vars:
+        service: gotify
+        rootful: false
+        podman_secrets:
+          GOTIFY_DEFAULTUSER_PASS: "{{ vault_gotify_sqlite_db_password }}"
+      tags: gotify

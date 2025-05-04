@@ -4,7 +4,7 @@ is_prod      = true
 dns_mappings = {
   "speak-to-me" = {
     ipv4    = "10.2.137.11"
-    aliases = ["homeassistant", "pihole", "glance"]
+    aliases = ["gotify", "homeassistant", "pihole", "glance"]
   }
   "breathe" = {
     ipv4    = "10.2.137.12"
