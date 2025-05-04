@@ -7,7 +7,7 @@ include:
 
 renovate:
   stage: renovate
-  image: ghcr.io/renovatebot/renovate@sha256:7dc9aec5a08be97ed30cb889086f5c1af1ebd79bd192b51bc2694d7f6daf7f91
+  image: ghcr.io/renovatebot/renovate@sha256:da91cce596b72f129736b52edebb5f838bde846f5d21fdc9077ab8d7b367ccde
   script:
     - renovate
   variables:
