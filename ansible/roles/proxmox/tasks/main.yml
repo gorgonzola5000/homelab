@@ -7,3 +7,5 @@
   ansible.builtin.import_tasks: storage.yml
 - name: Import IOMMU tasks
   ansible.builtin.import_tasks: iommu.yml
+- name: Import notifications tasks
+  ansible.builtin.import_tasks: notifications.yml

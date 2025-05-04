@@ -1,0 +1,21 @@
+[Unit]
+Description=Gotify - A simple server for sending and receiving messages
+
+[Container]
+Image=ghcr.io/gotify/server:2.6.3
+
+PublishPort=50010:80
+
+Volume=app-data.volume:/app/data
+
+Environment="TZ=Europe/Warsaw"
+Environment="GOTIFY_SERVER_TRUSTEDPROXIES=[127.0.0.1/24]"
+Secret=GOTIFY_DEFAULTUSER_PASS,type=env
+
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target default.target
