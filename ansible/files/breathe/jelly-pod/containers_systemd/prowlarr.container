@@ -2,7 +2,7 @@
 Description=PVR for usenet and bittorrent users for shows
 
 [Container]
-Image=ghcr.io/home-operations/prowlarr:1.35.1
+Image=ghcr.io/home-operations/prowlarr:1.36.2
 
 Volume=/home/jelly-pod/prowlarr-config:/config
 
