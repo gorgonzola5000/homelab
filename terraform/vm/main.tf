@@ -48,6 +48,7 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
   }
 
   protection = var.is_prod
+  on_boot    = var.is_prod
 
   lifecycle {
     ignore_changes = [
@@ -115,6 +116,7 @@ resource "proxmox_virtual_environment_vm" "breathe" {
   }
 
   protection = var.is_prod
+  on_boot    = var.is_prod
 
   lifecycle {
     ignore_changes = [

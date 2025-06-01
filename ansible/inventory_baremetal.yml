@@ -4,6 +4,7 @@ ipaservers:
 ipaclients:
   hosts:
     proxmox.home.parents-basement.win:
+    pbs.home.parents-basement.win:
 keycloak:
   hosts:
     keycloak.home.parents-basement.win:

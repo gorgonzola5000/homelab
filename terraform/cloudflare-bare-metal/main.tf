@@ -16,6 +16,15 @@ resource "cloudflare_record" "a_proxmox" {
   proxied = false
 }
 
+resource "cloudflare_record" "a_pbs" {
+  zone_id = data.cloudflare_zone.domain.id
+  name    = "pbs.${var.subdomain}"
+  value   = "10.2.137.9"
+  type    = "A"
+  ttl     = 3600
+  proxied = false
+}
+
 resource "cloudflare_record" "a_openWRT" {
   zone_id = data.cloudflare_zone.domain.id
   name    = "openwrt.${var.subdomain}"

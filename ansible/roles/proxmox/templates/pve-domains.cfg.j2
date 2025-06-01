@@ -1,0 +1,19 @@
+pam: pam
+  comment Linux PAM standard authentication
+
+pve: pve
+  comment Proxmox VE authentication server
+
+ldap: freeIPA
+  base_dn dc=home,dc=parents-basement,dc=win
+  server1 freeipa.{{ subdomain }}.{{ domain }}
+  user_attr uid
+  bind_dn uid=proxmox-functional,cn=users,cn=accounts,dc=home,dc=parents-basement,dc=win
+  default 1
+  filter (&(objectClass=person)(memberOf=cn=proxmox_admins,cn=groups,cn=accounts,dc=home,dc=parents-basement,dc=win))
+  group_classes groupOfNames
+  group_filter (&(objectClass=groupOfNames)(cn=proxmox_admins))
+  mode ldaps
+  sync-defaults-options remove-vanished=acl;entry;properties,scope=both
+  user_classes inetOrgPerson
+  verify 1

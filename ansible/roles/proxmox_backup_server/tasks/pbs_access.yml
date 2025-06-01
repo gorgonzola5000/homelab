@@ -1,0 +1,40 @@
+---
+- name: "Add user {{ vault_pbs_archiver_username }}"
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: "proxmox-backup-manager user create {{ vault_pbs_archiver_username }}@pbs --password {{ vault_pbs_archiver_password }}"
+  changed_when: true
+  failed_when: false
+
+- name: Touch file for freeIPA secret
+  ansible.builtin.file:
+    state: touch
+    path: /etc/proxmox-backup/ldap_passwords.json
+    mode: '0600'
+
+- name: Touch file for realms definition
+  ansible.builtin.file:
+    state: touch
+    path: /etc/proxmox-backup/domains.cfg
+    mode: '0640'
+
+- name: Ensure secret for the freeIPA realm are set
+  ansible.builtin.template:
+    src: proxmox-backup-ldap_passwords.json.j2
+    dest: /etc/proxmox-backup/ldap_passwords.json
+    mode: '0600'
+    owner: root
+    group: backup
+
+- name: Ensure file for realm definition is set
+  ansible.builtin.template:
+    src: proxmox-backup-domains.cfg.j2
+    dest: /etc/proxmox-backup/domains.cfg
+    mode: '0640'
+    owner: root
+    group: backup
+
+- name: Sync freeIPA realm
+  ansible.builtin.shell:
+    cmd: "proxmox-backup-manager ldap sync freeIPA"
+    executable: /bin/bash

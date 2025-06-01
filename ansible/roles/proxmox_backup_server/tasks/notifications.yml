@@ -1,0 +1,16 @@
+---
+- name: Configure notifications
+  ansible.builtin.template:
+    src: proxmox-backup-notifications.cfg.j2
+    dest: /etc/proxmox-backup/notifications.cfg
+    mode: '0640'
+    owner: root
+    group: backup
+
+- name: Configure notifications' secrets
+  ansible.builtin.template:
+    src: proxmox-backup-notifications-priv.cfg.j2
+    dest: /etc/proxmox-backup/notifications-priv.cfg
+    mode: '0600'
+    owner: root
+    group: root

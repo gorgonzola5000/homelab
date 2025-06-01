@@ -24,7 +24,6 @@ provider "cloudflare" {
 
 provider "proxmox" {
   endpoint = "https://proxmox.${var.subdomain}.${var.domain}"
-  # username and password set with env variables
 
   ssh {
     agent       = false

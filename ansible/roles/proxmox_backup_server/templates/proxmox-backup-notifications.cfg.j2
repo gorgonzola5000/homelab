@@ -1,0 +1,14 @@
+sendmail: mail-to-root
+	comment Send mails to root@pam's email address
+	mailto-user root@pam
+
+matcher: default-matcher
+	comment Route everything but successful prune job notifications to mail-to-root
+	invert-match true
+	match-field exact:type=prune
+	match-severity info
+	mode all
+	target mail-to-root
+
+gotify: Gotify
+	server https://gotify.{{ subdomain }}.{{ domain }}

@@ -1,0 +1,7 @@
+---
+- name: Import repositories tasks
+  ansible.builtin.import_tasks: repositories.yml
+- name: Import PBS access tasks
+  ansible.builtin.import_tasks: pbs_access.yml
+- name: Import notifications tasks
+  ansible.builtin.import_tasks: notifications.yml

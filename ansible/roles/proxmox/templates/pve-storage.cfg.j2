@@ -1,0 +1,15 @@
+dir: local
+        path /var/lib/vz
+        content vztmpl,iso,snippets
+
+lvmthin: local-lvm
+        thinpool data
+        vgname pve
+        content rootdir,images
+
+pbs: pbs-offline-backup
+        datastore zpool
+        server pbs.{{ subdomain }}.{{ domain }}
+        content backup
+        prune-backups keep-all=1
+        username archiver@pbs

@@ -4,7 +4,7 @@
     node_name: freeipa
     subdomain: home
     domain: parents-basement.win
-  hosts: '{{ node_name }}.{{ subdomain }}.{{ domain }}'
+  hosts: "{{ node_name }}.{{ subdomain }}.{{ domain }}"
   become: true
   roles:
     - common
@@ -20,90 +20,126 @@
         state: present
 
   tasks:
-  - name: Configure users and groups
-    tags: freeipa-users-and-groups
-    block:
-      - name: Create user {{ vault_admin_username }}
-        freeipa.ansible_freeipa.ipauser:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: "{{ vault_admin_username }}"
-          first: "{{ vault_admin_username }}"
-          last: "{{ vault_admin_username }}"
-          password: "{{ vault_admin_password }}"
-          update_password: on_create
-          sshpubkey: "{{ vault_admin_public_key }}"
+    - name: Configure users and groups
+      tags: freeipa-users-and-groups
+      block:
+        - name: Create user {{ vault_admin_username }}
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: "{{ vault_admin_username }}"
+            first: "{{ vault_admin_username }}"
+            last: "{{ vault_admin_username }}"
+            password: "{{ vault_admin_password }}"
+            update_password: on_create
+            sshpubkey: "{{ vault_admin_public_key }}"
 
-      - name: Create user kamil
-        freeipa.ansible_freeipa.ipauser:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: kamil
-          first: kamil
-          last: kamil
+        - name: Create user kamil
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: kamil
+            first: kamil
+            last: kamil
 
-      - name: Create user keycloak-functional
-        freeipa.ansible_freeipa.ipauser:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: keycloak-functional
-          first: keycloak-functional
-          last: keycloak-functional
-          password: "{{ vault_freeipa_keycloak_functional_password }}"
-          update_password: on_create
+        - name: Create user keycloak-functional
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: keycloak-functional
+            first: keycloak-functional
+            last: keycloak-functional
+            password: "{{ vault_freeipa_keycloak_functional_password }}"
+            update_password: on_create
 
-      - name: Create user opnsense-functional
-        freeipa.ansible_freeipa.ipauser:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: opnsense-functional
-          first: opnsense-functional
-          last: opnsense-functional
-          password: "{{ vault_freeipa_opnsense_functional_password }}"
-          update_password: on_create
+        - name: Create user opnsense-functional
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: opnsense-functional
+            first: opnsense-functional
+            last: opnsense-functional
+            password: "{{ vault_freeipa_opnsense_functional_password }}"
+            update_password: on_create
 
-      - name: Create user jellyfin-functional
-        freeipa.ansible_freeipa.ipauser:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: jellyfin-functional
-          first: jellyfin-functional
-          last: jellyfin-functional
-          password: "{{ vault_freeipa_jellyfin_functional_password }}"
-          update_password: on_create
+        - name: Create user jellyfin-functional
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: jellyfin-functional
+            first: jellyfin-functional
+            last: jellyfin-functional
+            password: "{{ vault_freeipa_jellyfin_functional_password }}"
+            update_password: on_create
 
-      - name: Create user jellyseerr-functional
-        freeipa.ansible_freeipa.ipauser:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: jellyseerr-functional
-          first: jellyseerr-functional
-          last: jellyseerr-functional
-          password: "{{ vault_freeipa_jellyseerr_functional_password }}"
-          update_password: on_create
+        - name: Create user jellyseerr-functional
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: jellyseerr-functional
+            first: jellyseerr-functional
+            last: jellyseerr-functional
+            password: "{{ vault_freeipa_jellyseerr_functional_password }}"
+            update_password: on_create
 
-      - name: Ensure group admins exists
-        freeipa.ansible_freeipa.ipagroup:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: admins
-          user:
-          - "{{ vault_admin_username }}"
-          - admin
+        - name: Create user proxmox-functional
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: proxmox-functional
+            first: proxmox-functional
+            last: proxmox-functional
+            password: "{{ vault_freeipa_proxmox_functional_password }}"
+            update_password: on_create
 
-      - name: Create group jellyfin_users
-        freeipa.ansible_freeipa.ipagroup:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: jellyfin_users
-          user:
-          - "{{ vault_admin_username }}"
-          - jellyseerr-functional
-          - kamil
+        - name: Create user pbs-functional
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: pbs-functional
+            first: pbs-functional
+            last: pbs-functional
+            password: "{{ vault_freeipa_pbs_functional_password }}"
+            update_password: on_create
 
-      - name: Create group jellyfin_admins
-        freeipa.ansible_freeipa.ipagroup:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: jellyfin_admins
-          user:
-          - "{{ vault_admin_username }}"
-          - jellyseerr-functional
+        - name: Create user terraform-functional
+          freeipa.ansible_freeipa.ipauser:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: terraform-functional
+            first: terraform-functional
+            last: terraform-functional
+            password: "{{ vault_freeipa_terraform_functional_password }}"
+            update_password: on_create
+            sshpubkey: "{{ vault_freeipa_terraform_functional_public_key }}"
 
-      - name: Create group opnsense_admins
-        freeipa.ansible_freeipa.ipagroup:
-          ipaadmin_password: "{{ ipaadmin_password }}"
-          name: opnsense_admins
-          user:
-          - "{{ vault_admin_username }}"
+        - name: Ensure group admins exists
+          freeipa.ansible_freeipa.ipagroup:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: admins
+            user:
+              - "{{ vault_admin_username }}"
+              - admin
+
+        - name: Create group jellyfin_users
+          freeipa.ansible_freeipa.ipagroup:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: jellyfin_users
+            user:
+              - "{{ vault_admin_username }}"
+              - jellyseerr-functional
+              - kamil
+
+        - name: Create group jellyfin_admins
+          freeipa.ansible_freeipa.ipagroup:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: jellyfin_admins
+            user:
+              - "{{ vault_admin_username }}"
+              - jellyseerr-functional
+
+        - name: Create group opnsense_admins
+          freeipa.ansible_freeipa.ipagroup:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: opnsense_admins
+            user:
+              - "{{ vault_admin_username }}"
+
+        - name: Create group proxmox_admins
+          freeipa.ansible_freeipa.ipagroup:
+            ipaadmin_password: "{{ ipaadmin_password }}"
+            name: proxmox_admins
+            user:
+              - "{{ vault_admin_username }}"
+              - terraform-functional

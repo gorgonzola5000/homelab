@@ -1,0 +1,21 @@
+---
+- name: Add standard proxmox repository
+  ansible.builtin.lineinfile:
+    line: deb http://download.proxmox.com/debian/pbs bookworm pbs-no-subscription
+    path: /etc/apt/sources.list
+
+- name: Delete enterprise repository
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list
+    state: absent
+    regexp: 'enterprise'
+
+- name: Delete sources.list.d directory
+  ansible.builtin.file:
+    path: '/etc/apt/sources.list.d'
+    state: absent
+
+- name: Run apt dist-upgrade
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: dist

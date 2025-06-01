@@ -1,0 +1,19 @@
+pam: pam
+	comment Linux PAM standard authentication
+	type pam
+
+pbs: pbs
+	comment Proxmox Backup authentication server
+	type pbs
+
+ldap: freeIPA
+	base-dn dc=home,dc=parents-basement,dc=win
+	bind-dn uid=pbs-functional,cn=users,cn=accounts,dc=home,dc=parents-basement,dc=win
+	default true
+	filter (&(objectClass=person)(memberOf=cn=proxmox_admins,cn=groups,cn=accounts,dc=home,dc=parents-basement,dc=win))
+	mode ldaps
+	server1 freeipa.{{ subdomain }}.{{ domain }}
+	sync-defaults-options remove-vanished=acl;entry;properties
+	user-attr uid
+	user-classes inetOrgPerson
+	verify true

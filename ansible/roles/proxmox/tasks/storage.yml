@@ -1,17 +1,16 @@
 ---
-- name: Allow templates, snippets, ISOs and backups in 'local' pool
-  ansible.builtin.blockinfile:
-    path: /etc/pve/storage.cfg
-    marker_begin: "dir: local"
-    marker_end: "lvmthin: local-lvm"
-    marker: "{mark}"
-    block: "\tpath /var/lib/vz\n\tcontent vztmpl,snippets,iso,backup\n\n"
-    ### ABOVE TRANSLATES TO:
-    #
-    # dir: local
-    #   path /var/lib/vz
-    #   content vztmpl,snippets,iso,backup
-    #
-    # lvmthin: local-lvm
-    ### REST OF THE FILE
-    state: present
+- name: Ensure archiver@pbs password is set
+  ansible.builtin.template:
+    src: pve-priv-storage-pbs-offline-backup.pw.j2
+    dest: /etc/pve/priv/storage/pbs-offline-backup.pw
+    mode: '0600'
+    owner: root
+    group: www-data
+
+- name: Ensure storage configuration is set
+  ansible.builtin.template:
+    src: pve-storage.cfg.j2
+    dest: /etc/pve/storage.cfg
+    mode: '0640'
+    owner: root
+    group: www-data
