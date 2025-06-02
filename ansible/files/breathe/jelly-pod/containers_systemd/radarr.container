@@ -2,7 +2,7 @@
 Description=PVR for usenet and bittorrent users for shows
 
 [Container]
-Image=ghcr.io/home-operations/radarr:5.23.3
+Image=ghcr.io/home-operations/radarr:5.25.0
 
 Volume=/home/jelly-pod/radarr-config:/config
 Volume=/mnt/volume/data:/data
