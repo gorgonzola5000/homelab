@@ -3,8 +3,8 @@
   ansible.builtin.import_tasks: repositories.yml
 - name: Import PVE access tasks
   ansible.builtin.import_tasks: pve_access.yml
-- name: Import storage tasks
-  ansible.builtin.import_tasks: storage.yml
+#- name: Import storage tasks
+#  ansible.builtin.import_tasks: storage.yml
 - name: Import IOMMU tasks
   ansible.builtin.import_tasks: iommu.yml
 - name: Import notifications tasks
