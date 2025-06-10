@@ -21,7 +21,7 @@ resource "proxmox_virtual_environment_vm" "freeipa" {
   }
 
   disk {
-    datastore_id = "local-lvm"
+    datastore_id = "local-zfs"
     file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
     interface    = "virtio0"
     size         = 20
@@ -64,60 +64,18 @@ resource "cloudflare_record" "a_freeipa" {
   proxied = false
 }
 
-resource "cloudflare_record" "a_keycloak" {
+resource "cloudflare_record" "srv_ldap" {
   zone_id = data.cloudflare_zone.domain.id
-  name    = "keycloak.${var.subdomain}"
-  value   = var.keycloak-ipv4
-  type    = "A"
-  ttl     = 3600
-  proxied = false
-}
+  name    = "_ldap._tcp.${var.subdomain}"
+  type    = "SRV"
 
-resource "proxmox_virtual_environment_vm" "keycloak" {
-  name        = "keycloak"
-  tags        = ["terraform", "alma"]
-  description = "keycloak"
-
-  node_name = "proxmox"
-  vm_id     = 332
-
-  agent {
-    enabled = true
-  }
-  stop_on_destroy = true
-
-  memory {
-    dedicated = 2048
-  }
-
-  cpu {
-    cores = 1
-    type  = "host"
-  }
-
-  disk {
-    datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
-    interface    = "virtio0"
-    size         = 20
-  }
-
-  initialization {
-    ip_config {
-      ipv4 {
-        address = "${var.keycloak-ipv4}/24"
-        gateway = var.gateway_ip
-      }
-    }
-    dns {
-      servers = [var.gateway_ip]
-      domain  = "${var.subdomain}.${var.domain}"
-    }
-
-    user_data_file_id = proxmox_virtual_environment_file.keycloak_cloud_config.id
-  }
-
-  network_device {
-    bridge = "vmbr0"
+  data {
+    service  = "_ldap"
+    proto    = "_tcp"
+    name     = "freeipa"
+    priority = 0
+    weight   = 0
+    port     = 389
+    target   = "freeipa.${var.subdomain}.${var.domain}"
   }
 }

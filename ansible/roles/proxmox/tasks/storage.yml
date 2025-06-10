@@ -7,10 +7,50 @@
     owner: root
     group: www-data
 
-- name: Ensure storage configuration is set
-  ansible.builtin.template:
-    src: pve-storage.cfg.j2
-    dest: /etc/pve/storage.cfg
-    mode: '0640'
+#- name: Ensure storage configuration is set
+#  ansible.builtin.template:
+#    src: pve-storage.cfg.j2
+#    dest: /etc/pve/storage.cfg
+#    mode: '0640'
+#    owner: root
+#    group: www-data
+    #
+- name: Ensure media dataset is set
+  community.general.zfs:
+    name: mpool/media
+    state: present
+
+- name: Ensure packets for NFS are installed
+  ansible.builtin.apt:
+    name:
+      - nfs-kernel-server
+      - nfs-common
+      - gssproxy
+    state: present
+
+- name: Ensure /etc/exports is configured
+  ansible.builtin.copy:
+    src: etc-exports
+    dest: /etc/exports
+    mode: '0644'
     owner: root
-    group: www-data
+    group: root
+
+#- name: Ensure /etc/gssproxy/gssproxy.conf is set
+#  ansible.builtin.copy:
+#    src: etc-gssproxy-gssproxy.conf
+#    dest: /etc/gssproxy/gssproxy.conf
+
+- name: Ensure gssproxy is started and enabled
+  ansible.builtin.systemd_service:
+    name: gssproxy
+    state: started
+    enabled: true
+
+- name: Get Kerberos ticket using keytab
+  community.general.krb_ticket:
+    keytab: true
+    keytab_path: /etc/krb5.keytab
+
+- name: Retrieve nfs service keytab
+  ansible.builtin.shell: ipa-getkeytab -s freeipa.{{ subdomain }}.{{ domain }} -p nfs/{{ node_name }}.{{ subdomain }}.{{ domain }} -k /etc/krb5.keytab

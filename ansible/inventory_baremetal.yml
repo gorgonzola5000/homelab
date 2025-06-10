@@ -3,6 +3,8 @@ ipaservers:
     freeipa.home.parents-basement.win:
 ipaclients:
   hosts:
+    speak-to-me.prod.home.parents-basement.win:
+    breathe.prod.home.parents-basement.win:
     proxmox.home.parents-basement.win:
     pbs.home.parents-basement.win:
 keycloak:

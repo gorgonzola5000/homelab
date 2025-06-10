@@ -4,7 +4,7 @@
     node_name: breathe
     subdomain: home
     domain: parents-basement.win
-  hosts: '{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}'
+  hosts: "{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}"
   become: true
   pre_tasks:
     - name: Partition media disk
@@ -29,11 +29,21 @@
     - common
     - vm
     - ansible_managed
+
+    - role: freeipa.ansible_freeipa.ipaclient
+      vars:
+        state: present
+        ipaclient_domain: "{{ subdomain }}.{{ domain }}"
+        ipaclient_all_ip_addresses: true
+        ipasssd_enable_dns_updates: true
+        ipaclient_force_join: yes
+      tags: freeipa
+
     - role: nginx_reverse_proxy
       vars:
         domains:
-          - '{{ subdomain }}.{{ domain }}'
-          - '*.{{ subdomain }}.{{ domain }}'
+          - "{{ subdomain }}.{{ domain }}"
+          - "*.{{ subdomain }}.{{ domain }}"
       tags: nginx_reverse_proxy
 
     - role: media_server
