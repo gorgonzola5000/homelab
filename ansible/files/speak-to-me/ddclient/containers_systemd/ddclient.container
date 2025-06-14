@@ -2,7 +2,7 @@
 Description=ddclient container
 
 [Container]
-Image=docker.io/linuxserver/ddclient:3.11.2
+Image=docker.io/linuxserver/ddclient:4.0.0
 Volume=/home/ddclient/config:/config:Z
 Environment="TZ=Europe/Warsaw"
 Secret=DDCLIENT_PASSWORD,type=env
