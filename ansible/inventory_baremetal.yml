@@ -4,6 +4,8 @@ ipaservers:
 ipaclients:
   hosts:
     speak-to-me.prod.home.parents-basement.win:
+    speak-to-me.dev.home.parents-basement.win:
+    breathe.dev.home.parents-basement.win:
     breathe.prod.home.parents-basement.win:
     proxmox.home.parents-basement.win:
     pbs.home.parents-basement.win:

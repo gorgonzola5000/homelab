@@ -51,9 +51,3 @@ variable "vm_id_schema" {
   type        = number
   description = "eg. vm_id_schema = 2 --> vm_ids in this env are 2XX"
 }
-
-variable "media_disk_size" {
-  type        = number
-  description = "size of the disk for storing media in GB"
-}
-

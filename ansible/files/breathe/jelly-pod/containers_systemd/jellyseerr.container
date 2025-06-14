@@ -6,9 +6,6 @@ Image=docker.io/fallenbagel/jellyseerr:2.5.2
 
 Volume=/home/jelly-pod/jellyseerr-config:/app/config
 
-User=1111
-Group=1111
-
 Environment=TZ=Europe/Warsaw
 Environment=PORT=5055
 

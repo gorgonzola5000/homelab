@@ -4,7 +4,7 @@
     node_name: speak-to-me
     subdomain: home
     domain: parents-basement.win
-  hosts: '{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}'
+  hosts: "{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}"
   become: true
   roles:
     - common
@@ -14,9 +14,15 @@
     - role: nginx_reverse_proxy
       vars:
         domains:
-          - '{{ subdomain }}.{{ domain }}'
-          - '*.{{ subdomain }}.{{ domain }}'
+          - "{{ subdomain }}.{{ domain }}"
+          - "*.{{ subdomain }}.{{ domain }}"
       tags: nginx_reverse_proxy
+
+    - role: ipa_client_install
+      vars:
+        password: "{{ ipaadmin_password }}"
+        principal: admin
+      tags: ipa_client_install
 
     - role: quadlet
       vars:
@@ -29,7 +35,7 @@
     - role: quadlet
       vars:
         service: ddclient
-        rootful: false
+        rootful: true
         podman_secrets:
           DDCLIENT_PASSWORD: "{{ vault_ddclient_cloudflare_token }}"
       tags: ddclient
@@ -37,13 +43,13 @@
     - role: quadlet
       vars:
         service: glance
-        rootful: false
+        rootful: true
       tags: glance
 
     - role: quadlet
       vars:
         service: gotify
-        rootful: false
+        rootful: true
         podman_secrets:
           GOTIFY_DEFAULTUSER_PASS: "{{ vault_gotify_sqlite_db_password }}"
       tags: gotify

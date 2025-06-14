@@ -1,0 +1,11 @@
+---
+- name: Ensure ipa-client is present
+  ansible.builtin.dnf:
+    name: ipa-client
+    state: present
+
+- name: Install IdM client
+  ansible.builtin.shell:
+    cmd: "ipa-client-install --force-join --principal {{ principal }} --password {{ password }} --unattended"
+  register: result
+  failed_when: result.rc != 0 and '--uninstall' not in result.stderr

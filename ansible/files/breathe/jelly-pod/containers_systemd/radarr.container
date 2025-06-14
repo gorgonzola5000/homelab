@@ -7,9 +7,6 @@ Image=ghcr.io/home-operations/radarr:5.26.0
 Volume=/home/jelly-pod/radarr-config:/config
 Volume=/mnt/volume/data:/data
 
-User=1111
-Group=1111
-
 Pod=jelly.pod
 
 [Install]

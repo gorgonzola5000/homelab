@@ -6,38 +6,25 @@
     domain: parents-basement.win
   hosts: "{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}"
   become: true
-  pre_tasks:
-    - name: Partition media disk
-      community.general.parted:
-        device: /dev/vdb
-        number: 1
-        state: present
-
-    - name: Create an xfs filesystem on /dev/vdb1
-      community.general.filesystem:
-        fstype: xfs
-        state: present
-        dev: /dev/vdb1
-
-    - name: Perform the mounting on the mount device
-      ansible.builtin.mount:
-        fstype: xfs
-        src: /dev/vdb1
-        path: /mnt/volume
-        state: mounted
   roles:
     - common
     - vm
     - ansible_managed
 
-    - role: freeipa.ansible_freeipa.ipaclient
+    - role: ipa_client_install
       vars:
-        state: present
-        ipaclient_domain: "{{ subdomain }}.{{ domain }}"
-        ipaclient_all_ip_addresses: true
-        ipasssd_enable_dns_updates: true
-        ipaclient_force_join: yes
-      tags: freeipa
+        password: "{{ ipaadmin_password }}"
+        principal: admin
+      tags: ipa_client_install
+
+    #    - role: freeipa.ansible_freeipa.ipaclient
+    #      vars:
+    #        state: present
+    #        ipaclient_domain: "{{ subdomain }}.{{ domain }}"
+    #        ipaclient_all_ip_addresses: true
+    #        ipasssd_enable_dns_updates: true
+    #        ipaclient_force_join: yes
+    #      tags: freeipa
 
     - role: nginx_reverse_proxy
       vars:
@@ -49,17 +36,27 @@
     - role: media_server
       tags: media_server
 
+    - role: wireguard_client
+      vars:
+        address1: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_address1') }}"
+        address2: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_address2') }}"
+        private_key: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_private_key') }}"
+        dns1: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_dns1') }}"
+        dns2: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_dns2') }}"
+        public_key: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_public_key') }}"
+        preshared_key: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_preshared_key') }}"
+        endpoint: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_endpoint') }}"
+        wg_interface_name: AirVPN
+      tags: wireguard_client
+
     - role: quadlet
       vars:
-        service: qbit-pod
+        service: qbittorrent
         rootful: true
         podman_secrets:
-          WIREGUARD_PRIVATE_KEY: "{{ vault_vpn_private_key }}"
-          WIREGUARD_PRESHARED_KEY: "{{ vault_vpn_preshared_key }}"
-          WIREGUARD_ADDRESSES: "{{ vault_vpn_addresses }}"
-          SERVER_COUNTRIES: "{{ vault_vpn_server_countries }}"
-          FIREWALL_VPN_INPUT_PORTS: "{{ vault_vpn_input_ports }}"
-      tags: qbit-pod
+          QBT_TORRENTING_PORT: "{{ lookup('vars', 'vault_' ~ environment_name ~ '_vpn_input_ports') }}"
+        wg_interface_name: AirVPN
+      tags: qbittorrent
 
     - role: quadlet
       vars:

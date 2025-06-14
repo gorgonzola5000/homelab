@@ -4,6 +4,10 @@
     name:
       - qemu-guest-agent
     state: present
+
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}"
 # ansible hangs on the commented out task. probably due to qemu-guest-agent requireing reboot or something. it's enabled during deployment so who cares
 #- name: Start and enable systemd service
 #  ansible.builtin.service:

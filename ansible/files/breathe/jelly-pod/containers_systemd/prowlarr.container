@@ -6,9 +6,6 @@ Image=ghcr.io/home-operations/prowlarr:1.36.3
 
 Volume=/home/jelly-pod/prowlarr-config:/config
 
-User=1111
-Group=1111
-
 Pod=jelly.pod
 
 [Install]

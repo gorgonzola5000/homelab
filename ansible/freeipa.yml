@@ -24,7 +24,6 @@
       freeipa.ansible_freeipa.ipaservice:
         ipaadmin_password: "{{ ipaadmin_password }}"
         name: "nfs/proxmox.{{ subdomain }}.{{ domain }}"
-    #      action: member
 
     - name: Configure users and groups
       tags: freeipa-users-and-groups

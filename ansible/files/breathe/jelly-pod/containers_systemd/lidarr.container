@@ -2,15 +2,15 @@
 Description=PVR for usenet and bittorrent users for shows
 
 [Container]
-Image=docker.io/linuxserver/lidarr:2.11.2
+Image=ghcr.io/home-operations/lidarr:2.12.4
 
-Volume=/home/jelly-pod/lidarr-config:/config
-Volume=/mnt/volume/data:/data
+Volume=/home/jelly-pod/lidarr-config:/config:Z
+Volume=/mnt/volume/data:/data:z
+
+User=0
+Group=0
 
 Environment=TZ=Europe/Warsaw
-
-User=1111
-Group=1111
 
 Pod=jelly.pod
 

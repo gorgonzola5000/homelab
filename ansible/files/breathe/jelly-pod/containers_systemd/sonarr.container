@@ -7,9 +7,6 @@ Image=ghcr.io/home-operations/sonarr:4.0.14
 Volume=/home/jelly-pod/sonarr-config:/config
 Volume=/mnt/volume/data:/data
 
-User=1111
-Group=1111
-
 Pod=jelly.pod
 
 [Install]

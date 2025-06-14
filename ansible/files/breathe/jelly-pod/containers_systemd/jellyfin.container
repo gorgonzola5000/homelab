@@ -5,11 +5,7 @@ Description=Jellyfin - The Free Software Media System
 Image=docker.io/jellyfin/jellyfin:10.10.7
 
 Volume=/home/jelly-pod/jellyfin-config:/config
-Volume=/mnt/volume/jellyfin-cache:/cache
-Volume=/mnt/volume/data/media:/media
-
-User=1111
-Group=1111
+Volume=/mnt/volume/data/media:/media:z
 
 Pod=jelly.pod
 

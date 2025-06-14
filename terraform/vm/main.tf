@@ -21,11 +21,10 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
   }
 
   disk {
-    datastore_id = "local-lvm"
-    file_id      = "local:iso/${var.environment}-AlmaLinux-9-GenericCloud.x86_64.qcow2.iso"
-    #file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
-    interface = "virtio0"
-    size      = 20
+    datastore_id = "local-zfs"
+    file_id      = proxmox_virtual_environment_download_file.alma_10_qcow2.id
+    interface    = "virtio0"
+    size         = 20
   }
 
   initialization {
@@ -40,6 +39,8 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
       domain  = "${var.environment}.${var.subdomain}.${var.domain}"
     }
 
+    datastore_id = "local-zfs"
+
     user_data_file_id = proxmox_virtual_environment_file.cloud_config_yum.id
   }
 
@@ -52,8 +53,7 @@ resource "proxmox_virtual_environment_vm" "speak-to-me" {
 
   lifecycle {
     ignore_changes = [
-      initialization,
-      disk
+      initialization
     ]
   }
 }
@@ -81,19 +81,10 @@ resource "proxmox_virtual_environment_vm" "breathe" {
   }
 
   disk {
-    datastore_id = "local-lvm"
-    file_id      = "local:iso/${var.environment}-AlmaLinux-9-GenericCloud.x86_64.qcow2.iso"
-    #file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
-    interface = "virtio0"
-    size      = 20
-  }
-
-  disk {
-    datastore_id = "local-lvm"
-    interface    = "virtio1"
-    backup       = false
-    file_format  = "raw"
-    size         = var.media_disk_size
+    datastore_id = "local-zfs"
+    file_id      = proxmox_virtual_environment_download_file.alma_10_qcow2.id
+    size         = 64
+    interface    = "virtio0"
   }
 
   initialization {
@@ -108,6 +99,8 @@ resource "proxmox_virtual_environment_vm" "breathe" {
       domain  = "${var.environment}.${var.subdomain}.${var.domain}"
     }
 
+    datastore_id = "local-zfs"
+
     user_data_file_id = proxmox_virtual_environment_file.cloud_config_yum.id
   }
 
@@ -120,16 +113,15 @@ resource "proxmox_virtual_environment_vm" "breathe" {
 
   lifecycle {
     ignore_changes = [
-      initialization,
-      disk
+      initialization
     ]
   }
 }
 
-#resource "proxmox_virtual_environment_download_file" "alma_9_qcow2" {
-#  content_type = "iso"
-#  datastore_id = "local"
-#  node_name    = "proxmox"
-#  url          = "https://repo.almalinux.org/almalinux/9.5/cloud/x86_64/images/AlmaLinux-9-GenericCloud-9.5-20241120.x86_64.qcow2"
-#  file_name    = "${var.environment}-AlmaLinux-9-GenericCloud.x86_64.qcow2.iso"
-#}
+resource "proxmox_virtual_environment_download_file" "alma_10_qcow2" {
+  content_type = "iso"
+  datastore_id = "local"
+  node_name    = "proxmox"
+  url          = "https://repo.almalinux.org/almalinux/10/cloud/x86_64/images/AlmaLinux-10-GenericCloud-10.0-20250528.0.x86_64.qcow2"
+  file_name    = "${var.environment}-AlmaLinux-10-GenericCloud.x86_64.qcow2.iso"
+}

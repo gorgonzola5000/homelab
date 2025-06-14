@@ -62,7 +62,7 @@
     cmd: "certbot certonly -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini {% for domain in domains %} -d {{ domain }} {% endfor %} --preferred-challenges dns-01"
     executable: /bin/bash
   when:
-    - not dry_run
+    - environment_name == "prod"
     - not letsencrypt_cert.stat.exists
   notify:
     - Restart nginx
@@ -73,7 +73,7 @@
     cmd: "certbot certonly --staging -n --agree-tos --email {{ vault_email_certbot }} --no-eff-email --dns-cloudflare --dns-cloudflare-credentials /home/root/.secrets/cloudflare.ini {% for domain in domains %} -d {{ domain }} {% endfor %} --preferred-challenges dns-01"
     executable: /bin/bash
   when:
-    - dry_run
+    - environment_name == "dev"
     - not letsencrypt_cert.stat.exists
   notify:
     - Restart nginx

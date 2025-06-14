@@ -11,4 +11,3 @@ dns_mappings = {
     aliases = ["qbittorrent", "gluetun", "prowlarr", "sonarr", "radarr", "jellyseerr", "jellyfin", "lidarr"]
   }
 }
-media_disk_size = 50

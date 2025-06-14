@@ -4,15 +4,17 @@ Description=Open-source software alternative to uTorrent
 [Container]
 Image=ghcr.io/home-operations/qbittorrent:5.1.0
 
-Volume=/home/qbit-pod/config:/config
-Volume=/mnt/volume/data:/data
+Volume=/home/qbittorrent/config:/config:Z
+Volume=/mnt/volume/data:/data:z
 
-Environment=QBT_TORRENTING_PORT=27477
+Network=host
 
-User=2222
-Group=2222
+AddDevice=/dev/net/tun
 
-Pod=qbit.pod
+Secret=QBT_TORRENTING_PORT,type=env
+
+User=0
+Group=0
 
 [Install]
 # Start by default on boot

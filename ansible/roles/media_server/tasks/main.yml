@@ -1,22 +1,38 @@
 ---
-- name: Ensure jelly-pod users exist
-  ansible.builtin.user:
-    name: jelly-pod
-    uid: 1111
-
-- name: Ensure qbit-pod users exist
-  ansible.builtin.user:
-    name: qbit-pod
-    uid: 2222
-
-- name: Create media directory structure
+- name: Ensure /mnt/volume exists
   ansible.builtin.file:
-    path: '/mnt/volume/{{ item.path }}'
+    path: /mnt/volume
     state: directory
-    mode: '777'
-    owner: root
-    group: root
-  with_community.general.filetree: media-directory-structure/
-  when: item.state == 'directory'
-  loop_control:
-    label: '{{ item.path }}'
+
+- name: Mount an NFS volume
+  block:
+  - name: Mount an NFS volume
+    ansible.posix.mount:
+      src: proxmox.{{ subdomain }}.{{ domain }}:/mpool/media
+      path: /mnt/volume
+      state: mounted
+      fstype: nfs
+  rescue:
+    - name: Reboot the system before retrying NFS mount
+      ansible.builtin.reboot:
+        msg: "Rebooting to work around NFS mount issue"
+        reboot_timeout: 600
+
+    - name: Retry NFS mount after reboot
+      ansible.posix.mount:
+        src: proxmox.{{ subdomain }}.{{ domain }}:/mpool/media
+        path: /mnt/volume
+        state: mounted
+        fstype: nfs
+
+#- name: Create media directory structure
+#  ansible.builtin.file:
+#    path: '/mnt/volume/{{ item.path }}'
+#    state: directory
+#    mode: '777'
+#    owner: root
+#    group: root
+#  with_community.general.filetree: media-directory-structure/
+#  when: item.state == 'directory'
+#  loop_control:
+#    label: '{{ item.path }}'
