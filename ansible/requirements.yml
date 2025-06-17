@@ -3,7 +3,7 @@ roles:
   - name: geerlingguy.swap
     version: 1.2.0
   - name: linux-system-roles.certificate
-    version: 1.3.11
+    version: 1.3.12
   - name: linux-system-roles.journald
     version: 1.3.5
 
