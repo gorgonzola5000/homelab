@@ -6,6 +6,11 @@
     domain: parents-basement.win
   hosts: "{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}"
   become: true
+  pre_tasks:
+    - name: RedHat - Set SELinux to disabled
+      ansible.posix.selinux:
+        policy: targeted
+        state: disabled
   roles:
     - common
     - vm
@@ -23,7 +28,7 @@
     #        ipaclient_domain: "{{ subdomain }}.{{ domain }}"
     #        ipaclient_all_ip_addresses: true
     #        ipasssd_enable_dns_updates: true
-    #        ipaclient_force_join: yes
+    #        ipaclient_force_join: true
     #      tags: freeipa
 
     - role: nginx_reverse_proxy

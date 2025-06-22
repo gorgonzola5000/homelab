@@ -6,6 +6,11 @@
     domain: parents-basement.win
   hosts: "{{ node_name }}.{{ environment_name }}.{{ subdomain }}.{{ domain }}"
   become: true
+  pre_tasks:
+    - name: RedHat - Set SELinux to disabled
+      ansible.posix.selinux:
+        policy: targeted
+        state: disabled
   roles:
     - common
     - vm

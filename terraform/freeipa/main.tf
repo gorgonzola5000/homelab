@@ -1,67 +1,41 @@
-resource "proxmox_virtual_environment_vm" "freeipa" {
-  name        = "freeipa"
-  tags        = ["terraform", "alma"]
-  description = "freeipa"
+module "vms" {
+  source = "./modules/vm"
 
-  node_name = "proxmox"
-  vm_id     = 333
+  gateway_ip = var.gateway_ip
+  alma_qcow2_file_id = proxmox_virtual_environment_download_file.alma_10_qcow2.id
+  zone_id            = data.cloudflare_zone.domain.id
 
-  agent {
-    enabled = true
-  }
-  stop_on_destroy = true
-
-  memory {
-    dedicated = 4096
-  }
-
-  cpu {
-    cores = 1
-    type  = "host"
-  }
-
-  disk {
-    datastore_id = "local-zfs"
-    file_id      = proxmox_virtual_environment_download_file.alma_9_qcow2.id
-    interface    = "virtio0"
-    size         = 20
-  }
-
-  initialization {
-    ip_config {
-      ipv4 {
-        address = "${var.freeipa-ipv4}/24"
-        gateway = var.gateway_ip
-      }
+  vm_config = {
+    vm1 = {
+      name      = "money"
+      vm_id     = 336
+      ipv4      = "10.2.137.36"
+      domain    = var.domain
+      subdomain = var.subdomain
     }
-    dns {
-      servers = [var.gateway_ip]
-      domain  = "${var.subdomain}.${var.domain}"
+    vm2 = {
+      name      = "us-and-them"
+      vm_id     = 337
+      ipv4      = "10.2.137.37"
+      domain    = var.domain
+      subdomain = var.subdomain
     }
-
-    user_data_file_id = proxmox_virtual_environment_file.freeipa_cloud_config.id
-  }
-
-  network_device {
-    bridge = "vmbr0"
+    vm3 = {
+      name      = "any-colour-you-like"
+      vm_id     = 338
+      ipv4      = "10.2.137.38"
+      domain    = var.domain
+      subdomain = var.subdomain
+    }
   }
 }
 
-resource "proxmox_virtual_environment_download_file" "alma_9_qcow2" {
+resource "proxmox_virtual_environment_download_file" "alma_10_qcow2" {
   content_type = "iso"
   datastore_id = "local"
   node_name    = "proxmox"
-  url          = "https://repo.almalinux.org/almalinux/9.4/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
-  file_name    = "freeipa-AlmaLinux-9-GenericCloud-9.4.x86_64.qcow2.iso"
-}
-
-resource "cloudflare_record" "a_freeipa" {
-  zone_id = data.cloudflare_zone.domain.id
-  name    = "freeipa.${var.subdomain}"
-  value   = var.freeipa-ipv4
-  type    = "A"
-  ttl     = 3600
-  proxied = false
+  url          = "https://repo.almalinux.org/almalinux/10/cloud/x86_64/images/AlmaLinux-10-GenericCloud-10.0-20250528.0.x86_64.qcow2"
+  file_name    = "AlmaLinux-10-GenericCloud.x86_64.qcow2.iso"
 }
 
 resource "cloudflare_record" "srv_ldap" {
@@ -72,10 +46,19 @@ resource "cloudflare_record" "srv_ldap" {
   data {
     service  = "_ldap"
     proto    = "_tcp"
-    name     = "freeipa"
+    name     = "money"
     priority = 0
     weight   = 0
     port     = 389
-    target   = "freeipa.${var.subdomain}.${var.domain}"
+    target   = "money.${var.subdomain}.${var.domain}"
   }
+}
+
+resource "cloudflare_record" "cname_freeipa" {
+  zone_id = data.cloudflare_zone.domain.id
+  name    = "freeipa.${var.subdomain}"
+  value   = "money.${var.subdomain}.${data.cloudflare_zone.domain.name}"
+  type    = "CNAME"
+  ttl     = 3600
+  proxied = false
 }

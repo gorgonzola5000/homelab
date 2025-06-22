@@ -41,20 +41,5 @@
 
 - name: Ensure ACLs are set for the proxmox_admins-freeIPA Proxmox group
   ansible.builtin.shell:
-    cmd: pveum acl modify / -group proxmox_admins-freeIPA -role Administrator
+    cmd: "pveum acl modify / -group proxmox_admins-freeIPA -role Administrator"
     executable: /bin/bash
-
-- name: List tokens of terraform
-  ansible.builtin.shell:
-    executable: /bin/bash
-    cmd: "pveum user token list terraform-functional@freeIPA"
-  changed_when: false
-  register: token_list
-
-- name: Add API token for terraform
-  ansible.builtin.shell:
-    executable: /bin/bash
-    cmd: "pveum user token add terraform-functional@freeIPA k8s"
-  when: '"k8s" not in token_list.stdout'
-  changed_when: true
-  failed_when: false

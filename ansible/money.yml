@@ -1,7 +1,7 @@
 ---
 - name: Configure FreeIPA VM
   vars:
-    node_name: freeipa
+    node_name: money
     subdomain: home
     domain: parents-basement.win
   hosts: "{{ node_name }}.{{ subdomain }}.{{ domain }}"
@@ -20,10 +20,44 @@
         state: present
 
   tasks:
+    - name: Add topology segment
+      freeipa.ansible_freeipa.ipatopologysegment:
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        suffix: "{{ item.suffix }}"
+        name: "{{ item.name | default(omit) }}"
+        left: "{{ item.left }}"
+        right: "{{ item.right }}"
+        state: present
+      loop:
+        - {
+            suffix: domain+ca,
+            left: any-colour-you-like.home.parents-basement.win,
+            right: money.home.parents-basement.win,
+          }
+        - {
+            suffix: domain+ca,
+            left: money.home.parents-basement.win,
+            right: us-and-them.home.parents-basement.win,
+          }
+        - {
+            suffix: domain+ca,
+            left: us-and-them.home.parents-basement.win,
+            right: any-colour-you-like.home.parents-basement.win,
+          }
+
+    - name: Set up Proxmox A DNS record
+      freeipa.ansible_freeipa.ipadnsrecord:
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        name: proxmox
+        zone_name: home.parents-basement.win
+        record_type: "A"
+        record_value: "10.2.137.3"
+
     - name: Set up NFS service on Proxmox
       freeipa.ansible_freeipa.ipaservice:
         ipaadmin_password: "{{ ipaadmin_password }}"
         name: "nfs/proxmox.{{ subdomain }}.{{ domain }}"
+        skip_host_check: true
 
     - name: Configure users and groups
       tags: freeipa-users-and-groups

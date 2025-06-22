@@ -1,6 +1,17 @@
 ---
 - name: Import repositories tasks
   ansible.builtin.import_tasks: repositories.yml
+- name: Join freeIPA domain
+  ansible.builtin.import_role:
+    name: freeipa.ansible_freeipa.ipaclient
+  vars:
+    state: present
+    ipaclient_domain: "{{ subdomain }}.{{ domain }}"
+    ipaclient_all_ip_addresses: true
+    ipasssd_enable_dns_updates: true
+    ipassd_enable_dns_updates: true # workaround for misspelled variables inside the role
+    ipaclient_force_join: true
+
 - name: Import PVE access tasks
   ansible.builtin.import_tasks: pve_access.yml
 - name: Import storage tasks
