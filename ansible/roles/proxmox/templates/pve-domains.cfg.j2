@@ -6,7 +6,8 @@ pve: pve
 
 ldap: freeIPA
   base_dn dc=home,dc=parents-basement,dc=win
-  server1 freeipa.{{ subdomain }}.{{ domain }}
+  server1 money.{{ subdomain }}.{{ domain }}
+  server2 us-and-them.{{ subdomain }}.{{ domain }}
   user_attr uid
   bind_dn uid=proxmox-functional,cn=users,cn=accounts,dc=home,dc=parents-basement,dc=win
   default 1

@@ -7,13 +7,10 @@
   hosts: "{{ node_name }}.{{ subdomain }}.{{ domain }}"
   become: true
   tasks:
-    #    - name: Backup all vms in the Proxmox cluster
-    #      community.general.proxmox_backup:
-    #        api_user: "{{ vault_pbs_archiver_username }}@pve"
-    #        api_password: "{{ vault_pbs_archiver_password }}"
-    #        api_host: proxmox
-    #        storage: pbs-offline-backup
-    #        mode: all
+    - name: Backup all vms in the Proxmox cluster except FreeIPA because it sucks ass
+      ansible.builtin.shell:
+        cmd: "vzdump --all --mode snapshot --compress zstd --storage pbs-offline-backup"
+      tags: vm
 
     - name: Backup /mpool/media
       ansible.builtin.shell:
@@ -21,3 +18,4 @@
       environment:
         PBS_PASSWORD: "{{ vault_pbs_archiver_password }}"
         PBS_REPOSITORY: "{{ vault_pbs_archiver_username }}@pbs@pbs.{{ subdomain }}.{{ domain }}:443:zpool"
+      tags: media

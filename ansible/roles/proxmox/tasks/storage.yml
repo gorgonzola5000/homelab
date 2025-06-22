@@ -36,11 +36,6 @@
     owner: root
     group: root
 
-#- name: Ensure /etc/gssproxy/gssproxy.conf is set
-#  ansible.builtin.copy:
-#    src: etc-gssproxy-gssproxy.conf
-#    dest: /etc/gssproxy/gssproxy.conf
-
 - name: Ensure gssproxy is started and enabled
   ansible.builtin.systemd_service:
     name: gssproxy
@@ -53,4 +48,4 @@
     keytab_path: /etc/krb5.keytab
 
 - name: Retrieve nfs service keytab
-  ansible.builtin.shell: ipa-getkeytab -s freeipa.{{ subdomain }}.{{ domain }} -p nfs/{{ node_name }}.{{ subdomain }}.{{ domain }} -k /etc/krb5.keytab
+  ansible.builtin.shell: ipa-getkeytab -s money.{{ subdomain }}.{{ domain }} -p nfs/{{ node_name }}.{{ subdomain }}.{{ domain }} -k /etc/krb5.keytab

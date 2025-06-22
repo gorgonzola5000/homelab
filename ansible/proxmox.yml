@@ -13,13 +13,6 @@
         root_password_hash: "{{ vault_proxmox_root_password_hash }}"
     - terraform_managed
     - ansible_managed
-    - role: freeipa.ansible_freeipa.ipaclient
-      vars:
-        state: present
-        ipaclient_domain: "{{ subdomain }}.{{ domain }}"
-        ipaclient_all_ip_addresses: true
-        ipasssd_enable_dns_updates: true
-        ipaclient_force_join: yes
 
     - role: linux-system-roles.certificate
       vars:
@@ -41,4 +34,4 @@
         keytab_path: /etc/krb5.keytab
 
     - name: Retrieve nfs service keytab
-      ansible.builtin.shell: ipa-getkeytab -s freeipa.{{ subdomain }}.{{ domain }} -p nfs/{{ node_name }}.{{ subdomain }}.{{ domain }} -k /etc/krb5.keytab
+      ansible.builtin.shell: ipa-getkeytab -s money.{{ subdomain }}.{{ domain }} -p nfs/{{ node_name }}.{{ subdomain }}.{{ domain }} -k /etc/krb5.keytab

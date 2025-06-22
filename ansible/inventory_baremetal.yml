@@ -1,6 +1,10 @@
 ipaservers:
   hosts:
-    freeipa.home.parents-basement.win:
+    money.home.parents-basement.win:
+ipareplicas:
+  hosts:
+    us-and-them.home.parents-basement.win:
+    any-colour-you-like.home.parents-basement.win:
 ipaclients:
   hosts:
     speak-to-me.prod.home.parents-basement.win:

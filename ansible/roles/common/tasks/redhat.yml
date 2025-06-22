@@ -1,9 +1,4 @@
 ---
-- name: RedHat - Set SELinux to disabled
-  ansible.posix.selinux:
-    policy: targeted
-    state: disabled
-
 - name: RedHat - Add repositories
   ansible.builtin.dnf:
     name: epel-release
