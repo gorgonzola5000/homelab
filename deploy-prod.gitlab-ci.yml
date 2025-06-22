@@ -23,7 +23,6 @@ include:
     - ansible-galaxy install -r requirements.yml
     - ansible-playbook -i $INVENTORY --extra-vars '{"environment_name":"'$ENVIRONMENT_NAME'"}' $PLAYBOOK
 
-
 # configure stuff that needs to be provisioned before everything else
 # eg. baremetal hosts, IdM server
 ansible bare metal:
@@ -35,7 +34,13 @@ ansible bare metal:
     ENVIRONMENT_NAME: baremetal
   parallel:
     matrix:
-      - PLAYBOOK: ['proxmox.yml', 'freeipa.yml']
+      - PLAYBOOK:
+          [
+            "proxmox.yml",
+            "money.yml",
+            "us-and-them.yml",
+            "any-colour-you-like.yml",
+          ]
   rules:
     - when: on_success
 
@@ -74,6 +79,6 @@ ansible VM prod:
     ENVIRONMENT_NAME: prod
   parallel:
     matrix:
-      - PLAYBOOK: ['speak-to-me.yml', 'breathe.yml']
+      - PLAYBOOK: ["speak-to-me.yml", "breathe.yml"]
   rules:
     - when: on_success

@@ -1,5 +1,10 @@
+/mpool  \
+    breathe.prod.home.parents-basement.win(ro,no_subtree_check,fsid=0,sec=krb5p) \
+    breathe.dev.home.parents-basement.win(ro,no_subtree_check,fsid=0,sec=krb5p) \
+    thinkpad-t480s.home.parents-basement.win(ro,no_subtree_check,fsid=0,sec=krb5p)
+
 /mpool/media  \
-    breathe.prod.home.parents-basement.win(rw,sync,fsid=0,crossmnt,no_subtree_check,no_root_squash,sec=krb5p) \
-    breathe.dev.home.parents-basement.win(rw,sync,fsid=0,crossmnt,no_subtree_check,no_root_squash,sec=krb5p) \
-    thinkpad-t480s.home.parents-basement.win(rw,sync,fsid=0,crossmnt,no_subtree_check,no_root_squash,sec=krb5p)
+    breathe.prod.home.parents-basement.win(rw,sync,crossmnt,no_subtree_check,no_root_squash,sec=krb5p) \
+    breathe.dev.home.parents-basement.win(rw,sync,crossmnt,no_subtree_check,no_root_squash,sec=krb5p) \
+    thinkpad-t480s.home.parents-basement.win(rw,sync,crossmnt,no_subtree_check,no_root_squash,sec=krb5p)
 

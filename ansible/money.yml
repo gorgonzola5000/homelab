@@ -57,6 +57,7 @@
       freeipa.ansible_freeipa.ipaservice:
         ipaadmin_password: "{{ ipaadmin_password }}"
         name: "nfs/proxmox.{{ subdomain }}.{{ domain }}"
+        host: "proxmox.{{ subdomain }}.{{ domain }}"
         skip_host_check: true
 
     - name: Configure users and groups

@@ -8,4 +8,4 @@
   ansible.builtin.shell:
     cmd: "ipa-client-install --force-join --principal {{ principal }} --password {{ password }} --unattended"
   register: result
-  failed_when: result.rc != 0 and '--uninstall' not in result.stderr
+  failed_when: result.rc != 0 and 'IPA client is already configured on this system' not in result.stderr

@@ -47,5 +47,6 @@
     keytab: true
     keytab_path: /etc/krb5.keytab
 
+# nfs/proxmox_fqdn service must first be present in the idm domain
 - name: Retrieve nfs service keytab
   ansible.builtin.shell: ipa-getkeytab -s money.{{ subdomain }}.{{ domain }} -p nfs/{{ node_name }}.{{ subdomain }}.{{ domain }} -k /etc/krb5.keytab

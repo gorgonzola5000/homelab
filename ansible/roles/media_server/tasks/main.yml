@@ -6,12 +6,12 @@
 
 - name: Mount an NFS volume
   block:
-  - name: Mount an NFS volume
-    ansible.posix.mount:
-      src: proxmox.{{ subdomain }}.{{ domain }}:/mpool/media
-      path: /mnt/volume
-      state: mounted
-      fstype: nfs
+    - name: Mount an NFS volume
+      ansible.posix.mount:
+        src: proxmox.{{ subdomain }}.{{ domain }}:/media
+        path: /mnt/volume
+        state: mounted
+        fstype: nfs
   rescue:
     - name: Reboot the system before retrying NFS mount
       ansible.builtin.reboot:
