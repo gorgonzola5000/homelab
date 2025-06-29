@@ -2,7 +2,7 @@
 Description=Open-source software alternative to uTorrent
 
 [Container]
-Image=ghcr.io/home-operations/qbittorrent:5.1.0
+Image=ghcr.io/home-operations/qbittorrent:5.1.1
 
 Volume=/home/qbittorrent/config:/config:Z
 Volume=/mnt/volume/data:/data:z
