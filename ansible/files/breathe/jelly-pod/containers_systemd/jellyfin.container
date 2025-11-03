@@ -2,7 +2,7 @@
 Description=Jellyfin - The Free Software Media System
 
 [Container]
-Image=docker.io/jellyfin/jellyfin:10.10.7
+Image=docker.io/jellyfin/jellyfin:10.11.2
 
 Volume=/home/jelly-pod/jellyfin-config:/config
 Volume=/mnt/volume/data/media:/media:z
