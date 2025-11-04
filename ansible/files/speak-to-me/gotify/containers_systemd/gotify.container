@@ -2,7 +2,7 @@
 Description=Gotify - A simple server for sending and receiving messages
 
 [Container]
-Image=ghcr.io/gotify/server:2.6.3
+Image=ghcr.io/gotify/server:2.7.3
 
 PublishPort=50010:80
 
