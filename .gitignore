@@ -33,5 +33,11 @@ terraform.rc
 packer/*/images/**
 packer/*/packer_key
 
+*.env
+!*gitkeep*
 
-.env
+preseed.cfg
+.venv
+*.iso
+
+ansible/execution_environment/context/*
