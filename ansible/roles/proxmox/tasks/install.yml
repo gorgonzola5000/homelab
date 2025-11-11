@@ -1,0 +1,122 @@
+---
+- name: Configure the primary network interface
+  vars:
+    fqdn: "{{ ansible_facts['fqdn'] }}"
+    hostname: "{{ ansible_facts['hostname'] }}"
+    primary_ip: "{{ ansible_facts['default_ipv4']['address'] }}"
+    primary_gateway: "{{ ansible_facts['default_ipv4']['gateway'] }}"
+  notify: Restart networking service
+  block:
+    - name: Ensure bridge-utils is installed
+      ansible.builtin.apt:
+        name: bridge-utils
+        state: present
+
+    - name: Set /etc/network/interfaces
+      ansible.builtin.copy:
+        src: etc-network-interfaces
+        dest: /etc/network/interfaces
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: "Deploy interface configuration for {{ primary_interface }}"
+      ansible.builtin.template:
+        src: primary_interface.conf.j2
+        dest: "/etc/network/interfaces.d/{{ primary_interface }}"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Deploy vmbr0 bridge configuration
+      ansible.builtin.template:
+        src: vmbr0.j2
+        dest: "/etc/network/interfaces.d/vmbr0"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Ensure /etc/hosts file has the correct entry
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: '.*\s{{ fqdn }}(\s.*)?$'
+        line: "{{ primary_ip }} {{ fqdn }} {{ hostname }}"
+        create: true
+        owner: root
+        group: root
+        mode: '0644'
+  always:
+    - name: Restart networking service
+      ansible.builtin.meta: flush_handlers
+
+- name: Set up Proxmox repositories
+  block:
+    - name: Ensure gpg is installed
+      ansible.builtin.apt:
+        name: gpg
+        state: present
+
+    - name: Add the Proxmox key
+      ansible.builtin.get_url:
+        url: https://enterprise.proxmox.com/debian/proxmox-archive-keyring-trixie.gpg
+        dest: /usr/share/keyrings/proxmox-archive-keyring.gpg
+        checksum: sha256:136673be77aba35dcce385b28737689ad64fd785a797e57897589aed08db6e45
+        mode: "0644"
+
+    - name: Add pve-no-subscription repository
+      ansible.builtin.copy:
+        src: pve-repo.sources
+        dest: /etc/apt/sources.list.d/pve-install-repo.sources
+        mode: "0644"
+
+- name: Delete conflicting packages, upgrade and install Proxmox kernel
+  notify: Reboot
+  block:
+    - name: Ensure ntp and related packages are absent
+      ansible.builtin.apt:
+        name:
+          - ntp
+          - ntpsec
+          - ntpsec-ntpdate
+        state: absent
+
+    - name: Update all packages
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: full
+
+    - name: Install Proxmox VE Kernel
+      ansible.builtin.apt:
+        name: proxmox-default-kernel
+        state: present
+  always:
+    - name: Reboot after upgrading packages and installing Proxmox kernel
+      ansible.builtin.meta: flush_handlers
+
+- name: Install Proxmox VE and dependencies
+  ansible.builtin.apt:
+    name:
+      - proxmox-ve
+      - postfix
+      - open-iscsi
+      - chrony
+    state: present
+
+- name: Remove pve-enterprise repository
+  ansible.builtin.deb822_repository:
+    name: pve-enterprise
+    types: deb
+    uris: https://enterprise.proxmox.com/debian/pve
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: pve-enterprise
+    state: absent
+
+- name: Remove the Debian kernel and os-prober
+  ansible.builtin.apt:
+    name:
+      - linux-image-amd64
+      - os-prober
+    state: absent
+  notify:
+    - Update GRUB
+    - Reboot

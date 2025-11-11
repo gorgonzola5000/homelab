@@ -30,7 +30,7 @@
 - name: Ensure NOPASSWD for certain proxmox commands
   ansible.builtin.blockinfile:
     state: present
-    path: "/etc/sudoers.d/terraform"
+    path: "/etc/sudoers.d/91-terraform"
     validate: /usr/sbin/visudo -cf %s
     create: true
     owner: root

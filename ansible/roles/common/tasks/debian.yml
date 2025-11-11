@@ -18,4 +18,4 @@
     question: unattended-upgrades/enable_auto_updates
     vtype: boolean
     value: 'true'
-  notify: dpkg-reconfigure unattended-upgrades
+  notify: Run dpkg-reconfigure unattended-upgrades

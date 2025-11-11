@@ -1,0 +1,64 @@
+---
+- name: Ensure sudo is installed
+  ansible.builtin.package:
+    name:
+      - sudo
+    state: present
+
+- name: Ensure group "sudo" exists
+  ansible.builtin.group:
+    name: sudo
+    state: present
+
+- name: Ensure terraform user exists in PAM realm
+  ansible.builtin.user:
+    shell: "/bin/bash"
+    name: terraform
+    create_home: true
+    groups: sudo
+    append: true
+    password: "{{ vault_terraform_password_hash }}"
+
+- name: Check if public ssh key is present in authorized_keys
+  ansible.posix.authorized_key:
+    user: terraform
+    state: present
+    key: "{{ vault_terraform_public_key }}"
+
+- name: Ensure proxmoxer package is installed
+  ansible.builtin.apt:
+    name: python3-proxmoxer
+    state: present
+
+- name: Create terraform@pam user
+  community.proxmox.proxmox_user:
+    api_host: "{{ ansible_facts['fqdn'] }}"
+    api_user: root@pam
+    api_password: "{{ vault_proxmox_root_password }}"
+    name: terraform@pam
+
+- name: Assign the role to terraform@pam
+  community.proxmox.proxmox_access_acl:
+    api_host: "{{ ansible_facts['fqdn'] }}"
+    api_user: root@pam
+    api_password: "{{ vault_proxmox_root_password }}"
+    state: present
+    path: /
+    type: user
+    ugid: terraform@pam
+    roleid: Administrator
+    propagate: true
+
+- name: Ensure NOPASSWD for certain proxmox commands
+  ansible.builtin.blockinfile:
+    state: present
+    path: "/etc/sudoers.d/91-terraform"
+    validate: /usr/sbin/visudo -cf %s
+    create: true
+    owner: root
+    group: root
+    mode: '0400'
+    block: |
+      terraform ALL=(root) NOPASSWD: /sbin/pvesm
+      terraform ALL=(root) NOPASSWD: /sbin/qm
+      terraform ALL=(root) NOPASSWD: /usr/bin/tee /var/lib/vz/*

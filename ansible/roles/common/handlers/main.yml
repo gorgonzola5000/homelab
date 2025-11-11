@@ -3,10 +3,8 @@
   ansible.builtin.service:
     name: sshd
     state: restarted
-  listen: restart sshd
 
 - name: Run dpkg-reconfigure unattended-upgrades
   ansible.builtin.shell:
-    cmd: dpkg-reconfigure -f noninteractive unattended-upgrades
-  listen: dpkg-reconfigure unattended-upgrades
+    cmd: 'dpkg-reconfigure -f noninteractive unattended-upgrades'
   changed_when: true

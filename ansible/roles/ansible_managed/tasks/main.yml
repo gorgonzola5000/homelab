@@ -40,7 +40,7 @@
 
 - name: Ensure passwordless sudo for user ansible
   ansible.builtin.lineinfile:
-    path: /etc/sudoers.d/ansible
+    path: /etc/sudoers.d/90-ansible
     line: 'ansible ALL=(ALL) NOPASSWD:ALL'
     mode: '0440'
     owner: root

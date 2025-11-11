@@ -1,0 +1,4 @@
+fearless:
+  hosts:
+    fearless.home.parents-basement.win:
+      primary_interface: enp3s0

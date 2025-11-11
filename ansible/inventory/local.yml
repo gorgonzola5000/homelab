@@ -1,0 +1,4 @@
+fearless:
+  hosts:
+    fearless-local.home.parents-basement.win:
+      primary_interface: "{{ lookup('env', 'PRIMARY_INTERFACE') }}"
