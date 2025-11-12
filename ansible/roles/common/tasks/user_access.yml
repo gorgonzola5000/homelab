@@ -42,16 +42,11 @@
     - name: Touch a file sshd config overwrite file
       ansible.builtin.file:
         path: /etc/ssh/sshd_config.d/overwrite
-        state: touch
-        modification_time: preserve
-        access_time: preserve
-        mode: '0644'
-        owner: root
-        group: root
+        state: absent
 
     - name: Disallow SSH password authentication
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config.d/overwrite
+        path: /etc/ssh/sshd_config
         line: 'PasswordAuthentication no'
         state: present
         validate: sshd -t -f %s

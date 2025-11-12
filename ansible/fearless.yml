@@ -1,18 +1,11 @@
 ---
-- name: Configure Proxmox Node
-  #  vars:
-  #    node_name: proxmox
-  #    subdomain: home
-  #    domain: parents-basement.win
-  #  hosts: "{{ node_name }}.{{ subdomain }}.{{ domain }}"
+- name: Configure host Fearless
   hosts: fearless
   become: true
   roles:
-    - role: common
-      vars:
-        root_password_hash: "{{ vault_proxmox_root_password_hash }}"
+    - clevis
+    - common
     - proxmox
-    #- terraform_managed
     - ansible_managed
 #
 #    - role: linux-system-roles.certificate
