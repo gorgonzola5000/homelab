@@ -1,0 +1,9 @@
+fearless:
+  hosts:
+    fearless.home.parents-basement.win:
+      primary_interface: enp3s0
+      root_password_hash: "{{ vault_proxmox_root_password_hash }}"
+      clevis_bindings:
+        device: /dev/nvme0n1p3
+        servers:
+          - http://10.2.137.210:7500

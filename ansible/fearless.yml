@@ -1,0 +1,31 @@
+---
+- name: Configure host Fearless
+  hosts: fearless
+  become: true
+  roles:
+    - clevis
+    - common
+    - proxmox
+    - ansible_managed
+#
+#    - role: linux-system-roles.certificate
+#      vars:
+#        certificate_requests:
+#          - name: proxmox-ssl
+#            ca: ipa
+#            dns: "{{ inventory_hostname }}"
+#            principal: HTTP/{{ inventory_hostname }}@HOME.PARENTS-BASEMENT.WIN
+#
+#    - role: nginx
+#      tags: nginx
+#  tasks:
+#    - name: Install externally provided certificate
+#      ansible.builtin.shell: pvenode cert set /etc/ssl/certs/proxmox-ssl.crt /etc/ssl/private/proxmox-ssl.key --force --restart
+#
+#    - name: Get Kerberos ticket using keytab
+#      community.general.krb_ticket:
+#        keytab: true
+#        keytab_path: /etc/krb5.keytab
+#
+#    - name: Retrieve nfs service keytab
+#      ansible.builtin.shell: ipa-getkeytab -s money.{{ subdomain }}.{{ domain }} -p nfs/{{ node_name }}.{{ subdomain }}.{{ domain }} -k /etc/krb5.keytab

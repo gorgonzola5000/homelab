@@ -1,0 +1,10 @@
+proxmox_hostname          = "fearless-local"
+proxmox_ip                = "192.168.122.50"
+gateway_ip                = "192.168.122.1"
+talos_cluster_name        = "meddle-local"
+talos_hostname            = "echoes-local"
+talos_ip                  = "192.168.122.51"
+talos_mac_address         = "F2:FA:CE:B0:0C:11"
+talos_kubernetes_endpoint = "api.meddle-local.home.parents-basement.win"
+# 6 gibibytes
+talos_ram = 6144

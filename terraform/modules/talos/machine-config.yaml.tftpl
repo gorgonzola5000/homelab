@@ -1,0 +1,50 @@
+machine:
+  certSANs:
+      - ${kubernetes_endpoint}
+  install:
+    image: ${talos_image}
+  kernel:
+    modules:
+      - name: zfs
+  network:
+    hostname: ${hostname}
+    interfaces:
+      - deviceSelector:
+          hardwareAddr: ${mac_address}
+        addresses:
+          - ${ip}${subnet_mask}
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+        dhcp: false
+  sysctls:
+    vm.nr_hugepages: "1024"
+  kubelet:
+    extraMounts:
+      - destination: /var/local
+        type: bind
+        source: /var/local
+        options:
+          - bind
+          - rshared
+          - rw
+cluster:
+  allowSchedulingOnControlPlanes: true
+  extraManifests:
+    - "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml"
+  apiServer:
+    certSANs:
+      - ${kubernetes_endpoint}
+    admissionControl:
+      - name: PodSecurity
+        configuration:
+          apiVersion: pod-security.admission.config.k8s.io/v1beta1
+          kind: PodSecurityConfiguration
+          exemptions:
+            namespaces:
+              - openebs
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true

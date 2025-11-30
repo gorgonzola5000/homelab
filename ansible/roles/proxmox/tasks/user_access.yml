@@ -1,0 +1,19 @@
+---
+- name: Create user {{ vault_admin_username }}@pam
+  community.proxmox.proxmox_user:
+    api_host: "{{ ansible_facts['fqdn'] }}"
+    api_user: root@pam
+    api_password: "{{ vault_proxmox_root_password }}"
+    name: "{{ vault_admin_username }}@pam"
+
+- name: Assign the role to {{ vault_admin_username }}@pam
+  community.proxmox.proxmox_access_acl:
+    api_host: "{{ ansible_facts['fqdn'] }}"
+    api_user: root@pam
+    api_password: "{{ vault_proxmox_root_password }}"
+    state: present
+    path: /
+    type: user
+    ugid: "{{ vault_admin_username }}@pam"
+    roleid: Administrator
+    propagate: true
