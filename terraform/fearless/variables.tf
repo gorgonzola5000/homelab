@@ -60,3 +60,8 @@ variable "gitlab_token" {
 variable "proxmox_physical_host" {
   type = bool
 }
+
+variable "passphrase" {
+  type      = string
+  sensitive = true
+}

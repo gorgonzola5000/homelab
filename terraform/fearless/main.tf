@@ -16,11 +16,12 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   cpu {
-    cores = 2
+    cores = 6
     type  = "host"
   }
 
   machine = "q35"
+  bios    = "ovmf"
 
   disk {
     datastore_id = local.proxmox_datastore_id
@@ -42,11 +43,11 @@ resource "proxmox_virtual_environment_vm" "this" {
     for_each = var.proxmox_physical_host ? [1] : []
 
     content {
-      device = "hostpci0"
+      device  = "hostpci0"
       mapping = proxmox_virtual_environment_hardware_mapping_pci.this[0].name
-      rombar = true
-      xvga   = false
-      pcie   = true
+      rombar  = true
+      xvga    = false
+      pcie    = true
     }
   }
 

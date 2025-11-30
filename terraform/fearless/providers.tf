@@ -1,5 +1,17 @@
 terraform {
   backend "http" {}
+  encryption {
+    key_provider "pbkdf2" "this" {
+      passphrase = var.passphrase
+    }
+    method "aes_gcm" "this" {
+      keys = key_provider.pbkdf2.this
+    }
+    state {
+      method = method.aes_gcm.this
+      enforced = true
+    }
+  }
   required_providers {
     proxmox = {
       version = "0.86.0"
