@@ -1,5 +1,0 @@
-#cloud-config
-users:
-- name: root
-  ssh_authorized_keys:
-    - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINoexRWqDPLn16E6Jezr0z+gFFFrae+Y0Yj77PpmcKlt gorgonzola5000@ThinkPad-T480s"
