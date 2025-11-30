@@ -31,7 +31,7 @@ terraform {
     }
     gitlab = {
       source  = "gitlabhq/gitlab"
-      version = "18.3.0"
+      version = "18.6.1"
     }
     flux = {
       source  = "fluxcd/flux"
