@@ -1,0 +1,15 @@
+apiVersion: v1alpha1
+kind: RawVolumeConfig
+name: openebs-vol-${index}
+provisioning:
+  diskSelector:
+    match: disk.wwid == "${wwid}"
+  minSize: 2GB
+encryption:
+    provider: luks2
+    keys:
+        - slot: 0
+          static:
+            passphrase: ${passphrase}
+    cipher: aes-xts-plain64
+    blockSize: 4096

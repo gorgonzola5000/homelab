@@ -87,3 +87,13 @@ variable "is_bare_metal" {
   type        = bool
   default     = false
 }
+
+variable "zfs_pool_passphrase" {
+  type      = string
+  sensitive = true
+}
+
+variable "disk_wwids" {
+  description = "List of Disk WWIDs for the ZFS pool"
+  type        = list(string)
+}

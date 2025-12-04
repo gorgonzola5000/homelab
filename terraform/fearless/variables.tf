@@ -62,6 +62,17 @@ variable "proxmox_physical_host" {
 }
 
 variable "passphrase" {
+  type        = string
+  sensitive   = true
+  description = "State encryption passphrase"
+}
+
+variable "talos_zfs_pool_passphrase" {
   type      = string
   sensitive = true
+}
+
+variable "talos_disk_wwids" {
+  type        = list(string)
+  description = "List of Disk WWIDs"
 }

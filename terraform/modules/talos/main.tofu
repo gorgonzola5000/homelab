@@ -85,6 +85,16 @@ locals {
   ]
 
   bare_metal_patches = var.is_bare_metal ? [yamlencode(var.install_disk)] : []
+
+  install_config_patches = concat(local.base_config_patches, local.bare_metal_patches)
+
+  zfs_disk = [
+    for i, wwid in var.disk_wwids : templatefile("${path.module}/zfs-pool-disk.yaml.tftpl", {
+      index      = tostring(i) # Automatically becomes "0", "1", "2"...
+      wwid       = wwid
+      passphrase = var.zfs_pool_passphrase
+    })
+  ]
 }
 
 data "talos_machine_configuration" "controlplane" {
@@ -96,7 +106,7 @@ data "talos_machine_configuration" "controlplane" {
   kubernetes_version = var.kubernetes_version
   docs               = false
   examples           = false
-  config_patches     = concat(local.base_config_patches, local.bare_metal_patches)
+  config_patches     = flatten([local.install_config_patches, local.zfs_disk])
 }
 
 resource "talos_machine_configuration_apply" "controlplane" {

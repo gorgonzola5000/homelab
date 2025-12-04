@@ -8,7 +8,7 @@ terraform {
       keys = key_provider.pbkdf2.this
     }
     state {
-      method = method.aes_gcm.this
+      method   = method.aes_gcm.this
       enforced = true
     }
   }
