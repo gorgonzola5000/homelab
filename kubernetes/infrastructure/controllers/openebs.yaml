@@ -14,11 +14,11 @@ metadata:
   name: openebs
   namespace: flux-system
 spec:
-  version: "4.4.0"
   chart:
     spec:
       chart: openebs
       reconcileStrategy: ChartVersion
+      version: "4.4.0"
       sourceRef:
         kind: HelmRepository
         name: openebs
@@ -27,12 +27,17 @@ spec:
   install:
     createNamespace: false
   values:
+    zfs-localpv:
+      zfsNode:
+        encrKeysDir: "/var/openebs/keys"
     alloy:
       enabled: false
     loki:
       enabled: false
     engines:
       local:
+        zfs:
+          enabled: true
         lvm:
           enabled: false
       replicated:
@@ -48,9 +53,12 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: zfspv
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
 parameters:
   fstype: "zfs"
   shared: "yes"
   poolname: "tank"
   compression: "lz4"
 provisioner: zfs.csi.openebs.io
+reclaimPolicy: Retain

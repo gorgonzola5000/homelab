@@ -11,8 +11,8 @@ spec:
   retryInterval: 2m
   timeout: 5m
   sourceRef:
-    kind: ExternalArtifact
-    name: apps
-  path: ./production
+    kind: GitRepository
+    name: flux-system
+  path: ./kubernetes/apps/meddle
   prune: true
   wait: true

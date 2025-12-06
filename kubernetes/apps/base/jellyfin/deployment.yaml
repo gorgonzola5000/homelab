@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: media
+  labels:
+    app: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+        - name: jellyfin
+          image: ghcr.io/jellyfin/jellyfin:10.11.4.20251201-025340
+          ports:
+            - containerPort: 8096
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: music
+              mountPath: /mnt/media/music
+            - name: cache
+              mountPath: /cache
+            - name: tmp
+              mountPath: /tmp
+
+      volumes:
+        - name: music
+          persistentVolumeClaim:
+            claimName: music
+            readOnly: true
+        - name: config
+          persistentVolumeClaim:
+            claimName: jellyfin-config
+        - name: cache
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
