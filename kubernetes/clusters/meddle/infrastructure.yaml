@@ -39,3 +39,10 @@ spec:
       target:
         kind: ClusterIssuer
         name: letsencrypt
+    - patch: |
+        - op: replace
+          path: /spec/path
+          value: ./sops/meddle
+      target:
+        kind: Kustomization
+        name: secrets

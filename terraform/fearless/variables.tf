@@ -76,3 +76,7 @@ variable "talos_disk_wwids" {
   type        = list(string)
   description = "List of Disk WWIDs"
 }
+
+variable "sops_age_key_path" {
+  type = string
+}

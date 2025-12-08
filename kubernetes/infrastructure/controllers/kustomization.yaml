@@ -4,3 +4,4 @@ resources:
   - openebs.yaml
   - cert-manager.yaml
   - gateway.yaml
+  - sops.yaml

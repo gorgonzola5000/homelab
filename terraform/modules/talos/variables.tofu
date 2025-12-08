@@ -97,3 +97,14 @@ variable "disk_wwids" {
   description = "List of Disk WWIDs for the ZFS pool"
   type        = list(string)
 }
+
+variable "encrypted_age_key_path" {
+  description = "Path to the SOPS-encrypted YAML file containing the Age key (relative to the root module execution)."
+  type        = string
+}
+
+variable "age_key_yaml_key" {
+  description = "The key in the YAML file that holds the Age private key string."
+  type        = string
+  default     = "age_key"
+}
