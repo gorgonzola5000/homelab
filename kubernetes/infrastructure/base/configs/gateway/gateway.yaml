@@ -7,14 +7,20 @@ spec:
   gatewayClassName: cilium
   listeners:
     - name: http
+      hostname: "*.home.parents-basement.win"
       protocol: HTTP
       port: 80
       allowedRoutes:
         namespaces:
           from: All
     - name: https
+      hostname: "*.home.parents-basement.win"
       protocol: HTTPS
       port: 443
       allowedRoutes:
         namespaces:
           from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-tls-secret
