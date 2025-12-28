@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jellyfin
-  namespace: media
+  namespace: redmanager
   labels:
     app: jellyfin
 spec:

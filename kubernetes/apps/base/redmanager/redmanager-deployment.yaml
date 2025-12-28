@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redmanager
+  namespace: redmanager
+  labels:
+    app: redmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redmanager
+  template:
+    metadata:
+      labels:
+        app: redmanager
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: redmanager
+          image: registry.gitlab.com/starfruit6000/redmanager/test@sha256:48b039b7d12448ec247e6561b50b6c2b65d1c92705cf4e5bba180f73a25e5a1e
+          env:
+            - name: DB_HOST
+              value: "postgres"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              value: "redmanager_db"
+            - name: TRANSMISSION_HOST
+              value: "transmission:9091"
+            - name: TRANSMISSION_USER
+              value: "admin"
+            - name: TRANSMISSION_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: TRANSMISSION_PASS
+            - name: REDMANAGER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: REDMANAGER_API_KEY
+            - name: RED_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: RED_API_KEY
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
