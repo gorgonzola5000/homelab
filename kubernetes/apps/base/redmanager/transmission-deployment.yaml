@@ -30,16 +30,16 @@ spec:
           env:
             - name: FIREWALL_INPUT_PORTS
               value: "9091"
-            #            - name: FIREWALL_OUTBOUND_SUBNETS
-            #              value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-            - name: FIREWALL_DEBUG
-              value: "on"
+            - name: SERVER_COUNTRIES
+              value: Poland
+            - name: PORT_FORWARD_ONLY
+              value: on
             - name: VPN_SERVICE_PROVIDER
-              value: "protonvpn"
+              value: protonvpn
             - name: VPN_PORT_FORWARDING
-              value: "on"
+              value: on
             - name: VPN_TYPE
-              value: "wireguard"
+              value: wireguard
             - name: WIREGUARD_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
