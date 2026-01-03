@@ -21,7 +21,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: gluetun
-          image: qmcgaw/gluetun@sha256:d7a95039d240aa9cd2a13996a9f61b43a8378b1104eea2cc5ebb0140d160ff25
+          image: qmcgaw/gluetun@sha256:53c63cf35260ddd58da322ce1e1d87cb14358bbb011fba100676692be97be970
           securityContext:
             runAsUser: 0
             runAsGroup: 0
