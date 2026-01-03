@@ -50,7 +50,7 @@ spec:
               protocol: TCP
 
         - name: transmission
-          image: ghcr.io/home-operations/transmission@sha256:c7b5b2228fa6702f20e4d6c1e4d2b558e4f46383211ae7b13c9383875324fb77
+          image: ghcr.io/home-operations/transmission:rolling@sha256:c7b5b2228fa6702f20e4d6c1e4d2b558e4f46383211ae7b13c9383875324fb77
           env:
             - name: TRANSMISSION__RPC_USERNAME
               valueFrom:
