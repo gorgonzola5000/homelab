@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: jellyfin
+  name: gonic
   namespace: redmanager
 spec:
   type: ClusterIP
   selector:
-    app: jellyfin
+    app: gonic
   ports:
-    - name: web
-      port: 8096
+    - name: http
+      port: 4747

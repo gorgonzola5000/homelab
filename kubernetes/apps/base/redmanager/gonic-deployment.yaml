@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gonic
+  namespace: redmanager
+  labels:
+    app: gonic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gonic
+  template:
+    metadata:
+      labels:
+        app: gonic
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: gonic
+          image: ghcr.io/sentriz/gonic:latest@sha256:d22d04c9465e00db782e4fe489989977381f7b87a7390fd89c127672eaf31aef
+          env:
+            - name: GONIC_MUSIC_PATH
+              value: /music
+            - name: GONIC_PODCAST_PATH
+              value: /tmp-podcast
+            - name: GONIC_PLAYLISTS_PATH
+              value: /tmp-playlists
+            - name: GONIC_CACHE_PATH
+              value: /tmp-cache
+            - name: GONIC_LISTEN_ADDR
+              value: "0.0.0.0:4747"
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 4747
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: music
+              mountPath: /music
+            - name: tmp-podcast
+              mountPath: /tmp-podcast
+            - name: tmp-playlists
+              mountPath: /tmp-playlists
+            - name: tmp-cache
+              mountPath: /tmp-cache
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gonic-data
+        - name: music
+          persistentVolumeClaim:
+            claimName: music
+        - name: tmp-podcast
+          emptyDir: {}
+        - name: tmp-playlists
+          emptyDir: {}
+        - name: tmp-cache
+          emptyDir: {}
