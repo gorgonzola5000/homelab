@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrtag
+  labels:
+    app: wrtag
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wrtag
+  template:
+    metadata:
+      labels:
+        app: wrtag
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: wrtag
+          image: ghcr.io/gorgonzola5000/wrtag:docker-flac-transcode@sha256:8af899f05a20d6ac2432010b25632693055cb0ba32861296db4918a6a432e9de
+          env:
+            - name: WRTAG_WEB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: WRTAG_WEB_API_KEY
+            - name: WRTAG_PATH_FORMAT
+              value: '/music/{{ artists .Release.Artists | sort | join "; " | safepath }}/({{ .Release.ReleaseGroup.FirstReleaseDate.Year }}) {{ .Release.Title | safepath }}{{ if not (eq .ReleaseDisambiguation "") }} ({{ .ReleaseDisambiguation | safepath }}){{ end }}/{{ pad0 2 .TrackNum }}.{{ len .Tracks | pad0 2 }} {{ if .IsCompilation }}{{ artistsString .Track.Artists | safepath }} - {{ end }}{{ .Track.Title | safepath }}{{ .Ext }}'
+            - name: WRTAG_ADDON
+              value: "subproc /usr/bin/flac --compression-level-5 --delete-input-file -f -w <files>"
+            - name: WRTAG_LOG_LEVEL
+              value: debug
+          volumeMounts:
+            - name: redmanager-download
+              mountPath: /downloads
+            - name: music
+              mountPath: /music
+          ports:
+            - containerPort: 7373
+              protocol: TCP
+
+      volumes:
+        - name: redmanager-download
+          persistentVolumeClaim:
+            claimName: redmanager-download
+        - name: music
+          persistentVolumeClaim:
+            claimName: music

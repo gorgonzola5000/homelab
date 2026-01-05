@@ -22,7 +22,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: redmanager
-          image: registry.gitlab.com/starfruit6000/redmanager:latest@sha256:d9458ecc639c6a87e0aae83fa1331261972ce2b192ab7f87993a80240d4adcc2
+          image: registry.gitlab.com/starfruit6000/redmanager:latest@sha256:c8b346e9cc3f2ea127dd067fa1ef57751411324d66cf256888cc432507190ece
           env:
             - name: DB_HOST
               value: "postgres"
@@ -57,6 +57,13 @@ spec:
                 secretKeyRef:
                   name: redmanager-secret
                   key: RED_API_KEY
+            - name: WRTAG_WEB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: WRTAG_WEB_API_KEY
+            - name: WRTAG_URL
+              value: "http://wrtag:7373"
           securityContext:
             seccompProfile:
               type: RuntimeDefault

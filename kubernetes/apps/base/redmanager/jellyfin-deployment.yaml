@@ -49,7 +49,6 @@ spec:
         - name: music
           persistentVolumeClaim:
             claimName: music
-            readOnly: true
         - name: config
           persistentVolumeClaim:
             claimName: jellyfin-config
