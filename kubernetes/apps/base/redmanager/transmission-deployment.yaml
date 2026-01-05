@@ -67,6 +67,20 @@ spec:
               mountPath: /downloads
             - name: transmission-config
               mountPath: /config
+
+          #        - name: liveness
+          #          image: registry.k8s.io/busybox:1.27.2
+          #          args:
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "nslookup google.com > /dev/null 2>&1"
+            initialDelaySeconds: 300
+            periodSeconds: 300
+            timeoutSeconds: 20
+            failureThreshold: 1
       volumes:
         - name: redmanager-download
           persistentVolumeClaim:
