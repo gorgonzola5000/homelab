@@ -5,6 +5,8 @@ metadata:
   labels:
     app: transmission
 spec:
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -14,14 +16,21 @@ spec:
       labels:
         app: transmission
     spec:
+      #dnsPolicy: Default
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 1.1.1.1
+          - 8.8.8.8
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
-      containers:
-        - name: gluetun
+      initContainers:
+        - name: gluetun-sidecar
           image: qmcgaw/gluetun@sha256:53c63cf35260ddd58da322ce1e1d87cb14358bbb011fba100676692be97be970
+          restartPolicy: Always
           securityContext:
             runAsUser: 0
             runAsGroup: 0
@@ -45,10 +54,60 @@ spec:
                 secretKeyRef:
                   name: redmanager-secret
                   key: WIREGUARD_PRIVATE_KEY
+            - name: LOG_LEVEL
+              value: info
+            - name: BLOCK_MALICIOUS
+              value: off
+            - name: BLOCK_SURVEILLANCE
+              value: off
+            - name: BLOCK_ADS
+              value: off
+            - name: HEALTH_RESTART_VPN
+              value: off
+            - name: DNS_UPSTREAM_IPV6
+              value: on
+            - name: DNS_SERVER
+              value: off
+            - name: VPN_PORT_FORWARDING_UP_COMMAND
+              value: "/usr/local/bin/transmission-port-update.sh --user $TRANSMISSION__RPC_USERNAME --pass $TRANSMISSION__RPC_PASSWORD --port {{PORTS}}"
+            - name: TRANSMISSION__RPC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: TRANSMISSION_USER
+            - name: TRANSMISSION__RPC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: TRANSMISSION_PASS
+          volumeMounts:
+            - name: transmission-port-update
+              mountPath: /usr/local/bin/transmission-port-update.sh
+              subPath: transmission-port-update.sh
           ports:
             - containerPort: 9091
               protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "nslookup google.com"
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "nslookup google.com"
+            initialDelaySeconds: 600
+            periodSeconds: 30
+            timeoutSeconds: 10
 
+      containers:
         - name: transmission
           image: ghcr.io/home-operations/transmission:rolling@sha256:9809bf792c95d2258827509fe1fafabf74f86bd2469fcf4f0aba95f18283d1c7
           env:
@@ -67,20 +126,6 @@ spec:
               mountPath: /downloads
             - name: transmission-config
               mountPath: /config
-
-          #        - name: liveness
-          #          image: registry.k8s.io/busybox:1.27.2
-          #          args:
-          livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - "nslookup google.com > /dev/null 2>&1"
-            initialDelaySeconds: 300
-            periodSeconds: 300
-            timeoutSeconds: 20
-            failureThreshold: 1
       volumes:
         - name: redmanager-download
           persistentVolumeClaim:
@@ -88,3 +133,7 @@ spec:
         - name: transmission-config
           persistentVolumeClaim:
             claimName: transmission-config
+        - name: transmission-port-update
+          configMap:
+            name: transmission-port-update
+            defaultMode: 0744
