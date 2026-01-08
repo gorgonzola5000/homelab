@@ -76,3 +76,9 @@ spec:
             - containerPort: 8080
               name: http
               protocol: TCP
+          volumeMounts:
+            - name: redmanager-transmission-shared
+              mountPath: /redmanager-transmission-shared
+      volumes:
+        - name: redmanager-transmission-shared
+          mountPath: /redmanager-transmission-shared

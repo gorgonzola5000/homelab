@@ -126,6 +126,8 @@ spec:
               mountPath: /downloads
             - name: transmission-config
               mountPath: /config
+            - name: redmanager-transmission-shared
+              mountPath: /redmanager-transmission-shared
       volumes:
         - name: redmanager-download
           persistentVolumeClaim:
@@ -137,3 +139,5 @@ spec:
           configMap:
             name: transmission-port-update
             defaultMode: 0744
+        - name: redmanager-transmission-shared
+          mountPath: /redmanager-transmission-shared
