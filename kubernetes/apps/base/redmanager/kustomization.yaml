@@ -14,7 +14,6 @@ resources:
   - redmanager-svc.yaml
   - transmission-configmap.yaml
   - transmission-deployment.yaml
-  - transmission-http-route.yaml
   - transmission-svc.yaml
   - wrtag-deployment.yaml
   - wrtag-svc.yaml
