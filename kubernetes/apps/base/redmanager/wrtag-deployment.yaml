@@ -21,7 +21,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: wrtag
-          image: ghcr.io/gorgonzola5000/wrtag:docker-flac-transcode@sha256:a1e96b0c7cdd8a1cae3f8c471cf2916fd5fced69f1a289ec5769b0855853f6c4
+          image: ghcr.io/gorgonzola5000/wrtag:docker-flac-transcode@sha256:c5c3775cff80f289bbca16747e9d77cb9af761ff06249f58eeb1bd4c68b73fa0
           env:
             - name: WRTAG_WEB_API_KEY
               valueFrom:
