@@ -4,3 +4,4 @@ resources:
   - ../../base/controllers/cert-manager
   - ../../base/controllers/openebs
   - ../../base/controllers/monitoring
+  - grafana-secret.yaml
