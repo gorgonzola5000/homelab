@@ -7,5 +7,6 @@
     "managerFilePatterns": [
       "/kubernetes/.+\\.yaml$/"
     ]
-  }
+  },
+  "prConcurrentLimit": 0
 }
