@@ -1,0 +1,7 @@
+stages:
+  - renovate
+
+renovate:
+  stage: renovate
+  trigger:
+    project: starfruit6000/renovate
