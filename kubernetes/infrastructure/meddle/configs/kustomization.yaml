@@ -4,6 +4,7 @@ resources:
   - ../../base/configs/cert-manager
   - ../../base/configs/gateway
   - ../../base/configs/openebs
+  - ../../base/configs/monitoring
   - cloudflare-secret.enc.yaml
 patches:
   - path: lets-encrypt.yaml
