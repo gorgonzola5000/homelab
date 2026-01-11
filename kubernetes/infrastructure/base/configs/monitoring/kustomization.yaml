@@ -3,6 +3,9 @@ kind: Kustomization
 namespace: monitoring
 resources:
   - podmonitor.yaml
+  - openebs.yaml
+  - release.yaml
+  - http.yaml
 configMapGenerator:
   - name: flux-grafana-dashboards
     files:

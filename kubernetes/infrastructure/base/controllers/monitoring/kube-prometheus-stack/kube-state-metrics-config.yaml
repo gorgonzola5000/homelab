@@ -28,6 +28,11 @@ kube-state-metrics:
           - imagepolicies
           - imageupdateautomations
         verbs: ["list", "watch"]
+      - apiGroups: ["openebs.io"]
+        resources:
+          - blockdevices
+          - cstorpoolclusters
+        verbs: ["list", "watch"]
   customResourceState:
     enabled: true
     config:
@@ -275,3 +280,30 @@ kube-state-metrics:
                   ready: [status, conditions, "[type=Ready]", status]
                   suspended: [spec, suspend]
                   source_name: [spec, sourceRef, name]
+
+          - groupVersionKind:
+              group: openebs.io
+              kind: BlockDevice
+              version: v1alpha1
+            metricNamePrefix: openebs
+            metrics:
+              - name: "blockdevice_info"
+                help: "Information about BlockDevice"
+                each:
+                  type: Info
+                  info:
+                    labelsFromPath:
+                      name: [metadata, name]
+                      nodename: [metadata, labels, "kubernetes.io/hostname"]
+                  labelsFromPath:
+                    namespace: [metadata, namespace]
+                    status: [status, state]
+                    path: [spec, path]
+                    capacity: [spec, capacity, storage]
+              - name: "blockdevice_capacity_bytes"
+                help: "Capacity of BlockDevice in bytes"
+                each:
+                  type: Gauge
+                  gauge:
+                    path: [spec, capacity, storage]
+                    valueFrom: [spec, capacity, storage]
