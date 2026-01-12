@@ -44,3 +44,6 @@ spec:
         existingSecret: monitoring-secret
         userKey: grafana-admin-user
         passwordKey: grafana-admin-password
+      grafana.ini:
+        server:
+          root_url: https://grafana.home.parents-basement.win
