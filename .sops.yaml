@@ -7,6 +7,13 @@ creation_rules:
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb"
           - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
 
+  # talos and kube config files
+  - path_regex: sops/.*/(talos|kube)_config_.*\.enc$
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb"
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+
   # meddle encrypted files
   - path_regex: sops/meddle/.*\.enc\.yaml$
     encrypted_regex: "^(data|stringData)$"
