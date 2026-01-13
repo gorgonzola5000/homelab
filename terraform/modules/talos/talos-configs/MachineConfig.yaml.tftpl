@@ -6,17 +6,6 @@ machine:
   kernel:
     modules:
       - name: zfs
-  network:
-    hostname: ${hostname}
-    interfaces:
-      - deviceSelector:
-          hardwareAddr: ${mac_address}
-        addresses:
-          - ${ip}${subnet_mask}
-        routes:
-          - network: 0.0.0.0/0
-            gateway: ${gateway}
-        dhcp: false
   sysctls:
     vm.nr_hugepages: "1024"
   kubelet:
@@ -32,6 +21,7 @@ cluster:
   allowSchedulingOnControlPlanes: true
   extraManifests:
     - "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml"
+    - "https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.38.1/install.yaml"
   apiServer:
     certSANs:
       - ${kubernetes_endpoint}

@@ -52,15 +52,3 @@ data "talos_image_factory_urls" "this" {
   platform      = "metal"
   architecture  = "amd64"
 }
-
-#resource "null_resource" "download_iso" {
-#
-#  triggers = {
-#    iso_url     = data.talos_image_factory_urls.this.urls.iso
-#    output_path = basename(data.talos_image_factory_urls.this.urls.iso)
-#  }
-#
-#  provisioner "local-exec" {
-#    command = "curl -L -o ${self.triggers.output_path} ${self.triggers.iso_url}"
-#  }
-#}

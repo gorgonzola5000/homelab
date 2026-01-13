@@ -1,34 +1,10 @@
-#resource "kubernetes_manifest" "gateway_api_standard" {
-#  manifest = yamldecode(file("https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml"))
-#
-#  depends_on = [
-#    talos_cluster_kubeconfig.this
-#  ]
-#
-#  timeouts {
-#    create = "10m"
-#    update = "10m"
-#    delete = "30s"
-#  }
-#}
-
-data "talos_cluster_health" "wait_for_cluster" {
-  endpoints              = [var.kubernetes_endpoint]
-  client_configuration   = talos_machine_secrets.this.client_configuration
-  control_plane_nodes    = [var.ip]
-  skip_kubernetes_checks = true
-
-  depends_on = [
-    talos_cluster_kubeconfig.this
-  ]
-}
-
-resource "helm_release" "cilium" {
-  name       = "cilium"
-  repository = "https://helm.cilium.io/"
-  chart      = "cilium"
-  version    = "1.18.5"
-  namespace  = "kube-system"
+data "helm_template" "cilium" {
+  namespace    = "kube-system"
+  name         = "cilium"
+  repository   = "https://helm.cilium.io"
+  chart        = "cilium"
+  version      = "1.18.5"
+  kube_version = var.kubernetes_version
 
   set = [
     {
@@ -95,14 +71,5 @@ resource "helm_release" "cilium" {
       name  = "envoy.securityContext.capabilities.envoy"
       value = "{NET_BIND_SERVICE,NET_ADMIN,BPG,PERFORM,SYS_ADMIN}"
     }
-
   ]
-
-  #depends_on = [
-  #  kubernetes_manifest.gateway_api_standard
-  #]
-  depends_on = [
-    data.talos_cluster_health.wait_for_cluster
-  ]
-  timeout = 600 # wait up to 10 minutes
 }

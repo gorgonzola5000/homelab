@@ -1,10 +1,12 @@
 module "talos-iso" {
   source = "../modules//talos-iso"
 
-  hostname    = var.talos_hostname
-  gateway     = var.gateway_ip
-  static_ip   = var.talos_ip
-  subnet_mask = "/24"
+  hostname               = var.talos_hostname
+  gateway                = var.gateway_ip
+  static_ip              = var.talos_ip
+  subnet_mask            = "/24"
+  kubernetes_version     = "1.35.0"
+  talos_version_contract = "1.12.1"
 }
 
 module "talos" {
@@ -14,6 +16,8 @@ module "talos" {
   cluster_name           = var.talos_cluster_name
   hostname               = var.talos_hostname
   kubernetes_endpoint    = var.talos_kubernetes_endpoint
+  kubernetes_version     = "1.35.0"
+  talos_version_contract = "1.12.1"
   gateway                = var.gateway_ip
   mac_address            = var.talos_mac_address
   ip                     = var.talos_ip

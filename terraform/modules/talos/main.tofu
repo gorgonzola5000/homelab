@@ -73,28 +73,69 @@ output "installer_image" {
 
 locals {
   base_config_patches = [
-    templatefile("${path.module}/machine-config.yaml.tftpl", {
-      hostname            = var.hostname
+    templatefile("${path.module}/talos-configs/MachineConfig.yaml.tftpl", {
       mac_address         = var.mac_address
-      ip                  = var.ip
-      subnet_mask         = var.subnet_mask
-      gateway             = var.gateway
       talos_image         = data.talos_image_factory_urls.this.urls.installer
       kubernetes_endpoint = var.kubernetes_endpoint
+    }),
+    templatefile("${path.module}/talos-configs/HostnameConfig.yaml.tftpl", {
+      hostname = var.hostname
     })
+    #    templatefile("${path.module}/talos-configs/LinkAliasConfig.yaml.tftpl", {
+    #      mac_address = var.mac_address
+    #    }),
+    #    templatefile("${path.module}/talos-configs/LinkConfig.yaml.tftpl", {
+    #      ip          = var.ip
+    #      subnet_mask = var.subnet_mask
+    #      gateway     = var.gateway
+    #    })
   ]
-
   bare_metal_patches = var.is_bare_metal ? [yamlencode(var.install_disk)] : []
-
   install_config_patches = concat(local.base_config_patches, local.bare_metal_patches)
 
-  zfs_disk = [
-    for i, wwid in var.disk_wwids : templatefile("${path.module}/zfs-pool-disk.yaml.tftpl", {
-      index      = tostring(i) # Automatically becomes "0", "1", "2"...
+  zfs_disk_patches = [
+    for i, wwid in var.disk_wwids : templatefile("${path.module}/talos-configs/RawVolumeConfig.yaml.tftpl", {
+      index      = tostring(i)
       wwid       = wwid
       passphrase = var.zfs_pool_passphrase
     })
   ]
+
+  cilium_patch = [yamlencode({
+    cluster = {
+      inlineManifests = [
+        {
+          name     = "cilium"
+          contents = data.helm_template.cilium.manifest
+        }
+      ]
+    }
+  })]
+#
+#  flux_sops_secret_manifest = [yamlencode({
+#    cluster = {
+#      inlineManifests = [
+#        {
+#          apiVersion = "v1"
+#          kind       = "Secret"
+#          type       = "Opaque"
+#          metadata = {
+#            name      = "sops-age"
+#            namespace = "flux-system"
+#          }
+#          stringData = {
+#            "age.agekey" = data.sops_file.secret_zero.data[var.age_key_yaml_key]
+#          }
+#        }
+#  )]
+#
+#  flux_ns_manifest = [yamlencode({
+#    apiVersion = "v1"
+#    kind       = "Namespace"
+#    metadata = {
+#      name = "flux-system"
+#    }
+#  })]
 }
 
 data "talos_machine_configuration" "controlplane" {
@@ -106,7 +147,13 @@ data "talos_machine_configuration" "controlplane" {
   kubernetes_version = var.kubernetes_version
   docs               = false
   examples           = false
-  config_patches     = flatten([local.install_config_patches, local.zfs_disk])
+  config_patches = flatten([
+    local.install_config_patches,
+    local.zfs_disk_patches,
+    local.cilium_patch,
+#    flux_ns_manifest,
+#    flux_sops_secret_manifest,
+  ])
 }
 
 resource "talos_machine_configuration_apply" "controlplane" {
@@ -140,7 +187,6 @@ data "talos_cluster_health" "this" {
   depends_on = [
     talos_machine_configuration_apply.controlplane,
     talos_cluster_kubeconfig.this,
-    helm_release.cilium
   ]
 
   client_configuration = talos_machine_secrets.this.client_configuration
@@ -150,13 +196,13 @@ data "talos_cluster_health" "this" {
 
 resource "local_file" "kubeconfig" {
   content         = talos_cluster_kubeconfig.this.kubeconfig_raw
-  filename        = pathexpand("~/.kube/config_${var.cluster_name}")
+  filename        = "${path.root}/../../sops/${var.cluster_name}/kube_config_${var.cluster_name}.enc"
   file_permission = "0600"
 }
 
 resource "local_file" "talosconfig" {
   content         = data.talos_client_configuration.this.talos_config
-  filename        = pathexpand("~/.talos/config_${var.cluster_name}")
+  filename        = "${path.root}/../../sops/${var.cluster_name}/talos_config_${var.cluster_name}.enc"
   file_permission = "0600"
 
   provisioner "local-exec" {

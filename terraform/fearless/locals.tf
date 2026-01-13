@@ -13,6 +13,8 @@ locals {
   talos_mac_address         = var.talos_mac_address
   talos_ip                  = var.talos_ip
   talos_ram                 = 45056
+  talos_kubernetes_version  = "1.35.0"
+  talos_talos_version       = "1.12.1"
 
   homelab_domain = "home.${local.apex_domain}"
   apex_domain    = "parents-basement.win"

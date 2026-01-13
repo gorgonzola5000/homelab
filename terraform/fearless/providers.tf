@@ -29,21 +29,9 @@ terraform {
       source  = "siderolabs/talos"
       version = "0.10.0"
     }
-    gitlab = {
-      source  = "gitlabhq/gitlab"
-      version = "18.7.0"
-    }
-    flux = {
-      source  = "fluxcd/flux"
-      version = "1.7.6"
-    }
     helm = {
       source  = "hashicorp/helm"
       version = "3.1.1"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "3.0.1"
     }
     sops = {
       source  = "carlpett/sops"
@@ -66,41 +54,5 @@ provider "proxmox" {
     agent       = false
     username    = "terraform"
     private_key = base64decode(var.terraform_private_key)
-  }
-}
-
-provider "gitlab" {
-  token = var.gitlab_token
-}
-
-provider "flux" {
-  kubernetes = {
-    host                   = "https://${local.talos_ip}:6443"
-    client_certificate     = base64decode(module.talos.kubernetes_client_certificate)
-    client_key             = base64decode(module.talos.kubernetes_client_key)
-    cluster_ca_certificate = base64decode(module.talos.kubernetes_cluster_ca_certificate)
-  }
-  git = {
-    url = "ssh://git@gitlab.com/${data.gitlab_project.this.path_with_namespace}.git"
-    ssh = {
-      username    = "git"
-      private_key = tls_private_key.flux.private_key_pem
-    }
-  }
-}
-
-provider "kubernetes" {
-  host                   = "https://${local.talos_ip}:6443"
-  client_certificate     = base64decode(module.talos.kubernetes_client_certificate)
-  client_key             = base64decode(module.talos.kubernetes_client_key)
-  cluster_ca_certificate = base64decode(module.talos.kubernetes_cluster_ca_certificate)
-}
-
-provider "helm" {
-  kubernetes = {
-    host                   = "https://${local.talos_ip}:6443"
-    client_certificate     = base64decode(module.talos.kubernetes_client_certificate)
-    client_key             = base64decode(module.talos.kubernetes_client_key)
-    cluster_ca_certificate = base64decode(module.talos.kubernetes_cluster_ca_certificate)
   }
 }

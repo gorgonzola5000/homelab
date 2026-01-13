@@ -72,7 +72,8 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   lifecycle {
     ignore_changes = [
-      initialization
+      initialization,
+      disk
     ]
   }
 }
@@ -101,7 +102,8 @@ resource "proxmox_virtual_environment_download_file" "this" {
   datastore_id            = local.proxmox_datastore_id
   content_type            = "iso"
   url                     = module.talos-iso.raw_image_url
-  file_name               = "metal-amd64.raw.zst.img"
+  file_name               = "metal-amd64-t-${local.talos_talos_version}-k-${local.talos_kubernetes_version}.raw.zst.img"
   overwrite_unmanaged     = true
+  overwrite               = true
   decompression_algorithm = "zst"
 }
