@@ -8,7 +8,7 @@ allowVolumeExpansion: true
 parameters:
   fstype: "zfs"
   shared: "yes"
-  poolname: "tank"
+  poolname: "rescue"
   compression: "lz4"
 provisioner: zfs.csi.openebs.io
 reclaimPolicy: Retain
