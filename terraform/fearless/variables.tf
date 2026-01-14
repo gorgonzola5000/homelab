@@ -77,6 +77,6 @@ variable "talos_disk_wwids" {
   description = "List of Disk WWIDs"
 }
 
-variable "sops_age_key_path" {
+variable "flux_sops_age_key_path" {
   type = string
 }

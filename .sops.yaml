@@ -1,7 +1,7 @@
 creation_rules:
   # private keys for use by flux for decrypting cluster specific files
-  - path_regex: sops/.*/age\.enc\.yaml$
-    encrypted_regex: ".*"
+  - path_regex: sops/.*/flux-secret\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
     key_groups:
       - age:
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb"

@@ -2,27 +2,8 @@ resource "talos_machine_secrets" "this" {
   talos_version = var.talos_version_contract
 }
 
-data "talos_image_factory_versions" "this" {
-  filters = {
-    stable_versions_only = true
-  }
-}
-
-# compute the latest version dynamically
-locals {
-  latest_talos_version = element(
-    data.talos_image_factory_versions.this.talos_versions,
-    length(data.talos_image_factory_versions.this.talos_versions) - 1
-  )
-}
-
-output "latest" {
-  value = local.latest_talos_version
-}
-
 data "talos_image_factory_extensions_versions" "this" {
-  # get the latest talos version
-  talos_version = local.latest_talos_version
+  talos_version = var.talos_version_contract
   filters = {
     names = [
       "zfs",
@@ -61,7 +42,7 @@ resource "talos_image_factory_schematic" "this" {
 }
 
 data "talos_image_factory_urls" "this" {
-  talos_version = local.latest_talos_version
+  talos_version = var.talos_version_contract
   schematic_id  = talos_image_factory_schematic.this.id
   platform      = "metal"
   architecture  = "amd64"
@@ -90,7 +71,7 @@ locals {
     #      gateway     = var.gateway
     #    })
   ]
-  bare_metal_patches = var.is_bare_metal ? [yamlencode(var.install_disk)] : []
+  bare_metal_patches     = var.is_bare_metal ? [yamlencode(var.install_disk)] : []
   install_config_patches = concat(local.base_config_patches, local.bare_metal_patches)
 
   zfs_disk_patches = [
@@ -111,31 +92,48 @@ locals {
       ]
     }
   })]
-#
-#  flux_sops_secret_manifest = [yamlencode({
-#    cluster = {
-#      inlineManifests = [
-#        {
-#          apiVersion = "v1"
-#          kind       = "Secret"
-#          type       = "Opaque"
-#          metadata = {
-#            name      = "sops-age"
-#            namespace = "flux-system"
-#          }
-#          stringData = {
-#            "age.agekey" = data.sops_file.secret_zero.data[var.age_key_yaml_key]
-#          }
-#        }
-#  )]
-#
-#  flux_ns_manifest = [yamlencode({
-#    apiVersion = "v1"
-#    kind       = "Namespace"
-#    metadata = {
-#      name = "flux-system"
-#    }
-#  })]
+
+  flux_sops_secret_manifest = [yamlencode({
+    cluster = {
+      inlineManifests = [
+        {
+          name     = "flux-sops"
+          contents = data.sops_file.flux_secret.raw
+        }
+      ]
+    }
+  })]
+
+  flux_ns_manifest = [yamlencode({
+    cluster = {
+      inlineManifests = [
+        {
+          name = "flux-system-namespace"
+          contents = yamlencode({
+            apiVersion = "v1"
+            kind       = "Namespace"
+            metadata = {
+              name = "flux-system"
+            }
+            }
+          )
+        }
+      ]
+    }
+  })]
+
+  flux_instance = [yamlencode({
+    cluster = {
+      inlineManifests = [
+        {
+          name = "flux-instance"
+          contents = templatefile("${path.module}/kubernetes-manifests/flux-instance.yaml.tftpl", {
+            cluster_name = var.cluster_name
+            }
+          )
+      }]
+    }
+  })]
 }
 
 data "talos_machine_configuration" "controlplane" {
@@ -151,8 +149,9 @@ data "talos_machine_configuration" "controlplane" {
     local.install_config_patches,
     local.zfs_disk_patches,
     local.cilium_patch,
-#    flux_ns_manifest,
-#    flux_sops_secret_manifest,
+    local.flux_ns_manifest,
+    local.flux_sops_secret_manifest,
+    local.flux_instance,
   ])
 }
 

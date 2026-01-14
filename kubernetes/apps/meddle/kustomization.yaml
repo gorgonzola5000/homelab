@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ../base/redmanager
   - redmanager-secret.enc.yaml
+  - ../base/monitoring

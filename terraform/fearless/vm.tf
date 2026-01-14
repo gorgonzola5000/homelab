@@ -104,6 +104,6 @@ resource "proxmox_virtual_environment_download_file" "this" {
   url                     = module.talos-iso.raw_image_url
   file_name               = "metal-amd64-t-${local.talos_talos_version}-k-${local.talos_kubernetes_version}.raw.zst.img"
   overwrite_unmanaged     = true
-  overwrite               = true
+  overwrite               = false
   decompression_algorithm = "zst"
 }
