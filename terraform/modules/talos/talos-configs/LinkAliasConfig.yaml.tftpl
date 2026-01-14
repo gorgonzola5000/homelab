@@ -2,4 +2,4 @@ apiVersion: v1alpha1
 kind: LinkAliasConfig
 name: int0
 selector:
-    match: glob("${mac_address}", mac(link.permanent_addr))
+    match: mac(link.permanent_addr) == "${mac_address}"

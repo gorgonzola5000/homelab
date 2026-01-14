@@ -61,15 +61,15 @@ locals {
     }),
     templatefile("${path.module}/talos-configs/HostnameConfig.yaml.tftpl", {
       hostname = var.hostname
+    }),
+    templatefile("${path.module}/talos-configs/LinkAliasConfig.yaml.tftpl", {
+      mac_address = var.mac_address
+    }),
+    templatefile("${path.module}/talos-configs/LinkConfig.yaml.tftpl", {
+      ip          = var.ip
+      subnet_mask = var.subnet_mask
+      gateway     = var.gateway
     })
-    #    templatefile("${path.module}/talos-configs/LinkAliasConfig.yaml.tftpl", {
-    #      mac_address = var.mac_address
-    #    }),
-    #    templatefile("${path.module}/talos-configs/LinkConfig.yaml.tftpl", {
-    #      ip          = var.ip
-    #      subnet_mask = var.subnet_mask
-    #      gateway     = var.gateway
-    #    })
   ]
   bare_metal_patches     = var.is_bare_metal ? [yamlencode(var.install_disk)] : []
   install_config_patches = concat(local.base_config_patches, local.bare_metal_patches)
