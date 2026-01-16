@@ -5,6 +5,9 @@ data "helm_template" "cilium" {
   chart        = "cilium"
   version      = "1.18.5"
   kube_version = var.kubernetes_version
+  api_versions = [
+    "gateway.networking.k8s.io/v1/GatewayClass"
+  ]
 
   set = [
     {
