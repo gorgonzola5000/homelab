@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gonic
+  name: navidrome
   namespace: redmanager
   labels:
-    app: gonic
+    app: navidrome
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gonic
+      app: navidrome
   template:
     metadata:
       labels:
-        app: gonic
+        app: navidrome
     spec:
       securityContext:
         runAsUser: 1000
@@ -21,19 +21,21 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
-        - name: gonic
-          image: ghcr.io/sentriz/gonic:latest@sha256:d22d04c9465e00db782e4fe489989977381f7b87a7390fd89c127672eaf31aef
+        - name: navidrome
+          image: docker.io/deluan/navidrome:latest@sha256:4edc8a1de3e042f30b78a478325839f4395177eb8201c27543dccc0eba674f23
           env:
-            - name: GONIC_MUSIC_PATH
+            - name: ND_MUSICFOLDER
               value: /music
-            - name: GONIC_PODCAST_PATH
-              value: /tmp-podcast
-            - name: GONIC_PLAYLISTS_PATH
-              value: /tmp-playlists
-            - name: GONIC_CACHE_PATH
+            - name: ND_DATAFOLDER
+              value: /data
+            - name: ND_CACHEFOLDER
               value: /tmp-cache
-            - name: GONIC_LISTEN_ADDR
-              value: "0.0.0.0:4747"
+            - name: ND_ENABLEFAVOURITES
+              value: "false"
+            - name: ND_ENABLESTARRATING
+              value: "false"
+            - name: ND_ENABLEINSIGHTSCOLLECTOR
+              value: "false"
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -43,31 +45,23 @@ spec:
               drop:
                 - ALL
           ports:
-            - containerPort: 4747
+            - containerPort: 4533
               name: http
               protocol: TCP
           volumeMounts:
-            - name: data
-              mountPath: /data
             - name: music
               mountPath: /music
-            - name: tmp-podcast
-              mountPath: /tmp-podcast
-            - name: tmp-playlists
-              mountPath: /tmp-playlists
+            - name: data
+              mountPath: /data
             - name: tmp-cache
               mountPath: /tmp-cache
 
       volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: gonic-data
         - name: music
           persistentVolumeClaim:
             claimName: music
-        - name: tmp-podcast
-          emptyDir: {}
-        - name: tmp-playlists
-          emptyDir: {}
+        - name: data
+          persistentVolumeClaim:
+            claimName: navidrome-data
         - name: tmp-cache
           emptyDir: {}

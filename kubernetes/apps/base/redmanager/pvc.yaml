@@ -13,7 +13,7 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: gonic-data
+  name: navidrome-data
 spec:
   accessModes:
     - ReadWriteOnce
