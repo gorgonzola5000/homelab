@@ -182,30 +182,31 @@ resource "talos_cluster_kubeconfig" "this" {
   node                 = var.ip
 }
 
-data "talos_cluster_health" "this" {
-  depends_on = [
-    talos_machine_configuration_apply.controlplane,
-    talos_cluster_kubeconfig.this,
-  ]
-
-  client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints            = [var.kubernetes_endpoint]
-  control_plane_nodes  = [var.ip]
-}
-
-resource "local_file" "kubeconfig" {
+resource "local_sensitive_file" "kubeconfig" {
   content         = talos_cluster_kubeconfig.this.kubeconfig_raw
-  filename        = "${path.root}/../../sops/${var.cluster_name}/kube_config_${var.cluster_name}.enc"
-  file_permission = "0600"
-}
-
-resource "local_file" "talosconfig" {
-  content         = data.talos_client_configuration.this.talos_config
-  filename        = "${path.root}/../../sops/${var.cluster_name}/talos_config_${var.cluster_name}.enc"
+  filename        = "${path.root}/../../sops/${var.cluster_name}/kube_config"
   file_permission = "0600"
 
   provisioner "local-exec" {
-    command    = "talosctl config merge ~/.talos/config_${var.cluster_name}"
-    on_failure = continue
+    command    = <<-EOT
+      cp ${path.root}/../../sops/${var.cluster_name}/kube_config \
+      ${path.root}/../../sops/${var.cluster_name}/kube_config.enc \
+      && sops encrypt -i ${path.root}/../../sops/${var.cluster_name}/kube_config.enc
+    EOT
+  }
+}
+
+resource "local_sensitive_file" "talosconfig" {
+  content         = data.talos_client_configuration.this.talos_config
+  filename        = "${path.root}/../../sops/${var.cluster_name}/talos_config"
+  file_permission = "0600"
+
+  provisioner "local-exec" {
+    command    = <<-EOT
+      cp ${path.root}/../../sops/${var.cluster_name}/talos_config \
+      ${path.root}/../../sops/${var.cluster_name}/talos_config.enc \
+      && sops encrypt -i ${path.root}/../../sops/${var.cluster_name}/talos_config.enc \
+      && talosctl config merge ${path.root}/../../sops/${var.cluster_name}/talos_config
+    EOT
   }
 }
