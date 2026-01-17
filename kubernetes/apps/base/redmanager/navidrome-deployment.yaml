@@ -36,6 +36,13 @@ spec:
               value: "false"
             - name: ND_ENABLEINSIGHTSCOLLECTOR
               value: "false"
+            - name: ND_CONFIGFILE
+              value: "/data/navidrome.toml"
+            - name: ND_DEVAUTOCREATEADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: ND_DEVAUTOCREATEADMINPASSWORD
           securityContext:
             seccompProfile:
               type: RuntimeDefault
