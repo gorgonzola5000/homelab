@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arr
+  labels:
+    app: arr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arr
+  template:
+    metadata:
+      labels:
+        app: arr
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      initContainers:
+        - name: init-directories
+          image: busybox:latest
+          command:
+            ["sh", "-c", "mkdir -p /data/torrents/tv-sonarr /data/media/tv"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: sonarr
+          image: ghcr.io/home-operations/sonarr:rolling@sha256:22651c750eedb091f6d76ade95dbecae0eeafe2b55432c3b8d8b042e8745f344
+          env:
+            - name: SONARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: arr-secret
+                  key: SONARR__AUTH__APIKEY
+            - name: SONARR__AUTH__REQUIRED
+              value: DisabledForLocalAddresses
+            - name: SONARR__AUTH__METHOD
+              value: External
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8989
+              name: sonarr
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: sonarr-config
+              mountPath: /config
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data
+        - name: sonarr-config
+          persistentVolumeClaim:
+            claimName: sonarr-config

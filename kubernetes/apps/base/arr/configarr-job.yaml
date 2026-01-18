@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: configarr
+spec:
+  schedule: "0 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: configarr
+              image: ghcr.io/raydak-labs/configarr:latest@sha256:40180ae49ed3caab864f65682da14b172281edb19924e60a5fd357b2234cb987
+              tty: true
+              env:
+                - name: SONARR__AUTH__APIKEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: arr-secret
+                      key: SONARR__AUTH__APIKEY
+                - name: TRANSMISSION_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: arr-secret
+                      key: TRANSMISSION_USER
+                - name: TRANSMISSION_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: arr-secret
+                      key: TRANSMISSION_PASS
+              volumeMounts:
+                - mountPath: /app/repos
+                  name: configarr-cache
+                - name: config-volume
+                  mountPath: /app/config/config.yml
+                  subPath: config.yml
+
+          volumes:
+            - name: configarr-cache
+              persistentVolumeClaim:
+                claimName: configarr-cache
+            - name: config-volume
+              configMap:
+                name: configarr

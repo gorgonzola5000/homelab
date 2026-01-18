@@ -52,7 +52,7 @@ spec:
             - name: WIREGUARD_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
-                  name: redmanager-secret
+                  name: arr-secret
                   key: WIREGUARD_PRIVATE_KEY
             - name: LOG_LEVEL
               value: info
@@ -73,12 +73,12 @@ spec:
             - name: TRANSMISSION__RPC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: redmanager-secret
+                  name: arr-secret
                   key: TRANSMISSION_USER
             - name: TRANSMISSION__RPC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redmanager-secret
+                  name: arr-secret
                   key: TRANSMISSION_PASS
           volumeMounts:
             - name: transmission-port-update
@@ -114,24 +114,25 @@ spec:
             - name: TRANSMISSION__RPC_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: redmanager-secret
+                  name: arr-secret
                   key: TRANSMISSION_USER
             - name: TRANSMISSION__RPC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: redmanager-secret
+                  name: arr-secret
                   key: TRANSMISSION_PASS
+            - name: TRANSMISSION__DOWNLOAD_DIR
+              value: /data/torrents
           volumeMounts:
-            - name: redmanager-download
-              mountPath: /downloads
+            - name: data
+              mountPath: /data
             - name: transmission-config
               mountPath: /config
-            - name: redmanager-transmission-shared
-              mountPath: /redmanager-transmission-shared
+
       volumes:
-        - name: redmanager-download
+        - name: data
           persistentVolumeClaim:
-            claimName: redmanager-download
+            claimName: data
         - name: transmission-config
           persistentVolumeClaim:
             claimName: transmission-config
@@ -139,6 +140,3 @@ spec:
           configMap:
             name: transmission-port-update
             defaultMode: 0744
-        - name: redmanager-transmission-shared
-          persistentVolumeClaim:
-            claimName: redmanager-transmission-shared

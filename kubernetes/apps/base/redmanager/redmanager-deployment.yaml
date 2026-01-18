@@ -81,4 +81,5 @@ spec:
               mountPath: /redmanager-transmission-shared
       volumes:
         - name: redmanager-transmission-shared
-          mountPath: /redmanager-transmission-shared
+          persistentVolumeClaim:
+            claimName: redmanager-transmission-shared
