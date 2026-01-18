@@ -4,3 +4,5 @@ resources:
   - redmanager-secret.enc.yaml
   - ../base/redmanager
   - ../base/monitoring
+  - arr-secret.enc.yaml
+  - ../base/arr
