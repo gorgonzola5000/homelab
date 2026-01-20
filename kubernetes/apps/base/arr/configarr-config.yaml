@@ -22,22 +22,22 @@ data:
           # WEB-2160p
           - template: sonarr-v4-quality-profile-web-2160p
           - template: sonarr-v4-custom-formats-web-2160p
-    download_clients:
-      data:
-        - name: "Transmission"
-          type: transmission
-          enable: true
-          priority: 1
-          remove_completed_downloads: false
-          remove_failed_downloads: true
-          fields:
-            host: transmission
-            port: 9091
-            use_ssl: false
-            url_base: /transmission/
-            username: !env TRANSMISSION_USER
-            password: !env TRANSMISSION_PASS
-            tv_category: tv-sonarr
         custom_formats: []
+      download_clients:
+        data:
+          - name: "Transmission"
+            type: transmission
+            enable: true
+            priority: 1
+            remove_completed_downloads: false
+            remove_failed_downloads: true
+            fields:
+              host: transmission
+              port: 9091
+              use_ssl: false
+              url_base: /transmission/
+              username: !env TRANSMISSION_USER
+              password: !env TRANSMISSION_PASS
+              tv_category: tv-sonarr
 
     radarr: {}

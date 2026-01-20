@@ -58,6 +58,34 @@ spec:
             - name: sonarr-config
               mountPath: /config
 
+        - name: prowlarr
+          image: ghcr.io/home-operations/prowlarr:rolling@sha256:e2459e199564ab852c6e677e951cef36c172a8e71a0e1c90665631b5a0c57438
+          env:
+            - name: PROWLARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: arr-secret
+                  key: PROWLARR__AUTH__APIKEY
+            - name: PROWLARR__AUTH__REQUIRED
+              value: DisabledForLocalAddresses
+            - name: PROWLARR__AUTH__METHOD
+              value: External
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 9696
+              name: prowlarr
+              protocol: TCP
+          volumeMounts:
+            - name: prowlarr-config
+              mountPath: /config
+
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -65,3 +93,6 @@ spec:
         - name: sonarr-config
           persistentVolumeClaim:
             claimName: sonarr-config
+        - name: prowlarr-config
+          persistentVolumeClaim:
+            claimName: prowlarr-config

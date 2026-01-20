@@ -35,6 +35,17 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  name: prowlarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
   name: configarr-cache
 spec:
   accessModes:
