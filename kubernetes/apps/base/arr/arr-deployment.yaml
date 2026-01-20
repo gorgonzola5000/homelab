@@ -23,11 +23,45 @@ spec:
         - name: init-directories
           image: busybox:latest
           command:
-            ["sh", "-c", "mkdir -p /data/torrents/tv-sonarr /data/media/tv"]
+            [
+              "sh",
+              "-c",
+              "mkdir -p /data/torrents/radarr /data/media/movies /data/torrents/tv-sonarr /data/media/tv",
+            ]
           volumeMounts:
             - name: data
               mountPath: /data
       containers:
+        - name: radarr
+          image: ghcr.io/home-operations/radarr:rolling@sha256:5e08c0eefd2770d1d29395c4f84fe5bf7dfc3a986598021306a5d8ac017a3989
+          env:
+            - name: RADARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: arr-secret
+                  key: RADARR__AUTH__APIKEY
+            - name: RADARR__AUTH__REQUIRED
+              value: DisabledForLocalAddresses
+            - name: RADARR__AUTH__METHOD
+              value: External
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 7878
+              name: radarr
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: radarr-config
+              mountPath: /config
+
         - name: sonarr
           image: ghcr.io/home-operations/sonarr:rolling@sha256:22651c750eedb091f6d76ade95dbecae0eeafe2b55432c3b8d8b042e8745f344
           env:
@@ -90,6 +124,9 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: data
+        - name: radarr-config
+          persistentVolumeClaim:
+            claimName: radarr-config
         - name: sonarr-config
           persistentVolumeClaim:
             claimName: sonarr-config
