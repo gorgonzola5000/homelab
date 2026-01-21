@@ -6,6 +6,9 @@ resources:
   - arr-svc.yaml
   - configarr-config.yaml
   - configarr-job.yaml
+  - jellyfin-deployment.yaml
+  - jellyfin-http-route.yaml
+  - jellyfin-svc.yaml
   - namespace.yaml
   - pvc.yaml
   - transmission-configmap.yaml

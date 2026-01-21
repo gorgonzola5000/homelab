@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  labels:
+    app: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: jellyfin
+          image: ghcr.io/jellyfin/jellyfin:latest@sha256:25db4eb10143c1c12adb79ed978e31d94fc98dc499fbae2d38b2c935089ced3e
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: JELLYFIN_PublishedServerUrl
+              value: "https://jellyfin.home.parents-basement.win"
+          ports:
+            - containerPort: 8096
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /media
+              subPath: media
+            - name: cache
+              mountPath: /cache
+            - name: tmp
+              mountPath: /tmp
+
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: data
+        - name: config
+          persistentVolumeClaim:
+            claimName: jellyfin-config
+        - name: cache
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
