@@ -123,6 +123,8 @@ spec:
                   key: TRANSMISSION_PASS
             - name: TRANSMISSION__DOWNLOAD_DIR
               value: /data/torrents
+            - name: TRANSMISSION__INCOMPLETE_DIR
+              value: /data/torrents/incomplete
           volumeMounts:
             - name: data
               mountPath: /data
