@@ -63,7 +63,7 @@ spec:
             - name: BLOCK_ADS
               value: off
             - name: HEALTH_RESTART_VPN
-              value: off
+              value: on
             - name: DNS_UPSTREAM_IPV6
               value: on
             - name: DNS_SERVER
@@ -103,9 +103,10 @@ spec:
                 - /bin/sh
                 - -c
                 - "nslookup google.com"
-            initialDelaySeconds: 600
+            initialDelaySeconds: 300
             periodSeconds: 30
             timeoutSeconds: 10
+            failureThreshold: 3
 
       containers:
         - name: transmission
