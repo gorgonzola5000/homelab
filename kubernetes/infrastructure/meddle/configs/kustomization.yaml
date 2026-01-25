@@ -1,11 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../base/configs/cert-manager
   - cloudflare-secret.enc.yaml
+  - ../../base/configs/cert-manager
   - ../../base/configs/gateway
   - ../../base/configs/openebs
-  - ../../base/configs/monitoring
   - grafana-secret.enc.yaml
+  - ../../base/configs/monitoring
 patches:
   - path: lets-encrypt.yaml

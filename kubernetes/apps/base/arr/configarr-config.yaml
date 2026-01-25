@@ -42,4 +42,38 @@ data:
         root_folders:
           - /data/media/tv
 
-    radarr: {}
+    radarr:
+      movies:
+        base_url: http://arr:7878
+        api_key: !env RADARR__AUTH__APIKEY
+        include:
+          - template: radarr-quality-definition-movie
+          - template: radarr-quality-profile-hd-bluray-web
+          - template: radarr-custom-formats-hd-bluray-web
+          - template: radarr-quality-profile-uhd-bluray-web
+          - template: radarr-custom-formats-uhd-bluray-web
+          - template: radarr-quality-profile-remux-web-1080p
+          - template: radarr-custom-formats-remux-web-1080p
+          - template: radarr-quality-profile-remux-web-2160p
+          - template: radarr-custom-formats-remux-web-2160p
+          - template: radarr-quality-profile-anime
+          - template: radarr-custom-formats-anime
+        custom_formats: []
+        download_clients:
+          data:
+            - name: "Transmission"
+              type: transmission
+              enable: true
+              priority: 1
+              remove_completed_downloads: false
+              remove_failed_downloads: true
+              fields:
+                host: transmission
+                port: 9091
+                use_ssl: false
+                url_base: /transmission/
+                username: !env TRANSMISSION_USER
+                password: !env TRANSMISSION_PASS
+                movie_category: radarr
+        root_folders:
+          - /data/media/movies
