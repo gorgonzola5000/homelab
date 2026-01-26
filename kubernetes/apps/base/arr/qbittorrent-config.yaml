@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qbittorrent-config-tmpl
+data:
+  qBittorrent.conf.tmpl: |
+    [Application]
+    FileLogger\Age=1
+    FileLogger\AgeType=1
+    FileLogger\Backup=true
+    FileLogger\DeleteOld=true
+    FileLogger\Enabled=true
+    FileLogger\MaxSizeBytes=66560
+    FileLogger\Path=/config/qBittorrent/logs
+
+    [AutoRun]
+    enabled=false
+    program=
+
+    [BitTorrent]
+    Session\AddTorrentStopped=false
+    Session\AsyncIOThreadsCount=10
+    Session\DHTEnabled=false
+    Session\DefaultSavePath=/data/torrents
+    Session\DiskCacheSize=-1
+    Session\DiskIOReadMode=DisableOSCache
+    Session\DiskIOType=SimplePreadPwrite
+    Session\DiskIOWriteMode=EnableOSCache
+    Session\DiskQueueSize=4194304
+    Session\ExcludedFileNames=
+    Session\FilePoolSize=40
+    Session\HashingThreadsCount=2
+    Session\Interface=tun0
+    Session\InterfaceName=tun0
+    Session\LSDEnabled=false
+    Session\PeXEnabled=false
+    Session\Port=6881
+    Session\QueueingSystemEnabled=true
+    Session\ResumeDataStorageType=SQLite
+    Session\SSL\Port=60328
+    Session\ShareLimitAction=Stop
+    Session\UseOSCache=true
+    Session\UseRandomPort=false
+
+    [Core]
+    AutoDeleteAddedTorrentFile=Never
+
+    [LegalNotice]
+    Accepted=true
+
+    [Meta]
+    MigrationVersion=8
+
+    [Network]
+    PortForwardingEnabled=false
+    Proxy\HostnameLookupEnabled=false
+    Proxy\Profiles\BitTorrent=true
+    Proxy\Profiles\Misc=true
+    Proxy\Profiles\RSS=true
+
+    [Preferences]
+    Connection\PortRangeMin=6881
+    Connection\UPnP=false
+    General\Locale=en
+    General\StatusbarExternalIPDisplayed=true
+    General\UseRandomPort=false
+    MailNotification\req_auth=true
+    WebUI\Address=*
+    WebUI\AuthSubnetWhitelist=10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+    WebUI\AuthSubnetWhitelistEnabled=false
+    WebUI\CSRFProtection=true
+    WebUI\ClickjackingProtection=true
+    WebUI\HostHeaderValidation=false
+    WebUI\LocalHostAuth=false
+    WebUI\Username={{ getenv "QBITTORRENT_USER" }}
+    WebUI\Password_PBKDF2="@ByteArray({{ getenv "QBITTORRENT_PASS_HASH" }})"
+    WebUI\Port=8080
+    WebUI\SecureCookie=false
+    WebUI\ServerDomains=*
+    WebUI\UseUPnP=false
+
+    [RSS]
+    AutoDownloader\DownloadRepacks=true
+    AutoDownloader\SmartEpisodeFilter=s(\\d+)e(\\d+), (\\d+)x(\\d+), "(\\d{4}[.\\-]\\d{1,2}[.\\-]\\d{1,2})", "(\\d{1,2}[.\\-]\\d{1,2}[.\\-]\\d{4})"

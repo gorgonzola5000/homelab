@@ -11,6 +11,6 @@ resources:
   - jellyfin-svc.yaml
   - namespace.yaml
   - pvc.yaml
-  - transmission-configmap.yaml
-  - transmission-deployment.yaml
-  - transmission-svc.yaml
+  - qbittorrent-config.yaml
+  - qbittorrent-deployment.yaml
+  - qbittorrent-svc.yaml

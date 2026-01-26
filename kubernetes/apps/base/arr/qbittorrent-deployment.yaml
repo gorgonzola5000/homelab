@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: transmission
+  name: qbittorrent
   labels:
-    app: transmission
+    app: qbittorrent
 spec:
   strategy:
     type: Recreate
   replicas: 1
   selector:
     matchLabels:
-      app: transmission
+      app: qbittorrent
   template:
     metadata:
       labels:
-        app: transmission
+        app: qbittorrent
     spec:
       #dnsPolicy: Default
       dnsPolicy: None
@@ -38,7 +38,7 @@ spec:
               add: ["NET_ADMIN"]
           env:
             - name: FIREWALL_INPUT_PORTS
-              value: "9091"
+              value: "8080"
             - name: SERVER_COUNTRIES
               value: Poland
             - name: PORT_FORWARD_ONLY
@@ -63,30 +63,11 @@ spec:
             - name: BLOCK_ADS
               value: off
             - name: HEALTH_RESTART_VPN
-              value: off
+              value: on
             - name: DNS_UPSTREAM_IPV6
               value: on
             - name: DNS_SERVER
               value: off
-            - name: VPN_PORT_FORWARDING_UP_COMMAND
-              value: "/usr/local/bin/transmission-port-update.sh --user $TRANSMISSION__RPC_USERNAME --pass $TRANSMISSION__RPC_PASSWORD --port {{PORTS}}"
-            - name: TRANSMISSION__RPC_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: arr-secret
-                  key: TRANSMISSION_USER
-            - name: TRANSMISSION__RPC_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: arr-secret
-                  key: TRANSMISSION_PASS
-          volumeMounts:
-            - name: transmission-port-update
-              mountPath: /usr/local/bin/transmission-port-update.sh
-              subPath: transmission-port-update.sh
-          ports:
-            - containerPort: 9091
-              protocol: TCP
           readinessProbe:
             exec:
               command:
@@ -106,39 +87,51 @@ spec:
             initialDelaySeconds: 600
             periodSeconds: 30
             timeoutSeconds: 10
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+        - name: gomplate-qbittorrent-config
+          image: hairyhenderson/gomplate:alpine@sha256:0b81da292a603e826c2be71484b17b08f67a6ee23519be45c7e27d8ed1db1e70
+          env:
+            - name: QBITTORRENT_PASS_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: arr-secret
+                  key: QBITTORRENT_PASS_HASH
+            - name: QBITTORRENT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: arr-secret
+                  key: QBITTORRENT_USER
+          command:
+            - /bin/gomplate
+            - -f
+            - /tmp/qBittorrent.conf.tmpl
+            - -o
+            - /config/qBittorrent/qBittorrent.conf
+          volumeMounts:
+            - name: config-map-tmpl
+              mountPath: /tmp/qBittorrent.conf.tmpl
+              subPath: qBittorrent.conf.tmpl
+            - name: qbittorrent-config
+              mountPath: /config
 
       containers:
-        - name: transmission
-          image: ghcr.io/home-operations/transmission:rolling@sha256:b92d4039c761a582fa21dc144df2c54d26086fbb15ae8d08b17a0f8f9ae23ab0
-          env:
-            - name: TRANSMISSION__RPC_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: arr-secret
-                  key: TRANSMISSION_USER
-            - name: TRANSMISSION__RPC_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: arr-secret
-                  key: TRANSMISSION_PASS
-            - name: TRANSMISSION__DOWNLOAD_DIR
-              value: /data/torrents
-            - name: TRANSMISSION__INCOMPLETE_DIR
-              value: /data/torrents/incomplete
+        - name: qbittorrent
+          image: ghcr.io/home-operations/qbittorrent:rolling@sha256:56ecd30a7f5e1357daf5eea2a6935134d329b7b268a3a9b9c67041b65fb87fc6
           volumeMounts:
             - name: data
               mountPath: /data
-            - name: transmission-config
+            - name: qbittorrent-config
               mountPath: /config
 
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: data
-        - name: transmission-config
+        - name: qbittorrent-config
           persistentVolumeClaim:
-            claimName: transmission-config
-        - name: transmission-port-update
+            claimName: qbittorrent-config
+        - name: config-map-tmpl
           configMap:
-            name: transmission-port-update
-            defaultMode: 0744
+            name: qbittorrent-config-tmpl

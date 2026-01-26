@@ -25,20 +25,20 @@ data:
         custom_formats: []
         download_clients:
           data:
-            - name: "Transmission"
-              type: transmission
+            - name: "qBittorrent"
+              type: qbittorrent
               enable: true
               priority: 1
               remove_completed_downloads: false
               remove_failed_downloads: true
               fields:
-                host: transmission
-                port: 9091
+                host: qbittorrent
+                port: 8080
                 use_ssl: false
-                url_base: /transmission/
-                username: !env TRANSMISSION_USER
-                password: !env TRANSMISSION_PASS
-                tv_category: tv-sonarr
+                url_base: /
+                username: !env QBITTORRENT_USER
+                password: !env QBITTORRENT_PASS
+          update_password: true
         root_folders:
           - /data/media/tv
 
@@ -61,19 +61,19 @@ data:
         custom_formats: []
         download_clients:
           data:
-            - name: "Transmission"
-              type: transmission
+            - name: "qBittorrent"
+              type: qbittorrent
               enable: true
               priority: 1
               remove_completed_downloads: false
               remove_failed_downloads: true
               fields:
-                host: transmission
-                port: 9091
+                host: qbittorrent
+                port: 8080
                 use_ssl: false
-                url_base: /transmission/
-                username: !env TRANSMISSION_USER
-                password: !env TRANSMISSION_PASS
-                movie_category: radarr
+                url_base: /
+                username: !env QBITTORRENT_USER
+                password: !env QBITTORRENT_PASS
+          update_password: true
         root_folders:
           - /data/media/movies

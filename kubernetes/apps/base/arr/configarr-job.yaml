@@ -16,21 +16,28 @@ spec:
               image: ghcr.io/raydak-labs/configarr:latest@sha256:40180ae49ed3caab864f65682da14b172281edb19924e60a5fd357b2234cb987
               tty: true
               env:
+                - name: LOG_STACKTRACE
+                  value: "true"
                 - name: SONARR__AUTH__APIKEY
                   valueFrom:
                     secretKeyRef:
                       name: arr-secret
                       key: SONARR__AUTH__APIKEY
-                - name: TRANSMISSION_USER
+                - name: RADARR__AUTH__APIKEY
                   valueFrom:
                     secretKeyRef:
                       name: arr-secret
-                      key: TRANSMISSION_USER
-                - name: TRANSMISSION_PASS
+                      key: RADARR__AUTH__APIKEY
+                - name: QBITTORRENT_USER
                   valueFrom:
                     secretKeyRef:
                       name: arr-secret
-                      key: TRANSMISSION_PASS
+                      key: QBITTORRENT_USER
+                - name: QBITTORRENT_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: arr-secret
+                      key: QBITTORRENT_PASS
               volumeMounts:
                 - mountPath: /app/repos
                   name: configarr-cache

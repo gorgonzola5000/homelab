@@ -13,13 +13,13 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: transmission-config
+  name: qbittorrent-config
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 4Gi
+      storage: 8Gi
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
