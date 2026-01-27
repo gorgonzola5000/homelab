@@ -16,7 +16,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   }
 
   cpu {
-    cores = 6
+    cores = 10
     type  = "host"
   }
 

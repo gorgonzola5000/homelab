@@ -1,18 +1,5 @@
-data "talos_image_factory_versions" "this" {
-  filters = {
-    stable_versions_only = true
-  }
-}
-
-locals {
-  latest_talos_version = element(
-    data.talos_image_factory_versions.this.talos_versions,
-    length(data.talos_image_factory_versions.this.talos_versions) - 1
-  )
-}
-
 data "talos_image_factory_extensions_versions" "this" {
-  talos_version = local.latest_talos_version
+  talos_version = var.talos_version_contract
   filters = {
     names = [
       "zfs",
@@ -47,7 +34,7 @@ resource "talos_image_factory_schematic" "this" {
 }
 
 data "talos_image_factory_urls" "this" {
-  talos_version = local.latest_talos_version
+  talos_version = var.talos_version_contract
   schematic_id  = talos_image_factory_schematic.this.id
   platform      = "metal"
   architecture  = "amd64"

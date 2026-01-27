@@ -8,5 +8,21 @@
       "/kubernetes/.+\\.yaml$/"
     ]
   },
-  "prConcurrentLimit": 0
+  "prConcurrentLimit": 0,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.tf$/",
+        "/\\.tofu$/",
+        "/\\.tftpl$/",
+        "/\\.yaml$/",
+        "/\\.sh$/",
+        "/\\.tfvars/"
+      ],
+      "matchStrings": [
+        "(?<currentValue>[\\w+\\.\\-]*)['\",;]*\\s*#\\s?renovate: (?<datasource>\\S+)=(?<depName>\\S+)\\s?(registry=(?<registryUrl>\\S+))?\\s?(versioning=(?<versioning>\\S+))?"
+      ]
+    }
+  ]
 }
