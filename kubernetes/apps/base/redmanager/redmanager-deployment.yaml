@@ -22,7 +22,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: redmanager
-          image: registry.gitlab.com/starfruit6000/redmanager:latest@sha256:3a8f77bfffe25a0e6b583ea46c5a8bda0cf7973b1c6019bd70abcd93f0f1665d
+          image: registry.gitlab.com/starfruit6000/redmanager:latest@sha256:2d9a5d71b17b659a80b4127c08c0c2eccae88381b12a1c205a3bde069b80a884
           env:
             - name: DB_HOST
               value: "postgres"
