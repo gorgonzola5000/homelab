@@ -14,7 +14,7 @@ locals {
   talos_ip                  = var.talos_ip
   talos_ram                 = 45056
   talos_kubernetes_version  = "1.35.0" # renovate: github-releases=kubernetes/kubernetes
-  talos_talos_version       = "1.12.2" # renovate: github-releases=siderolabs/talos
+  talos_talos_version       = "1.12.3" # renovate: github-releases=siderolabs/talos
 
   homelab_domain = "home.${local.apex_domain}"
   apex_domain    = "parents-basement.win"
