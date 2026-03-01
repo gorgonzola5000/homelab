@@ -6,3 +6,4 @@ resources:
 
 patches:
   - path: arr-pvc-patch.yaml
+  - path: arr-jellyfin-http-route-patch.yaml

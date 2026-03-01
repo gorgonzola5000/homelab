@@ -3,3 +3,8 @@ kind: Kustomization
 resources:
   - ../../base/controllers/cert-manager
   - ../../base/controllers/openebs
+  - ../../base/controllers/envoy
+  - ../../base/controllers/cilium
+
+patches:
+  - path: ipam.yaml

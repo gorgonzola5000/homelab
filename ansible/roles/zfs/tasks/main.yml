@@ -52,34 +52,46 @@
 
       [Install]
       WantedBy=zfs-mount.service
-  notify: Restart zfs-load-key
 
 - name: Enable zfs-load-key systemd service
   ansible.builtin.systemd:
     name: zfs-load-key.service
     enabled: true
     daemon_reload: true
-  notify: Restart zfs-load-key
-
-- name: Flush handlers
-  meta: flush_handlers
 
 - name: Setup tank zpool
   block:
-  - name: Create zpool
-    community.general.zpool:
-      name: tank
-      state: present
-      pool_properties:
-        ashift: 12
-      filesystem_properties:
-        compression: lz4
-        encryption: aes-256-gcm
-        keyformat: passphrase
-        keylocation: file:///root/tank_keyfile
-      vdevs:
-        - type: raidz2
-          disks: "{{ zpool.physical_disks }}"
+    - name: Create zpool
+      community.general.zpool:
+        name: tank
+        state: present
+        pool_properties:
+          ashift: 12
+        filesystem_properties:
+          compression: lz4
+          encryption: aes-256-gcm
+          keyformat: passphrase
+          keylocation: file:///root/tank_keyfile
+        vdevs:
+          - type: raidz2
+            disks: "{{ zpool.physical_disks }}"
   rescue:
-  - name: Rescue task by trying to import the tank zpool
-    ansible.builtin.command: 'zpool import tank'
+    - name: Rescue task by trying to import the tank zpool
+      ansible.builtin.command: 'zpool import tank'
+
+- name: Get mounted ZFS filesystems
+  ansible.builtin.command: zfs mount
+  changed_when: false
+  register: zfs_mounted_filesystems
+
+- name: Load key zpool tank key
+  ansible.builtin.systemd:
+    name: zfs-load-key.service
+    state: restarted
+  when: "'tank' not in zfs_mounted_filesystems.stdout"
+
+- name: Load key zpool tank key
+  ansible.builtin.systemd:
+    name: zfs-mount.service
+    state: restarted
+  when: "'tank' not in zfs_mounted_filesystems.stdout"

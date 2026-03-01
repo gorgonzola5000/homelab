@@ -1,0 +1,7 @@
+disable:
+  - rke2-ingress-nginx
+cni: cilium
+disable-kube-proxy: true
+tls-san:
+  - "{{ cluster_name }}"
+  - "{{ inventory_hostname }}"
