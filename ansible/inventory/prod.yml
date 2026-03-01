@@ -1,9 +1,18 @@
-fearless:
+dogs:
   hosts:
-    fearless.home.parents-basement.win:
-      primary_interface: enp3s0
-      root_password_hash: "{{ vault_proxmox_root_password_hash }}"
-      clevis_bindings:
-        device: /dev/nvme0n1p3
-        servers:
-          - http://10.2.137.210:7500
+    dogs.home.parents-basement.win:
+#      clevis_bindings:
+#        device: /dev/sda3
+#        servers:
+#          - http://192.168.122.1:7500
+#      zpool:
+#        physical_disks:
+#          - /dev/vdb
+#          - /dev/vdc
+#          - /dev/vdd
+#          - /dev/vde
+#          - /dev/vdf
+#          - /dev/vdg
+#        tank_keyfile_contents: "{{ vault_dogs_tank_keyfile }}"
+#      cluster_name: animals-local
+#      flux_secret_content: "{{ lookup('community.sops.sops', 'sops/animals-local/flux-secret.enc.yaml') }}"

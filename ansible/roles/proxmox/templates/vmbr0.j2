@@ -1,7 +1,0 @@
-auto vmbr0
-iface vmbr0 inet static
-        address {{ primary_ip }}
-        gateway {{ primary_gateway }}
-        bridge_ports {{ primary_interface }}
-        bridge_stp off
-        bridge_fd 0

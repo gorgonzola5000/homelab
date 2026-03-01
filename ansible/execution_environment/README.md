@@ -8,4 +8,4 @@
 
 1. Run `ansible-builder build`
 2. `cd ..` to the directory with the Ansible playbooks
-3. Run the wanted playbook - `ansible-navigator run fearless.yml -i inventory/prod.yml --execution-environment-image homelab:latest`
+3. Run the wanted playbook - `ansible-navigator run dogs.yml -i inventory/prod.yml --execution-environment-image homelab:latest`
