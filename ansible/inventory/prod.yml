@@ -1,18 +1,23 @@
 dogs:
   hosts:
     dogs.home.parents-basement.win:
-#      clevis_bindings:
-#        device: /dev/sda3
-#        servers:
-#          - http://192.168.122.1:7500
-#      zpool:
-#        physical_disks:
-#          - /dev/vdb
-#          - /dev/vdc
-#          - /dev/vdd
-#          - /dev/vde
-#          - /dev/vdf
-#          - /dev/vdg
-#        tank_keyfile_contents: "{{ vault_dogs_tank_keyfile }}"
-#      cluster_name: animals-local
-#      flux_secret_content: "{{ lookup('community.sops.sops', 'sops/animals-local/flux-secret.enc.yaml') }}"
+      clevis_bindings:
+        device: /dev/sda3
+        servers:
+          - http://10.2.137.210:7500
+      zpool:
+        physical_disks:
+          - /dev/disk/by-id/wwn-0x5000cca028253590
+          - /dev/disk/by-id/wwn-0x5000cca0288aa9e4
+          - /dev/disk/by-id/wwn-0x5000cca028c9fecc
+          - /dev/disk/by-id/wwn-0x5000cca028ca10bc
+          - /dev/disk/by-id/wwn-0x5000cca028cbe2ac
+          - /dev/disk/by-id/wwn-0x5000cca05f4990f4
+          - /dev/disk/by-id/wwn-0x5000cca06d25efcc
+          - /dev/disk/by-id/wwn-0x5000cca06d664258
+        tank_keyfile_contents: "{{ vault_dogs_tank_keyfile }}"
+      cluster_name: animals
+      flux_secret_content: "{{ lookup('community.sops.sops', 'sops/animals/flux-secret.enc.yaml') }}"
+      dac:
+        ipv6: fded:bf35:8058:2137:fded:bf35:8058:2
+        nic: enp4s0f1

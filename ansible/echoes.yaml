@@ -1,6 +1,6 @@
 ---
-- name: Configure host dogs
-  hosts: dogs
+- name: Configure host echoes
+  hosts: echoes
   become: true
   roles:
     - clevis

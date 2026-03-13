@@ -1,0 +1,5 @@
+auto {{ dac.nic }}
+iface {{ dac.nic }} inet6 static
+    address {{ dac.ipv6 }}
+    netmask 64
+    mtu 9000
