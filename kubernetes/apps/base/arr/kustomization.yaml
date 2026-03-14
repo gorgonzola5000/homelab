@@ -10,7 +10,6 @@ resources:
   - jellyfin-http-route.yaml
   - jellyfin-svc.yaml
   - namespace.yaml
-  - pvc.yaml
   - qbittorrent-config.yaml
   - qbittorrent-deployment.yaml
   - qbittorrent-svc.yaml

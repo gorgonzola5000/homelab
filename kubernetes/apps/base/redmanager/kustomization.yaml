@@ -8,7 +8,6 @@ resources:
   - namespace.yaml
   - postgres-deployment.yaml
   - postgres-svc.yaml
-  - pvc.yaml
   - redmanager-deployment.yaml
   - redmanager-http-route.yaml
   - redmanager-svc.yaml

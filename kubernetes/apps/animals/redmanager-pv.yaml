@@ -1,0 +1,156 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redmanager-music
+spec:
+  capacity:
+    storage: 512Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/redmanager/music
+  claimRef:
+    name: music
+    namespace: redmanager
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - dogs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redmanager-navidrome-data
+spec:
+  capacity:
+    storage: 12Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/redmanager/navidrome-data
+  claimRef:
+    name: navidrome-data
+    namespace: redmanager
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - dogs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redmanager-download
+spec:
+  capacity:
+    storage: 5Ti
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/redmanager/redmanager-download
+  claimRef:
+    name: redmanager-download
+    namespace: redmanager
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - dogs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redmanager-pgdata
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/redmanager/pgdata
+  claimRef:
+    name: pgdata
+    namespace: redmanager
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - dogs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redmanager-transmission-config
+spec:
+  capacity:
+    storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/redmanager/transmission-config
+  claimRef:
+    name: transmission-config
+    namespace: redmanager
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - dogs
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redmanager-transmission-shared
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/redmanager/redmanager-transmission-shared
+  claimRef:
+    name: redmanager-transmission-shared
+    namespace: redmanager
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - dogs

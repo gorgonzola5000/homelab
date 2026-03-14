@@ -75,9 +75,15 @@
         vdevs:
           - type: raidz2
             disks: "{{ zpool.physical_disks }}"
+      register: this_sometimes_fails
   rescue:
-    - name: Rescue task by trying to import the tank zpool
-      ansible.builtin.command: 'zpool import tank'
+    - name: Zpool creation debug
+      ansible.builtin.debug:
+        msg: "The task failed with this error: {{ this_sometimes_fails.stderr }}"
+
+    - name: Manual intervention required
+      ansible.builtin.pause:
+        prompt: "Press ENTER to dismiss the error and continue. Press Ctrl+C and then 'A' to abort"
 
 - name: Get mounted ZFS filesystems
   ansible.builtin.command: zfs mount
@@ -95,3 +101,25 @@
     name: zfs-mount.service
     state: restarted
   when: "'tank' not in zfs_mounted_filesystems.stdout"
+
+- name: Ensure filetree exists for Local StorageClass
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - /tank/static/redmanager/music
+    - /tank/static/redmanager/navidrome-data
+    - /tank/static/redmanager/pgdata
+    - /tank/static/redmanager/redmanager-download
+    - /tank/static/redmanager/redmanager-transmission-shared
+    - /tank/static/redmanager/transmission-config
+    - /tank/static/arr/configarr-cache
+    - /tank/static/arr/data
+    - /tank/static/arr/jellyfin-config
+    - /tank/static/arr/prowlarr-config
+    - /tank/static/arr/qbittorrent-config
+    - /tank/static/arr/radarr-config
+    - /tank/static/arr/sonarr-config
