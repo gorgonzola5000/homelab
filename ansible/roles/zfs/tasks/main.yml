@@ -1,15 +1,4 @@
 ---
-- name: Configure Debian repos
-  deb822_repository:
-    name: debian
-    types: deb
-    uris: http://deb.debian.org/debian
-    suites: '{{ ansible_facts["distribution_release"] }}'
-    components:
-      - main
-      - contrib
-      - non-free
-
 - name: Run the equivalent of "apt-get update" as a separate step
   ansible.builtin.apt:
     update_cache: true

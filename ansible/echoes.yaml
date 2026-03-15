@@ -8,3 +8,12 @@
     - ansible_managed
     - zfs
     - rke2
+    - dac
+  tasks:
+    - name: Ensure packages for transcoding are present
+      ansible.builtin.apt:
+        name:
+          - firmware-misc-nonfree
+          - intel-media-va-driver-non-free
+          - intel-gpu-tools
+        state: present

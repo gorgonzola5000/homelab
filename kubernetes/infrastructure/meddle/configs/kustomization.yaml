@@ -3,9 +3,8 @@ kind: Kustomization
 resources:
   - cloudflare-secret.enc.yaml
   - ../../base/configs/cert-manager
-  - ../../base/configs/gateway
+  - ../../base/configs/envoy-gateway
   - ../../base/configs/openebs
-  - grafana-secret.enc.yaml
-  - ../../base/configs/monitoring
+
 patches:
   - path: lets-encrypt.yaml
