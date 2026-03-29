@@ -110,7 +110,7 @@ spec:
 
       containers:
         - name: transmission
-          image: ghcr.io/home-operations/transmission:rolling@sha256:b92d4039c761a582fa21dc144df2c54d26086fbb15ae8d08b17a0f8f9ae23ab0
+          image: ghcr.io/home-operations/transmission:rolling@sha256:3236ca32a6bc7d4d04386876a2bb785a72cdd8385512c63ee1af0f1cf8d9b830
           env:
             - name: TRANSMISSION__RPC_USERNAME
               valueFrom:
