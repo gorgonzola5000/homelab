@@ -91,7 +91,7 @@ spec:
             - containerPort: 8080
               protocol: TCP
         - name: gomplate-qbittorrent-config
-          image: hairyhenderson/gomplate:alpine@sha256:0b81da292a603e826c2be71484b17b08f67a6ee23519be45c7e27d8ed1db1e70
+          image: hairyhenderson/gomplate:alpine@sha256:62d7fde2d69fcb681219d10adbbbe133deb684bb9e9f554552a6febf4199eebb
           env:
             - name: QBITTORRENT_PASS_HASH
               valueFrom:
