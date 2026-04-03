@@ -1,0 +1,114 @@
+---
+- name: Run the equivalent of "apt-get update" as a separate step
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Ensure zfs packages are installed
+  ansible.builtin.apt:
+    name:
+      - dpkg-dev
+      - linux-headers-generic
+      - linux-image-generic
+      - zfs-dkms
+      - zfsutils-linux
+    state: present
+
+- name: Ensure keyfile file exists
+  ansible.builtin.template:
+    dest: /root/tank_keyfile
+    src: tank_keyfile.j2
+    owner: root
+    group: root
+    mode: '0400'
+
+- name: Create zfs-load-key systemd service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/zfs-load-key.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Load encryption keys
+      DefaultDependencies=no
+      After=zfs-import.target
+      Before=zfs-mount.service
+
+      [Service]
+      Type=oneshot
+      RemainAfterExit=yes
+      ExecStart=/usr/sbin/zfs load-key -a
+
+      [Install]
+      WantedBy=zfs-mount.service
+
+- name: Enable zfs-load-key systemd service
+  ansible.builtin.systemd:
+    name: zfs-load-key.service
+    enabled: true
+    daemon_reload: true
+
+- name: Setup tank zpool
+  block:
+    - name: Create zpool
+      community.general.zpool:
+        name: tank
+        state: present
+        pool_properties:
+          ashift: 12
+        filesystem_properties:
+          compression: lz4
+          encryption: aes-256-gcm
+          keyformat: passphrase
+          keylocation: file:///root/tank_keyfile
+        vdevs:
+          - type: raidz2
+            disks: "{{ zpool.physical_disks }}"
+      register: this_sometimes_fails
+  rescue:
+    - name: Zpool creation debug
+      ansible.builtin.debug:
+        msg: "The task failed with this error: {{ this_sometimes_fails.stderr }}"
+
+    - name: Manual intervention required
+      ansible.builtin.pause:
+        prompt: "Press ENTER to dismiss the error and continue. Press Ctrl+C and then 'A' to abort"
+
+- name: Get mounted ZFS filesystems
+  ansible.builtin.command: zfs mount
+  changed_when: false
+  register: zfs_mounted_filesystems
+
+- name: Load key zpool tank key
+  ansible.builtin.systemd:
+    name: zfs-load-key.service
+    state: restarted
+  when: "'tank' not in zfs_mounted_filesystems.stdout"
+
+- name: Load key zpool tank key
+  ansible.builtin.systemd:
+    name: zfs-mount.service
+    state: restarted
+  when: "'tank' not in zfs_mounted_filesystems.stdout"
+
+- name: Ensure filetree exists for Local StorageClass
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - /tank/static/redmanager/music
+    - /tank/static/redmanager/navidrome-data
+    - /tank/static/redmanager/pgdata
+    - /tank/static/redmanager/redmanager-download
+    - /tank/static/redmanager/redmanager-transmission-shared
+    - /tank/static/redmanager/transmission-config
+    - /tank/static/arr/configarr-cache
+    - /tank/static/arr/data
+    - /tank/static/arr/jellyfin-config
+    - /tank/static/arr/prowlarr-config
+    - /tank/static/arr/qbittorrent-config
+    - /tank/static/arr/radarr-config
+    - /tank/static/arr/sonarr-config

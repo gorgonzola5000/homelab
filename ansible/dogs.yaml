@@ -1,0 +1,11 @@
+---
+- name: Configure host dogs
+  hosts: dogs
+  become: true
+  roles:
+    - clevis
+    - common
+    - ansible_managed
+    - zfs
+    - rke2
+    - dac

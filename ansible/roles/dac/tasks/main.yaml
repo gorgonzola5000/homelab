@@ -1,0 +1,22 @@
+---
+- name: Configure DAC NIC
+  ansible.builtin.template:
+    src: dac.j2
+    dest: /etc/network/interfaces.d/dac
+    owner: root
+    group: root
+    mode: '0644'
+  when: dac is defined
+  notify: Restart networking
+
+- name: Ensure remote host DNS entry exists
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '.*\s+{{ dac.peer_hostname }}$'
+    line: "{{ dac.peer_ipv6 }} {{ dac.peer_hostname }}"
+    state: present
+    owner: root
+    group: root
+    mode: '0644'
+  when: 
+    - dac is defined

@@ -1,0 +1,8 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: navidrome
+  namespace: redmanager
+spec:
+  hostnames:
+    - navidrome.home.parents-basement.win

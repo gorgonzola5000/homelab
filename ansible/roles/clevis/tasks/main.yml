@@ -1,9 +1,8 @@
 ---
-
 - name: Set up emergency passphrase
   community.crypto.luks_device:
     device: "{{ clevis_bindings.device }}"
-    new_passphrase: "{{ vault_proxmox_emergency_passphrase }}"
+    new_passphrase: "{{ vault_luks_emergency_passphrase }}"
     passphrase: bootstrap
     new_keyslot: 31
 
@@ -20,7 +19,7 @@
       - device: "{{ clevis_bindings.device }}"
         # recommend vault encrypting the encryption_password
         # see https://docs.ansible.com/ansible/latest/user_guide/vault.html
-        encryption_password: "{{ vault_proxmox_emergency_passphrase }}"
+        encryption_password: "{{ vault_luks_emergency_passphrase }}"
         servers: "{{ clevis_bindings.servers }}"
         slot: 0
 
@@ -28,5 +27,5 @@
   community.crypto.luks_device:
     device: "{{ clevis_bindings.device }}"
     remove_keyslot: "{{ item }}"
-    passphrase: "{{ vault_proxmox_emergency_passphrase }}"
+    passphrase: "{{ vault_luks_emergency_passphrase }}"
   with_sequence: start=1 end=30

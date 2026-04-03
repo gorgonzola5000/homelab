@@ -1,0 +1,97 @@
+creation_rules:
+  # private keys for use by flux for decrypting cluster specific files
+  - path_regex: sops/.*/flux-secret\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+
+  # kube_config files
+  - path_regex: sops/.*/kube_config\.enc$
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+
+  # ansible vars
+  - path_regex: sops/ansible-secrets/secrets.enc.sops.yaml$
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+
+  # meddle encrypted files
+  - path_regex: sops/meddle/.*\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+          - "age1uvccut3fganrx0uztudlujeeenv3mhpa4y3pgd8dstagcqknnp3q5p4zhm"
+  - path_regex: kubernetes/[^/]+/meddle/.*\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+          - "age1uvccut3fganrx0uztudlujeeenv3mhpa4y3pgd8dstagcqknnp3q5p4zhm"
+
+  # meddle-local encrypted files
+  - path_regex: sops/meddle-local/.*\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+          - "age1ttrfgxxjy2ww7kurs6qpl7tv3vsypp323zln7ye2y23scyt48eqqvnuj6n"
+  - path_regex: kubernetes/[^/]+/meddle-local/.*\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+          - "age1ttrfgxxjy2ww7kurs6qpl7tv3vsypp323zln7ye2y23scyt48eqqvnuj6n"
+
+  # animals encrypted files
+  - path_regex: sops/animals/.*\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+          - "age1uzp73yjss0c5gap9k5ye96cl7z86affv86209xllpuc3n896hces8mhtmx"
+  - path_regex: kubernetes/[^/]+/animals/.*\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+          - "age1uzp73yjss0c5gap9k5ye96cl7z86affv86209xllpuc3n896hces8mhtmx"
+
+  # animals-local encrypted files
+  - path_regex: sops/animals-local/.*\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+          - "age1dqkegdud54tzus44czqltxukjuumefejyhn5zlzxqmyuvnnj4d3qte4u0d"
+  - path_regex: kubernetes/[^/]+/animals-local/.*\.enc\.yaml$
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
+          - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
+          - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
+          - "age1dqkegdud54tzus44czqltxukjuumefejyhn5zlzxqmyuvnnj4d3qte4u0d"

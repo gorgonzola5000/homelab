@@ -1,0 +1,338 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-data
+spec:
+  capacity:
+    storage: 1Ti
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/data
+  claimRef:
+    name: data
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-qbittorrent-config
+spec:
+  capacity:
+    storage: 8Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/qbittorrent-config
+  claimRef:
+    name: qbittorrent-config
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-radarr-config
+spec:
+  capacity:
+    storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/radarr-config
+  claimRef:
+    name: radarr-config
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-sonarr-config
+spec:
+  capacity:
+    storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/sonarr-config
+  claimRef:
+    name: sonarr-config
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-prowlarr-config
+spec:
+  capacity:
+    storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/prowlarr-config
+  claimRef:
+    name: prowlarr-config
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-configarr-cache
+spec:
+  capacity:
+    storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/configarr-cache
+  claimRef:
+    name: configarr-cache
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-jellyfin-config
+spec:
+  capacity:
+    storage: 12Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/jellyfin-config
+  claimRef:
+    name: jellyfin-config
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-music
+spec:
+  capacity:
+    storage: 512Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/music
+  claimRef:
+    name: music
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-navidrome-data
+spec:
+  capacity:
+    storage: 12Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/navidrome-data
+  claimRef:
+    name: navidrome-data
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-redmanager-download
+spec:
+  capacity:
+    storage: 5Ti
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/redmanager-download
+  claimRef:
+    name: redmanager-download
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-pgdata
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/pgdata
+  claimRef:
+    name: pgdata
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-transmission-config
+spec:
+  capacity:
+    storage: 4Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/transmission-config
+  claimRef:
+    name: transmission-config
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: arr-redmanager-transmission-shared
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /tank/static/arr/redmanager-transmission-shared
+  claimRef:
+    name: redmanager-transmission-shared
+    namespace: arr
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - echoes

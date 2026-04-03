@@ -3,14 +3,13 @@ kind: Kustomization
 namespace: redmanager
 resources:
   - navidrome-deployment.yaml
-  - navidrome-http-route.yaml
+  - navidrome-httproute.yaml
   - navidrome-svc.yaml
   - namespace.yaml
   - postgres-deployment.yaml
   - postgres-svc.yaml
-  - pvc.yaml
   - redmanager-deployment.yaml
-  - redmanager-http-route.yaml
+  - redmanager-httproute.yaml
   - redmanager-svc.yaml
   - transmission-configmap.yaml
   - transmission-deployment.yaml

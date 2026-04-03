@@ -1,0 +1,16 @@
+# # cspell:ignore cmdline, workdir
+---
+ansible-navigator:
+  ansible-runner:
+    artifact-dir: /tmp/ansible-runner
+  execution-environment:
+    image: homelab:latest
+    pull:
+      policy: never
+  logging:
+    level: critical
+    append: False
+    file: /tmp/ansible-runner/log.txt
+  mode: stdout
+  playbook-artifact:
+    enable: False

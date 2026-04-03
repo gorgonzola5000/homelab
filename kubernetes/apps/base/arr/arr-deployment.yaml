@@ -63,7 +63,7 @@ spec:
               mountPath: /config
 
         - name: sonarr
-          image: ghcr.io/home-operations/sonarr:rolling@sha256:22651c750eedb091f6d76ade95dbecae0eeafe2b55432c3b8d8b042e8745f344
+          image: ghcr.io/home-operations/sonarr:rolling@sha256:83607d2b741ec9469db09489e88c473ae6fdf7d85f3b55d4fa809b43e25a2a6c
           env:
             - name: SONARR__AUTH__APIKEY
               valueFrom:
@@ -93,7 +93,7 @@ spec:
               mountPath: /config
 
         - name: prowlarr
-          image: ghcr.io/home-operations/prowlarr:rolling@sha256:e2459e199564ab852c6e677e951cef36c172a8e71a0e1c90665631b5a0c57438
+          image: ghcr.io/home-operations/prowlarr:rolling@sha256:a44d003ee6f6ce23882d009482ca2ac7f951df64e73bfa04711363268d278562
           env:
             - name: PROWLARR__AUTH__APIKEY
               valueFrom:
