@@ -1,0 +1,17 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: jellyfin
+  namespace: arr
+spec:
+  template:
+    spec:
+      securityContext:
+        supplementalGroups:
+          - 44
+          - 992
+      containers:
+        - name: jellyfin
+          resources:
+            limits:
+              gpu.intel.com/i915: 1000m

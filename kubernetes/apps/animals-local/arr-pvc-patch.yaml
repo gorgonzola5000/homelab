@@ -1,0 +1,77 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: qbittorrent-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: radarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sonarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prowlarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: configarr-cache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jellyfin-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi

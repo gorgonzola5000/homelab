@@ -3,3 +3,10 @@ kind: Kustomization
 resources:
   - ../../base/controllers/cert-manager
   - ../../base/controllers/openebs
+  - ../../base/controllers/envoy
+  - ../../base/controllers/cilium
+  - ../../base/controllers/node-feature-discovery
+  - ../../base/controllers/intel-device-plugins-operator
+
+patches:
+  - path: ipam.yaml

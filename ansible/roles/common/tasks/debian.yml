@@ -1,11 +1,48 @@
 ---
+- name: Configure Debian base and updates repositories
+  ansible.builtin.deb822_repository:
+    name: debian
+    types:
+      - deb
+      - deb-src
+    uris:
+      - http://ftp.psnc.pl/debian
+      - http://deb.debian.org/debian
+    suites:
+      - trixie
+      - trixie-updates
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    state: present
+
+- name: Configure Debian security repository
+  ansible.builtin.deb822_repository:
+    name: debian-security
+    types:
+      - deb
+      - deb-src
+    uris: http://security.debian.org/debian-security/
+    suites:
+      - trixie-security
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    state: present
+
 - name: Debian - Full system upgrade
   ansible.builtin.apt:
     update_cache: true
     upgrade: full
 
 - name: Debian - Ensure unattended_upgrades, debconf are present
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name:
       - debconf
       - debconf-utils

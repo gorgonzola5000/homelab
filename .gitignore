@@ -1,17 +1,9 @@
-# Local .terraform directories
 **/.terraform/*
-
-# .tfstate files
 *.tfstate
 *.tfstate.*
-
-# Crash log files
 crash.log
 crash.*.log
-
-# Ignore transient lock info files created by terraform apply
 .terraform.tfstate.lock.info
-
 .terraformrc
 terraform.rc
 
@@ -24,5 +16,5 @@ preseed.cfg
 
 ansible/execution_environment/context/*
 
-sops/*/kube_config
-sops/*/talos_config
+kube_config
+talos_config

@@ -5,8 +5,8 @@ metadata:
   name: letsencrypt
 spec:
   acme:
-    email: gorgonzola5000@tuta.com
-    # The server is replaced in kubernetes/clusters/meddle/infrastructure-controllers.yaml
+    email: gorgonzola5000x@gmail.com
+    # The server is replaced in kubernetes/infrastructure/<cluster name>/configs/lets-encrypt.yaml
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-account-key

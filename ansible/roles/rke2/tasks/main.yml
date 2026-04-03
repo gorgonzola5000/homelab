@@ -1,0 +1,95 @@
+---
+- name: Ensure AppArmor packages are present
+  ansible.builtin.apt:
+    name:
+      - apparmor
+      - apparmor-utils
+      - auditd
+
+- name: Ensure RKE2 manifests directory exists
+  ansible.builtin.file:
+    path: /var/lib/rancher/rke2/server/manifests
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: Copy Cilium config manifest
+  ansible.builtin.copy:
+    src: rke2-cilium-config.yaml
+    dest: /var/lib/rancher/rke2/server/manifests/rke2-cilium-config.yaml
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Copy Flux secret
+  ansible.builtin.copy:
+    content: "{{ flux_secret_content }}"
+    dest: /var/lib/rancher/rke2/server/manifests/01-flux-system-secret.yaml
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: Template Flux Operator manifests
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "/var/lib/rancher/rke2/server/manifests/{{ item }}"
+    mode: '0644'
+    owner: root
+    group: root
+  loop:
+    - 00-flux-system-namespace.yaml
+    - 02-flux-operator.yaml
+    - 03-flux-instance.yaml
+
+- name: Install RKE2
+  ansible.builtin.shell:
+    cmd: "curl -sfL https://get.rke2.io | sh -"
+  environment:
+    INSTALL_RKE2_CHANNEL: stable
+  notify: Restart rke2-server.service
+
+- name: Ensure /etc/rancher/rke2 directory exists
+  ansible.builtin.file:
+    path: /etc/rancher/rke2
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory
+
+- name: Configure RKE2
+  ansible.builtin.template:
+    src: config.yaml
+    dest: /etc/rancher/rke2/config.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart rke2-server.service
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Fetch kube_config
+  ansible.builtin.fetch:
+    src: /etc/rancher/rke2/rke2.yaml
+    dest: sops/{{ cluster_name }}/kube_config
+    flat: true
+  register: kube_config_fetched
+
+- name: Update server IP in fetched kube_config
+  ansible.builtin.replace:
+    path: 'sops/{{ cluster_name }}/kube_config'
+    regexp: '127\.0\.0\.1'
+    replace: '{{ inventory_hostname }}'
+  when: kube_config_fetched.changed
+  delegate_to: localhost
+
+- name: Copy kube_config to kube_config.enc
+  ansible.builtin.copy:
+    src: 'sops/{{ cluster_name }}/kube_config'
+    dest: 'sops/{{ cluster_name }}/kube_config.enc'
+  delegate_to: localhost
+
+- name: Encrypt kube_config.enc
+  ansible.builtin.command: 'sops encrypt -i sops/{{ cluster_name }}/kube_config.enc'
+  delegate_to: localhost

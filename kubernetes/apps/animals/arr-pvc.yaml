@@ -1,0 +1,98 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: data
+  namespace: arr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: arr-data
+  resources:
+    requests:
+      storage: 1Ti
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: qbittorrent-config
+  namespace: arr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: arr-qbittorrent-config
+  resources:
+    requests:
+      storage: 8Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: radarr-config
+  namespace: arr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: arr-radarr-config
+  resources:
+    requests:
+      storage: 4Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sonarr-config
+  namespace: arr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: arr-sonarr-config
+  resources:
+    requests:
+      storage: 4Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prowlarr-config
+  namespace: arr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: arr-prowlarr-config
+  resources:
+    requests:
+      storage: 4Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: configarr-cache
+  namespace: arr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: arr-configarr-cache
+  resources:
+    requests:
+      storage: 4Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jellyfin-config
+  namespace: arr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: arr-jellyfin-config
+  resources:
+    requests:
+      storage: 12Gi

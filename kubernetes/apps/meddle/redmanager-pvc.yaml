@@ -1,0 +1,84 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: music
+  namespace: redmanager
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: redmanager-music
+  resources:
+    requests:
+      storage: 512Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: navidrome-data
+  namespace: redmanager
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: redmanager-navidrome-data
+  resources:
+    requests:
+      storage: 12Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redmanager-download
+  namespace: redmanager
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: redmanager-download
+  resources:
+    requests:
+      storage: 5Ti
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pgdata
+  namespace: redmanager
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: redmanager-pgdata
+  resources:
+    requests:
+      storage: 20Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: transmission-config
+  namespace: redmanager
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: redmanager-transmission-config
+  resources:
+    requests:
+      storage: 4Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redmanager-transmission-shared
+  namespace: redmanager
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: redmanager-transmission-shared
+  resources:
+    requests:
+      storage: 20Gi

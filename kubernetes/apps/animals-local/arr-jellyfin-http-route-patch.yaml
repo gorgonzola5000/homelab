@@ -1,0 +1,11 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: jellyfin
+  namespace: arr
+spec:
+  parentRefs:
+    - name: eg
+      namespace: envoy-gateway-system
+  hostnames:
+    - jellyfin.animals-local.home.parents-basement.win

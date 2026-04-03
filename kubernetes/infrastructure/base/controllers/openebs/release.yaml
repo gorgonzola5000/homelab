@@ -17,9 +17,9 @@ spec:
   install:
     createNamespace: false
   values:
-    zfs-localpv:
-      zfsNode:
-        encrKeysDir: "/var/openebs/keys"
+    #    zfs-localpv:
+    #      zfsNode:
+    #        encrKeysDir: "/var/openebs/keys"
     alloy:
       enabled: false
     loki:
