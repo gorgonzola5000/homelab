@@ -8,8 +8,8 @@ creation_rules:
           - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
 
-  # talos and kube config files
-  - path_regex: sops/.*/(talos|kube)_config\.enc$
+  # kube_config files
+  - path_regex: sops/.*/kube_config\.enc$
     key_groups:
       - age:
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
