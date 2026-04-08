@@ -40,7 +40,7 @@ spec:
             - name: FIREWALL_INPUT_PORTS
               value: "9091"
             - name: SERVER_COUNTRIES
-              value: Poland
+              value: Netherlands
             - name: PORT_FORWARD_ONLY
               value: on
             - name: VPN_SERVICE_PROVIDER

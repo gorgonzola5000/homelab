@@ -14,5 +14,6 @@ resources:
   - transmission-configmap.yaml
   - transmission-deployment.yaml
   - transmission-svc.yaml
+  - wrtag-configmap.yaml
   - wrtag-deployment.yaml
   - wrtag-svc.yaml

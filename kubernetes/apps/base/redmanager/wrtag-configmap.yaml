@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wrtag-post-import-script
+  namespace: redmanager
+data:
+  post-import.sh: |
+    #!/bin/sh
+    set -e 
+
+    flac --compression-level-5 --delete-input-file -f -w "$@"
+    metaflac --remove --block-type=PICTURE,PADDING --dont-use-padding "$@"
+    metaflac --remove-tag=COVERART --dont-use-padding "$@"
