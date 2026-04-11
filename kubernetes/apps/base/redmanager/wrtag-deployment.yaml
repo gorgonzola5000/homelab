@@ -21,7 +21,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: wrtag
-          image: registry.gitlab.com/starfruit6000/wrtag-flac:v0.30.0
+          image: registry.gitlab.com/starfruit6000/wrtag-flac:v0.30.0@sha256:89d530aed5793b59dfdf94ba4c5f2075641ba033207f85b699129e1f39a2a8cf
           env:
             - name: WRTAG_WEB_API_KEY
               valueFrom:
