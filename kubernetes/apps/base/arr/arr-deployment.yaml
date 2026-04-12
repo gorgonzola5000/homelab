@@ -93,7 +93,7 @@ spec:
               mountPath: /config
 
         - name: prowlarr
-          image: ghcr.io/home-operations/prowlarr:rolling@sha256:fc87e9af2f175ef19610fdcf1fcdcc84d5099127211cc6733f826409b2733237
+          image: ghcr.io/home-operations/prowlarr:rolling@sha256:da6b1f914ad22778c347d554a59b6e40110f654b40528c8de516616382db5148
           env:
             - name: PROWLARR__AUTH__APIKEY
               valueFrom:
