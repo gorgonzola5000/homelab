@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: transmission-port-update
+  name: transmission-scripts
   namespace: redmanager
 data:
   transmission-port-update.sh: |
@@ -153,4 +153,19 @@ data:
     fi
 
     echo "Success! Transmission peer-port updated to ${PORT}"
+    exit 0
+  healthcheck.sh: |
+    #!/bin/sh
+
+    if wget --timeout=2 --tries=1 -qO- http://localhost:8000/v1/portforward 2>/dev/null | grep -q '"port":0'; then
+        echo "ERROR: Gluetun API reports port is 0"
+        exit 1
+    fi
+
+    if ! ping -c 1 -w 2 1.1.1.1 >/dev/null 2>&1; then
+        echo "ERROR: Ping to 1.1.1.1 failed (VPN tunnel down)"
+        exit 1
+    fi
+
+    echo "SUCCESS: All health checks passed"
     exit 0

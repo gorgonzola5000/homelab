@@ -81,18 +81,19 @@ spec:
                   name: redmanager-secret
                   key: TRANSMISSION_PASS
           volumeMounts:
-            - name: transmission-port-update
+            - name: transmission-scripts
               mountPath: /usr/local/bin/transmission-port-update.sh
               subPath: transmission-port-update.sh
+            - name: transmission-scripts
+              mountPath: /usr/local/bin/healthcheck.sh
+              subPath: healthcheck.sh
           ports:
             - containerPort: 9091
               protocol: TCP
           readinessProbe:
             exec:
               command:
-                - /bin/sh
-                - -c
-                - "nslookup google.com"
+                - /usr/local/bin/healthcheck.sh
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
@@ -100,9 +101,7 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /bin/sh
-                - -c
-                - "nslookup google.com"
+                - /usr/local/bin/healthcheck.sh
             initialDelaySeconds: 300
             periodSeconds: 30
             timeoutSeconds: 10
@@ -136,9 +135,9 @@ spec:
         - name: transmission-config
           persistentVolumeClaim:
             claimName: transmission-config
-        - name: transmission-port-update
+        - name: transmission-scripts
           configMap:
-            name: transmission-port-update
+            name: transmission-scripts
             defaultMode: 0744
         - name: redmanager-transmission-shared
           persistentVolumeClaim:
