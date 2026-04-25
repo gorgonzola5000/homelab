@@ -1,57 +1,67 @@
 ---
-- name: Configure destination host
-  when: syncoid_type == 'destination'
-  block:
-    - name: Ensure root SSH key exists on destination
-      ansible.builtin.user:
-        name: root
-        generate_ssh_key: true
-        ssh_key_type: ed25519
+- name: Ensure root SSH key exists on destination
+  ansible.builtin.user:
+    name: root
+    generate_ssh_key: true
+    ssh_key_type: ed25519
 
-    - name: Read root public key from dogs
-      ansible.builtin.slurp:
-        src: /root/.ssh/id_ed25519.pub
-      register: dest_pub_key
+- name: Scan the source host's SSH keys over the DAC link
+  ansible.builtin.command: ssh-keyscan -t rsa,ed25519 {{ syncoid_source_host }}
+  register: source_host_keys
+  changed_when: false
 
-    - name: Authorize key on the source host for zfsbackup
-      ansible.posix.authorized_key:
-        user: zfsbackup
-        state: present
-        key: "{{ dest_pub_key['content'] | b64decode }}"
-      delegate_to: "{{ syncoid_source_host_fqdn }}"
+- name: Ensure source host is trusted in known_hosts
+  ansible.builtin.known_hosts:
+    path: /root/.ssh/known_hosts
+    name: "{{ syncoid_source_host }}"
+    key: "{{ item }}"
+    state: present
+  loop: "{{ source_host_keys.stdout_lines | reject('search', '^#') | list }}"
 
-    - name: Deploy Syncoid Systemd Service
-      ansible.builtin.template:
-        src: syncoid-pull.service.j2
-        dest: /etc/systemd/system/syncoid-pull.service
-        mode: '0644'
-      notify: Reload Systemd
+- name: Read root public key from dogs
+  ansible.builtin.slurp:
+    src: /root/.ssh/id_ed25519.pub
+  register: dest_pub_key
 
-    - name: Deploy Syncoid Systemd Timer
-      ansible.builtin.template:
-        src: syncoid-pull.timer.j2
-        dest: /etc/systemd/system/syncoid-pull.timer
-        mode: '0644'
-      notify: Reload Systemd
+- name: Authorize key on the source host for zfsbackup
+  ansible.posix.authorized_key:
+    user: zfsbackup
+    state: present
+    key: "{{ dest_pub_key['content'] | b64decode }}"
+  delegate_to: "{{ syncoid_source_host_fqdn }}"
 
-    - name: Ensure RKE2 service override directory exists
-      ansible.builtin.file:
-        path: /etc/systemd/system/rke2-server.service.d
-        state: directory
-        mode: '0755'
+- name: Deploy Syncoid Systemd Service
+  ansible.builtin.template:
+    src: syncoid-pull.service.j2
+    dest: /etc/systemd/system/syncoid-pull.service
+    mode: '0644'
+  notify: Reload Systemd
 
-    - name: Inject Syncoid dependency into RKE2
-      ansible.builtin.copy:
-        dest: /etc/systemd/system/rke2-server.service.d/override.conf
-        content: |
-          [Unit]
-          After=syncoid-pull.service
-          Requires=syncoid-pull.service
-        mode: '0644'
-      notify: Reload Systemd
+- name: Deploy Syncoid Systemd Timer
+  ansible.builtin.template:
+    src: syncoid-pull.timer.j2
+    dest: /etc/systemd/system/syncoid-pull.timer
+    mode: '0644'
+  notify: Reload Systemd
 
-    - name: Enable and start Syncoid Timer
-      ansible.builtin.systemd:
-        name: syncoid-pull.timer
-        enabled: true
-        state: started
+- name: Ensure RKE2 service override directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/rke2-server.service.d
+    state: directory
+    mode: '0755'
+
+- name: Inject Syncoid dependency into RKE2
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/rke2-server.service.d/override.conf
+    content: |
+      [Unit]
+      After=syncoid-pull.service
+      Requires=syncoid-pull.service
+    mode: '0644'
+  notify: Reload Systemd
+
+- name: Enable and start Syncoid Timer
+  ansible.builtin.systemd:
+    name: syncoid-pull.timer
+    enabled: true
+    state: started
