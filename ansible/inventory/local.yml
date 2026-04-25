@@ -16,6 +16,26 @@ dogs:
         tank_keyfile_contents: foobarbaz
       cluster_name: animals-local
       flux_secret_content: "{{ lookup('community.sops.sops', 'sops/animals-local/flux-secret.enc.yaml') }}"
+      sanoid_conf: |
+        # Filesystem Backups
+        [tank/static]
+          use_template = primary
+          recursive = yes
+
+        # Templates
+        [template_primary]
+          frequently = 0
+          hourly = 24
+          daily = 30
+          weekly = 4
+          monthly = 3
+          yearly = 0
+          autosnap = yes
+          autoprune = yes
+      syncoid_type: source
+      syncoid_source_host: echoes-local
+      syncoid_source_host_fqdn: "echoes-local.home.parents-basement.win"
+      syncoid_dataset: tank/static
 echoes:
   hosts:
     echoes-local.home.parents-basement.win:
@@ -34,3 +54,22 @@ echoes:
         tank_keyfile_contents: foobarbaz
       cluster_name: meddle-local
       flux_secret_content: "{{ lookup('community.sops.sops', 'sops/meddle-local/flux-secret.enc.yaml') }}"
+      sanoid_conf: |
+        # Filesystem Backups
+        [tank/static]
+          use_template = backup
+          recursive = yes
+
+        # Templates
+        [template_backup]
+          frequently = 0
+          hourly = 24
+          daily = 30
+          monthly = 3
+          yearly = 0
+          autosnap = no
+          autoprune = yes
+      syncoid_type: destination
+      syncoid_source_host: echoes-local
+      syncoid_source_host_fqdn: "echoes-local.home.parents-basement.win"
+      syncoid_dataset: tank/static

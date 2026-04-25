@@ -1,0 +1,13 @@
+---
+- name: Ensure mbuffer is installed for fast transfers
+  ansible.builtin.apt:
+    name: mbuffer
+    state: present
+
+- name: Include Syncoid source host tasks
+  ansible.builtin.include_tasks: source.yaml
+  when: syncoid_type == 'source'
+
+- name: Include Syncoid destination host tasks
+  ansible.builtin.include_tasks: destination.yaml
+  when: syncoid_type == 'destination'

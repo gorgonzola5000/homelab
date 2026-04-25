@@ -3,9 +3,10 @@
   hosts: dogs
   become: true
   roles:
-    - clevis
-    - common
-    - ansible_managed
-    - zfs
+    #- clevis
+    #- common
+    #- ansible_managed
+    #- zfs
+    - syncoid
     - rke2
     - dac

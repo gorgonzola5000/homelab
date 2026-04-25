@@ -1,0 +1,11 @@
+[Unit]
+Description=Syncoid Pull Backup from {{ syncoid_source_host }}
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/usr/sbin/syncoid -r --sendoptions="w" --no-sync-snap --no-privilege-elevation zfsbackup@{{ syncoid_source_host }}:{{ syncoid_dataset }} {{ syncoid_dataset }}
+StandardOutput=append:/var/log/syncoid_pull.log
+StandardError=append:/var/log/syncoid_pull.log

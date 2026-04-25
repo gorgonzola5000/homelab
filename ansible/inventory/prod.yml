@@ -5,7 +5,7 @@ echoes:
       clevis_bindings:
         device: /dev/nvme0n1p3
         servers:
-          - http://10.2.137.210:7500
+          - http://10.5.137.3:7500
       zpool:
         physical_disks:
           - /dev/disk/by-id/wwn-0x5000cca0282cdfb4
@@ -22,6 +22,26 @@ echoes:
         nic: enp3s0f1np1
         peer_ipv6: fded:bf35:8058:2137:fded:bf35:8058:2
         peer_hostname: dogs
+      sanoid_conf: |
+        # Filesystem Backups
+        [tank/static]
+          use_template = primary
+          recursive = yes
+
+        # Templates
+        [template_primary]
+          frequently = 0
+          hourly = 24
+          daily = 30
+          weekly = 4
+          monthly = 3
+          yearly = 0
+          autosnap = yes
+          autoprune = yes
+      syncoid_type: source
+      syncoid_source_host: echoes
+      syncoid_source_host_fqdn: "echoes.home.parents-basement.win"
+      syncoid_dataset: tank/static
 dogs:
   hosts:
     dogs.home.parents-basement.win:
@@ -29,7 +49,7 @@ dogs:
       clevis_bindings:
         device: /dev/sda3
         servers:
-          - http://10.2.137.210:7500
+          - http://10.5.137.3:7500
       zpool:
         physical_disks:
           - /dev/disk/by-id/wwn-0x5000cca028253590
@@ -48,3 +68,22 @@ dogs:
         nic: enp4s0f1
         peer_ipv6: fded:bf35:8058:2137:fded:bf35:8058:1
         peer_hostname: echoes
+      sanoid_conf: |
+        # Filesystem Backups
+        [tank/static]
+          use_template = backup
+          recursive = yes
+
+        # Templates
+        [template_backup]
+          frequently = 0
+          hourly = 24
+          daily = 30
+          monthly = 3
+          yearly = 0
+          autosnap = no
+          autoprune = yes
+      syncoid_type: destination
+      syncoid_source_host: echoes
+      syncoid_source_host_fqdn: "echoes.home.parents-basement.win"
+      syncoid_dataset: tank/static

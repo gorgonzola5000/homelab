@@ -1,0 +1,13 @@
+---
+- name: Configure source host
+  block:
+    - name: Create restricted zfsbackup user
+      ansible.builtin.user:
+        name: zfsbackup
+        system: true
+        shell: /bin/bash
+        create_home: true
+
+    - name: Delegate ZFS permissions to zfsbackup user
+      ansible.builtin.command: zfs allow -u zfsbackup send,hold,release,bookmark,snapshot {{ syncoid_dataset }}
+      changed_when: false
