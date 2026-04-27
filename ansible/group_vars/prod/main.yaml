@@ -1,0 +1,10 @@
+---
+clevis_bind_servers:
+    - http://10.5.137.3:7500
+syncoid_source_host: echoes
+syncoid_source_host_fqdn: "echoes.home.parents-basement.win"
+grafana_cloud_prometheus_url: "https://prometheus-prod-65-prod-eu-west-2.grafana.net/api/prom/push"
+grafana_cloud_prometheus_user: "3144080"
+grafana_cloud_loki_url: "https://logs-prod-012.grafana.net/loki/api/v1/push"
+grafana_cloud_loki_user: "1567715"
+grafana_cloud_token: "{{ vault_prod_grafana_token }}"

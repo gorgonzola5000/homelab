@@ -10,6 +10,7 @@
     - syncoid
     - rke2
     - dac
+    - alloy
   tasks:
     - name: Ensure packages for transcoding are present
       ansible.builtin.apt:
@@ -18,3 +19,21 @@
           - intel-media-va-driver-non-free
           - intel-gpu-tools
         state: present
+  vars:
+    sanoid_conf: |
+      # Filesystem Backups
+      [tank/static]
+        use_template = primary
+        recursive = yes
+
+      # Templates
+      [template_primary]
+        frequently = 0
+        hourly = 24
+        daily = 30
+        weekly = 4
+        monthly = 3
+        yearly = 0
+        autosnap = yes
+        autoprune = yes
+    syncoid_type: source

@@ -1,7 +1,7 @@
 ---
 - name: Set up emergency passphrase
   community.crypto.luks_device:
-    device: "{{ clevis_bindings.device }}"
+    device: "{{ clevis_bind_device }}"
     new_passphrase: "{{ vault_luks_emergency_passphrase }}"
     passphrase: bootstrap
     new_keyslot: 31
@@ -16,16 +16,16 @@
     name: linux-system-roles.nbde_client
   vars:
     nbde_client_bindings:
-      - device: "{{ clevis_bindings.device }}"
+      - device: "{{ clevis_bind_device }}"
         # recommend vault encrypting the encryption_password
         # see https://docs.ansible.com/ansible/latest/user_guide/vault.html
         encryption_password: "{{ vault_luks_emergency_passphrase }}"
-        servers: "{{ clevis_bindings.servers }}"
+        servers: "{{ clevis_bind_servers }}"
         slot: 0
 
 - name: Clear all other keyslots
   community.crypto.luks_device:
-    device: "{{ clevis_bindings.device }}"
+    device: "{{ clevis_bind_device }}"
     remove_keyslot: "{{ item }}"
     passphrase: "{{ vault_luks_emergency_passphrase }}"
   with_sequence: start=1 end=30

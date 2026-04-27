@@ -1,0 +1,30 @@
+---
+- name: Add Grafana APT repository
+  ansible.builtin.deb822_repository:
+    name: grafana
+    types: deb
+    uris: https://apt.grafana.com
+    suites: stable
+    components: main
+    signed_by: https://apt.grafana.com/gpg-full.key
+    state: present
+    enabled: true
+
+- name: Allow unattended-upgrades for Grafana Repository
+  ansible.builtin.lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    insertafter: 'origin=Debian,codename=\${distro_codename}-security,label=Debian-Security'
+    line: '        "origin=Grafana,label=Grafana";'
+    state: present
+
+- name: Install Grafana Alloy via APT
+  ansible.builtin.apt:
+    name: alloy
+    state: present
+    update_cache: true
+
+# grafana.grafana.alloy does not set up an apt repo on the host
+# this would screw up unattended updates and make alloy stale fast
+- name: Configure Alloy using official Grafana role
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy

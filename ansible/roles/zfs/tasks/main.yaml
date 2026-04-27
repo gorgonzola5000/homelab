@@ -118,3 +118,6 @@
     name: zfs-scrub-monthly@tank.timer
     enabled: true
     state: started
+
+- name: Import smartctl tasks
+  ansible.builtin.import_tasks: smart.yaml

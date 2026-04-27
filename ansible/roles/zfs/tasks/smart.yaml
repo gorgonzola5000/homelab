@@ -1,0 +1,48 @@
+---
+- name: Install smartmontools
+  ansible.builtin.apt:
+    name: smartmontools
+    state: present
+
+- name: Configure smartd for scheduled self-tests
+  ansible.builtin.copy:
+    dest: /etc/smartd.conf
+    # This configuration tells smartd to:
+    # -a : Monitor all attributes
+    # -s : Schedule tests (S/../.././02 = Short test daily at 2AM, L/../../6/03 = Long test Saturday at 3AM)
+    content: |
+      DEVICESCAN -a -s (S/../.././02|L/../../6/03)
+    backup: true
+    mode: '0644'
+  register: smartd_config
+
+- name: Ensure smartd is enabled in /etc/default/smartmontools
+  ansible.builtin.lineinfile:
+    path: /etc/default/smartmontools
+    regexp: '^#?start_smartd='
+    line: 'start_smartd=yes'
+
+- name: Ensure smartd service is running and enabled
+  ansible.builtin.systemd:
+    name: smartmontools
+    state: started
+    enabled: true
+
+- name: Restart smartd if configuration changed
+  ansible.builtin.systemd:
+    name: smartmontools
+    state: restarted
+  when: smartd_config.changed
+
+- name: Install prometheus-smartctl-exporter from backports
+  ansible.builtin.apt:
+    name: prometheus-smartctl-exporter
+    default_release: trixie-backports
+    state: present
+    update_cache: true
+
+- name: Ensure prometheus-smartctl-exporter is running and enabled
+  ansible.builtin.systemd:
+    name: smartctl_exporter
+    state: started
+    enabled: true

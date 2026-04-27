@@ -3,10 +3,27 @@
   hosts: dogs
   become: true
   roles:
-    #- clevis
-    #- common
-    #- ansible_managed
-    #- zfs
+    - clevis
+    - common
+    - ansible_managed
+    - zfs
     - syncoid
     - rke2
     - dac
+  vars:
+    sanoid_conf: |
+      # Filesystem Backups
+      [tank/static]
+        use_template = backup
+        recursive = yes
+
+      # Templates
+      [template_backup]
+        frequently = 0
+        hourly = 24
+        daily = 30
+        monthly = 3
+        yearly = 0
+        autosnap = no
+        autoprune = yes
+    syncoid_type: destination

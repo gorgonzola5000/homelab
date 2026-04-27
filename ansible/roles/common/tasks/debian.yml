@@ -36,6 +36,24 @@
     signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
     state: present
 
+
+- name: Ensure trixie-backports repository is present
+  ansible.builtin.deb822_repository:
+    name: trixie-backports
+    types:
+      - deb
+      - deb-src
+    uris: http://deb.debian.org/debian
+    suites:
+      - trixie-backports
+    components:
+      - main
+      - contrib
+      - non-free
+      - non-free-firmware
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    state: present
+
 - name: Debian - Full system upgrade
   ansible.builtin.apt:
     update_cache: true
@@ -56,3 +74,10 @@
     vtype: boolean
     value: 'true'
   notify: Run dpkg-reconfigure unattended-upgrades
+
+- name: Allow unattended-upgrades for Trixie Backports
+  ansible.builtin.lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    insertafter: 'origin=Debian,codename=\${distro_codename}-security,label=Debian-Security'
+    line: '        "origin=Debian Backports,codename=${distro_codename}-backports,label=Debian Backports";'
+    state: present

@@ -1,89 +1,46 @@
-echoes:
-  hosts:
-    echoes.home.parents-basement.win:
-      root_password_hash: "{{ vault_echoes_root_password | password_hash }}"
-      clevis_bindings:
-        device: /dev/nvme0n1p3
-        servers:
-          - http://10.5.137.3:7500
-      zpool:
-        physical_disks:
-          - /dev/disk/by-id/wwn-0x5000cca0282cdfb4
-          - /dev/disk/by-id/wwn-0x5000cca0289aa3a0
-          - /dev/disk/by-id/wwn-0x5000cca0289af74c
-          - /dev/disk/by-id/wwn-0x5000cca028cad8e8
-          - /dev/disk/by-id/wwn-0x5000cca06d22747c
-          - /dev/disk/by-id/wwn-0x5000cca06d25f8e8
-        tank_keyfile_contents: "{{ vault_tank_keyfile }}"
-      cluster_name: meddle
-      flux_secret_content: "{{ lookup('community.sops.sops', 'sops/meddle/flux-secret.enc.yaml') }}"
-      dac:
-        ipv6: fded:bf35:8058:2137:fded:bf35:8058:1
-        nic: enp3s0f1np1
-        peer_ipv6: fded:bf35:8058:2137:fded:bf35:8058:2
-        peer_hostname: dogs
-      sanoid_conf: |
-        # Filesystem Backups
-        [tank/static]
-          use_template = primary
-          recursive = yes
-
-        # Templates
-        [template_primary]
-          frequently = 0
-          hourly = 24
-          daily = 30
-          weekly = 4
-          monthly = 3
-          yearly = 0
-          autosnap = yes
-          autoprune = yes
-      syncoid_type: source
-      syncoid_source_host: echoes
-      syncoid_source_host_fqdn: "echoes.home.parents-basement.win"
-      syncoid_dataset: tank/static
-dogs:
-  hosts:
-    dogs.home.parents-basement.win:
-      root_password_hash: "{{ vault_dogs_root_password | password_hash }}"
-      clevis_bindings:
-        device: /dev/sda3
-        servers:
-          - http://10.5.137.3:7500
-      zpool:
-        physical_disks:
-          - /dev/disk/by-id/wwn-0x5000cca028253590
-          - /dev/disk/by-id/wwn-0x5000cca0288aa9e4
-          - /dev/disk/by-id/wwn-0x5000cca028c9fecc
-          - /dev/disk/by-id/wwn-0x5000cca028ca10bc
-          - /dev/disk/by-id/wwn-0x5000cca028cbe2ac
-          - /dev/disk/by-id/wwn-0x5000cca05f4990f4
-          - /dev/disk/by-id/wwn-0x5000cca06d25efcc
-          - /dev/disk/by-id/wwn-0x5000cca06d664258
-        tank_keyfile_contents: "{{ vault_tank_keyfile }}"
-      cluster_name: animals
-      flux_secret_content: "{{ lookup('community.sops.sops', 'sops/animals/flux-secret.enc.yaml') }}"
-      dac:
-        ipv6: fded:bf35:8058:2137:fded:bf35:8058:2
-        nic: enp4s0f1
-        peer_ipv6: fded:bf35:8058:2137:fded:bf35:8058:1
-        peer_hostname: echoes
-      sanoid_conf: |
-        # Filesystem Backups
-        [tank/static]
-          use_template = backup
-          recursive = yes
-
-        # Templates
-        [template_backup]
-          frequently = 0
-          hourly = 24
-          daily = 30
-          monthly = 3
-          yearly = 0
-          autosnap = no
-          autoprune = yes
-      syncoid_type: destination
-      syncoid_source_host: echoes
-      syncoid_source_host_fqdn: "echoes.home.parents-basement.win"
-      syncoid_dataset: tank/static
+prod:
+  children:
+    echoes:
+      hosts:
+        echoes.home.parents-basement.win:
+          root_password_hash: "{{ vault_echoes_root_password | password_hash }}"
+          clevis_bind_device: /dev/nvme0n1p3
+          zpool:
+            physical_disks:
+              - /dev/disk/by-id/wwn-0x5000cca0282cdfb4
+              - /dev/disk/by-id/wwn-0x5000cca0289aa3a0
+              - /dev/disk/by-id/wwn-0x5000cca0289af74c
+              - /dev/disk/by-id/wwn-0x5000cca028cad8e8
+              - /dev/disk/by-id/wwn-0x5000cca06d22747c
+              - /dev/disk/by-id/wwn-0x5000cca06d25f8e8
+            tank_keyfile_contents: "{{ vault_tank_keyfile }}"
+          cluster_name: meddle
+          flux_secret_content: "{{ lookup('community.sops.sops', 'sops/meddle/flux-secret.enc.yaml') }}"
+          dac:
+            ipv6: fded:bf35:8058:2137:fded:bf35:8058:1
+            nic: enp3s0f1np1
+            peer_ipv6: fded:bf35:8058:2137:fded:bf35:8058:2
+            peer_hostname: dogs
+    dogs:
+      hosts:
+        dogs.home.parents-basement.win:
+          root_password_hash: "{{ vault_dogs_root_password | password_hash }}"
+          clevis_bind_device: /dev/nvme0n1p3
+          zpool:
+            physical_disks:
+              - /dev/disk/by-id/wwn-0x5000cca028253590
+              - /dev/disk/by-id/wwn-0x5000cca0288aa9e4
+              - /dev/disk/by-id/wwn-0x5000cca028c9fecc
+              - /dev/disk/by-id/wwn-0x5000cca028ca10bc
+              - /dev/disk/by-id/wwn-0x5000cca028cbe2ac
+              - /dev/disk/by-id/wwn-0x5000cca05f4990f4
+              - /dev/disk/by-id/wwn-0x5000cca06d25efcc
+              - /dev/disk/by-id/wwn-0x5000cca06d664258
+            tank_keyfile_contents: "{{ vault_tank_keyfile }}"
+          cluster_name: animals
+          flux_secret_content: "{{ lookup('community.sops.sops', 'sops/animals/flux-secret.enc.yaml') }}"
+          dac:
+            ipv6: fded:bf35:8058:2137:fded:bf35:8058:2
+            nic: enp4s0f1
+            peer_ipv6: fded:bf35:8058:2137:fded:bf35:8058:1
+            peer_hostname: echoes

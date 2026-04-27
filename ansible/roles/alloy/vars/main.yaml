@@ -1,0 +1,49 @@
+---
+alloy_user_groups:
+  - systemd-journal
+alloy_config: |
+  prometheus.exporter.unix "localhost" {
+    include_exporter_metrics = true
+  }
+
+  prometheus.scrape "host_scraper" {
+    targets    = prometheus.exporter.unix.localhost.targets
+    forward_to = [prometheus.remote_write.grafanacloud.receiver]
+  }
+  prometheus.scrape "smartctl_scraper" {
+    targets = [
+      {"__address__" = "localhost:9633"},
+    ]
+    forward_to = [prometheus.remote_write.grafanacloud.receiver]
+  }
+
+  loki.source.journal "zed_logs" {
+    format_as_json = true
+    max_age        = "24h"
+    path           = "/var/log/journal"
+    forward_to     = [loki.write.grafanacloud.receiver]
+    labels         = {
+      job  = "systemd-journal",
+      host = "{{ inventory_hostname }}",
+    }
+  }
+
+  prometheus.remote_write "grafanacloud" {
+    endpoint {
+      url = "{{ grafana_cloud_prometheus_url }}"
+      basic_auth {
+        username = "{{ grafana_cloud_prometheus_user }}"
+        password = "{{ grafana_cloud_token }}"
+      }
+    }
+  }
+
+  loki.write "grafanacloud" {
+    endpoint {
+      url = "{{ grafana_cloud_loki_url }}"
+      basic_auth {
+        username = "{{ grafana_cloud_loki_user }}"
+        password = "{{ grafana_cloud_token }}"
+      }
+    }
+  }

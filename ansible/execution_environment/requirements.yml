@@ -16,4 +16,5 @@ collections:
     version: 12.6.0
   - name: community.sops
     version: 2.3.0
-
+  - name: grafana.grafana
+    version: 6.0.6
