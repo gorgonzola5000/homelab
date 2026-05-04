@@ -4,8 +4,5 @@ metadata:
   name: jellyfin
   namespace: arr
 spec:
-  parentRefs:
-    - name: eg
-      namespace: envoy-gateway-system
   hostnames:
-    - redmanager.animals.home.parents-basement.win
+    - jellyfin.animals.home.parents-basement.win

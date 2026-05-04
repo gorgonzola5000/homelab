@@ -12,7 +12,7 @@ spec:
       port: 80
       allowedRoutes:
         namespaces:
-          from: All
+          from: Same
     - name: https
       hostname: "*.home.parents-basement.win"
       protocol: HTTPS

@@ -4,12 +4,13 @@ resources:
   - redmanager-secret.enc.yaml
   - redmanager-pv.yaml
   - redmanager-pvc.yaml
+  - ../base/redmanager
   - arr-secret.enc.yaml
   - arr-pv.yaml
   - arr-pvc.yaml
-  - ../base/redmanager
   - ../base/arr
 
 patches:
-  - path: redmanager-http-patch.yaml
+  - path: redmanager-httproute-patch.yaml
+  - path: redmanager-navidrome-httproute-patch.yaml
   - path: arr-jellyfin-http-route-patch.yaml
