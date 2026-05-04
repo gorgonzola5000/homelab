@@ -67,13 +67,15 @@
       - unattended-upgrades
     state: present
 
-- name: Debian - Configure unattended-upgrades
-  ansible.builtin.debconf:
-    name: unattended-upgrades
-    question: unattended-upgrades/enable_auto_updates
-    vtype: boolean
-    value: 'true'
-  notify: Run dpkg-reconfigure unattended-upgrades
+- name: Debian - Enable automatic updates (power switch)
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
 
 - name: Allow unattended-upgrades for Trixie Backports
   ansible.builtin.lineinfile:

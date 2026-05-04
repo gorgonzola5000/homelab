@@ -28,3 +28,66 @@
 - name: Configure Alloy using official Grafana role
   ansible.builtin.include_role:
     name: grafana.grafana.alloy
+
+- name: Ensure Prometheus textfile collector directory exists
+  ansible.builtin.file:
+    path: /var/lib/prometheus/node-exporter
+    state: directory
+    owner: alloy
+    group: alloy
+    mode: '0755'
+
+- name: Create reboot_required_metric.sh
+  ansible.builtin.copy:
+    dest: /usr/local/bin/reboot_metric.sh
+    owner: root
+    group: root
+    mode: '0755'
+    content: |
+      #!/bin/bash
+      METRIC_FILE="/var/lib/prometheus/node-exporter/reboot_required.prom"
+      if [ -f /var/run/reboot-required ]; then
+          echo "node_reboot_required 1" > "$METRIC_FILE"
+      else
+          echo "node_reboot_required 0" > "$METRIC_FILE"
+      fi
+
+- name: Create systemd service for reboot metric
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/reboot-metric.service
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Generate Node Exporter reboot metric
+
+      [Service]
+      Type=oneshot
+      User=root
+      ExecStart=/usr/local/bin/reboot_metric.sh
+  notify: Reload systemd
+
+- name: Create systemd timer for reboot metric
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/reboot-metric.timer
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Unit]
+      Description=Run reboot metric generator every 5 minutes
+
+      [Timer]
+      OnCalendar=*:0/5
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+  notify: Reload systemd
+
+- name: Enable and start reboot metric timer
+  ansible.builtin.systemd:
+    name: reboot-metric.timer
+    enabled: true
+    state: started

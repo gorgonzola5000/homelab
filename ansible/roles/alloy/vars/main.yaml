@@ -28,6 +28,18 @@ alloy_config: |
     }
   }
 
+  local.file_match "unattended_upgrades_logs" {
+    path_targets = [
+      {__path__ = "/var/log/unattended-upgrades/unattended-upgrades.log", job = "unattended-upgrades", host = "{{ inventory_hostname }}"},
+      {__path__ = "/var/log/unattended-upgrades/unattended-upgrades-dpkg.log", job = "unattended-upgrades-dpkg", host = "{{ inventory_hostname }}"},
+    ]
+  }
+
+  loki.source.file "unattended_upgrades" {
+    targets    = local.file_match.unattended_upgrades_logs.targets
+    forward_to = [loki.write.grafanacloud.receiver] 
+  }
+
   prometheus.remote_write "grafanacloud" {
     endpoint {
       url = "{{ grafana_cloud_prometheus_url }}"
