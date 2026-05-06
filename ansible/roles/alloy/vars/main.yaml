@@ -4,6 +4,9 @@ alloy_user_groups:
 alloy_config: |
   prometheus.exporter.unix "localhost" {
     include_exporter_metrics = true
+    textfile {
+      directory = "/var/lib/prometheus/node-exporter"
+    }
   }
 
   prometheus.scrape "host_scraper" {
