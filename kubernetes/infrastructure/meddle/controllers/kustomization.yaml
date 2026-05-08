@@ -7,6 +7,8 @@ resources:
   - ../../base/controllers/cilium
   - ../../base/controllers/node-feature-discovery
   - ../../base/controllers/intel-device-plugins-operator
+  - ../../base/controllers/alloy
+  - alloy-secret.enc.yaml
 
 patches:
   - path: ipam.yaml

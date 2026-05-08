@@ -7,6 +7,10 @@ ansible-navigator:
     image: homelab:latest
     pull:
       policy: never
+    volume-mounts:
+      - src: "../sops"
+        dest: "/sops"
+        options: "ro"
   logging:
     level: critical
     append: False

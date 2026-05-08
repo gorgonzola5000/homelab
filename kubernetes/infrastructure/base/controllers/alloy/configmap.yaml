@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy
+data:
+  config.river: |
+    prometheus.remote_write "grafanacloud" {
+      endpoint {
+        url = env("PROM_URL")
+        basic_auth {
+          username = env("PROM_USERNAME")
+          password = env("GRAFANA_CLOUD_TOKEN")
+        }
+      }
+    }
+
+    loki.write "grafanacloud" {
+      endpoint {
+        url = env("LOKI_URL")
+        basic_auth {
+          username = env("LOKI_USERNAME")
+          password = env("GRAFANA_CLOUD_TOKEN")
+        }
+      }
+    }
+
+    discovery.kubernetes "pods" {
+      role = "pod"
+    }
+
+    loki.source.kubernetes "pod_logs" {
+      targets    = discovery.kubernetes.pods.targets
+      forward_to = [loki.write.grafanacloud.receiver]
+    }
+
+    prometheus.exporter.self "alloy" {}
+
+    prometheus.scrape "alloy_internal" {
+      targets    = prometheus.exporter.self.alloy.targets
+      forward_to = [prometheus.remote_write.grafanacloud.receiver]
+    }
