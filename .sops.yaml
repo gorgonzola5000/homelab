@@ -18,6 +18,7 @@ creation_rules:
 
   # global secrets
   - path_regex: sops/global/secret.enc.yaml$
+    mac_only_encrypted: true
     key_groups:
       - age:
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X" # ansible
