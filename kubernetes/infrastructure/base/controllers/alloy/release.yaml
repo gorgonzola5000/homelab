@@ -12,3 +12,13 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: grafana
+  values:
+    alloy:
+      envFrom:
+        - secretRef:
+            name: alloy
+        - secretRef:
+            name: global-secrets
+      configMap:
+        create: false
+        name: alloy

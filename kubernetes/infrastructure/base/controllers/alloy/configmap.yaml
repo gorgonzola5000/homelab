@@ -3,12 +3,12 @@ kind: ConfigMap
 metadata:
   name: alloy
 data:
-  config.river: |
+  config.alloy: |
     prometheus.remote_write "grafanacloud" {
       endpoint {
-        url = env("PROM_URL")
+        url = env("GRAFANA_CLOUD_PROMETHEUS_URL")
         basic_auth {
-          username = env("PROM_USERNAME")
+          username = env("GRAFANA_CLOUD_PROMETHEUS_USER")
           password = env("GRAFANA_CLOUD_TOKEN")
         }
       }
@@ -16,9 +16,9 @@ data:
 
     loki.write "grafanacloud" {
       endpoint {
-        url = env("LOKI_URL")
+        url = env("GRAFANA_CLOUD_LOKI_URL")
         basic_auth {
-          username = env("LOKI_USERNAME")
+          username = env("GRAFANA_CLOUD_LOKI_USER")
           password = env("GRAFANA_CLOUD_TOKEN")
         }
       }
