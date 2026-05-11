@@ -1,13 +1,13 @@
 resource "grafana_rule_group" "hardware_alerts" {
   name             = "Hardware & Storage Alerts"
   folder_uid       = grafana_folder.infrastructure.uid
-  interval_seconds = 300
+  interval_seconds = 60
 
   rule {
     name           = "SMART Health Check Failed"
     condition      = "B"
-    for            = "5m"
-    no_data_state  = "OK" 
+    for            = "0s"
+    no_data_state  = "OK"
     exec_err_state = "Error"
 
     annotations = {
@@ -53,7 +53,7 @@ resource "grafana_rule_group" "hardware_alerts" {
   rule {
     name           = "Host Temperature High (>80C)"
     condition      = "B"
-    for            = "5m"
+    for            = "0s"
     no_data_state  = "OK"
     exec_err_state = "Error"
 
@@ -100,7 +100,7 @@ resource "grafana_rule_group" "hardware_alerts" {
   rule {
     name           = "Low Root Disk Space (<10%)"
     condition      = "B"
-    for            = "10m"
+    for            = "0s"
     no_data_state  = "OK"
     exec_err_state = "Error"
 
@@ -147,7 +147,7 @@ resource "grafana_rule_group" "hardware_alerts" {
   rule {
     name           = "ZFS Pool Degraded or Faulted"
     condition      = "B"
-    for            = "5m"
+    for            = "0s"
     no_data_state  = "OK"
     exec_err_state = "Error"
 
