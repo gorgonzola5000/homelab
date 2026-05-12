@@ -42,11 +42,20 @@
     - 02-flux-operator.yaml
     - 03-flux-instance.yaml
 
+- name: Check currently installed RKE2 version
+  ansible.builtin.command: /usr/local/bin/rke2 --version
+  register: rke2_current_version
+  failed_when: false
+  changed_when: false
+
 - name: Install RKE2
   ansible.builtin.shell:
     cmd: "curl -sfL https://get.rke2.io | sh -"
   environment:
-    INSTALL_RKE2_CHANNEL: stable
+    INSTALL_RKE2_VERSION: "{{ rke2_version }}"
+  when: >
+    rke2_current_version.rc != 0 or
+    rke2_version not in rke2_current_version.stdout
   notify: Restart rke2-server.service
 
 - name: Ensure /etc/rancher/rke2 directory exists
@@ -72,24 +81,35 @@
 - name: Fetch kube_config
   ansible.builtin.fetch:
     src: /etc/rancher/rke2/rke2.yaml
-    dest: sops/{{ cluster_name }}/kube_config
+    dest: /sops/{{ cluster_name }}/kube_config.orig
     flat: true
   register: kube_config_fetched
 
-- name: Update server IP in fetched kube_config
-  ansible.builtin.replace:
-    path: 'sops/{{ cluster_name }}/kube_config'
-    regexp: '127\.0\.0\.1'
-    replace: '{{ inventory_hostname }}'
+- name: Process and encrypt fetched kubeconfig locally
   when: kube_config_fetched.changed
   delegate_to: localhost
+  block:
+    - name: Create working copy of kube_config
+      ansible.builtin.copy:
+        src: '/sops/{{ cluster_name }}/kube_config.orig'
+        dest: '/sops/{{ cluster_name }}/kube_config'
 
-- name: Copy kube_config to kube_config.enc
-  ansible.builtin.copy:
-    src: 'sops/{{ cluster_name }}/kube_config'
-    dest: 'sops/{{ cluster_name }}/kube_config.enc'
-  delegate_to: localhost
+    - name: Update server IP in fetched kube_config
+      ansible.builtin.replace:
+        path: '/sops/{{ cluster_name }}/kube_config'
+        regexp: '127\.0\.0\.1'
+        replace: '{{ inventory_hostname }}'
 
-- name: Encrypt kube_config.enc
-  ansible.builtin.command: 'sops encrypt -i sops/{{ cluster_name }}/kube_config.enc'
-  delegate_to: localhost
+    - name: Rename cluster, context, and user from 'default'
+      ansible.builtin.replace:
+        path: '/sops/{{ cluster_name }}/kube_config'
+        regexp: 'default'
+        replace: '{{ cluster_name }}'
+
+    - name: Copy kube_config to kube_config.enc
+      ansible.builtin.copy:
+        src: '/sops/{{ cluster_name }}/kube_config'
+        dest: '/sops/{{ cluster_name }}/kube_config.enc'
+
+    - name: Encrypt kube_config.enc
+      ansible.builtin.command: 'sops --config /.sops.yaml encrypt -i /sops/{{ cluster_name }}/kube_config.enc'

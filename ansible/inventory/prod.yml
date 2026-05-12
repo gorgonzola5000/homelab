@@ -15,7 +15,7 @@ prod:
               - /dev/disk/by-id/wwn-0x5000cca06d25f8e8
             tank_keyfile_contents: "{{ vault_tank_keyfile }}"
           cluster_name: meddle
-          flux_secret_content: "{{ lookup('community.sops.sops', 'sops/meddle/flux-secret.enc.yaml') }}"
+          flux_secret_content: "{{ lookup('community.sops.sops', '/sops/meddle/flux-secret.enc.yaml') }}"
           dac:
             ipv6: fded:bf35:8058:2137:fded:bf35:8058:1
             nic: enp3s0f1np1
@@ -38,7 +38,7 @@ prod:
               - /dev/disk/by-id/wwn-0x5000cca06d664258
             tank_keyfile_contents: "{{ vault_tank_keyfile }}"
           cluster_name: animals
-          flux_secret_content: "{{ lookup('community.sops.sops', 'sops/animals/flux-secret.enc.yaml') }}"
+          flux_secret_content: "{{ lookup('community.sops.sops', '/sops/animals/flux-secret.enc.yaml') }}"
           dac:
             ipv6: fded:bf35:8058:2137:fded:bf35:8058:2
             nic: enp4s0f1

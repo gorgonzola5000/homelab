@@ -17,4 +17,4 @@ preseed.cfg
 ansible/execution_environment/context/*
 
 kube_config
-talos_config
+kube_config.orig

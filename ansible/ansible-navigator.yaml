@@ -10,7 +10,8 @@ ansible-navigator:
     volume-mounts:
       - src: "../sops"
         dest: "/sops"
-        options: "ro"
+      - src: "../.sops.yaml"
+        dest: "/.sops.yaml"
   logging:
     level: critical
     append: False

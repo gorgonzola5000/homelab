@@ -48,7 +48,14 @@
     enabled: true
     daemon_reload: true
 
+- name: Check if zpool 'tank' already exists
+  ansible.builtin.command: zpool status tank
+  register: zpool_status
+  failed_when: false
+  changed_when: false
+
 - name: Setup tank zpool
+  when: zpool_status.rc != 0
   block:
     - name: Create zpool
       community.general.zpool:

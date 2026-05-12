@@ -5,8 +5,22 @@
   ],
   "kubernetes": {
     "managerFilePatterns": [
+      "/kubernetes/.+\\.yml$/",
       "/kubernetes/.+\\.yaml$/"
     ]
   },
-  "prConcurrentLimit": 0
+  "prConcurrentLimit": 0,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Ansible variables containing Renovate comments",
+      "fileMatch": [
+        "\\.yml$",
+        "\\.yaml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+?:\\s+[\"']?(?<currentValue>\\S+?)[\"']?$"
+      ]
+    }
+  ]
 }
