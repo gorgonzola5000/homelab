@@ -14,9 +14,9 @@
     {
       "customType": "regex",
       "description": "Update Ansible variables containing Renovate comments",
-      "fileMatch": [
-        "\\.yml$",
-        "\\.yaml$"
+      "managerFilePatterns": [
+        "/\\.yml$/",
+        "/\\.yaml$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+?:\\s+[\"']?(?<currentValue>\\S+?)[\"']?$"
