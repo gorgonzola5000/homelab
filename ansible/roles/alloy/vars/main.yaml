@@ -10,10 +10,22 @@ alloy_config: |
   }
 
   prometheus.scrape "host_scraper" {
+    scrape_interval = "60s"
     targets    = prometheus.exporter.unix.localhost.targets
+    forward_to = [prometheus.relabel.host_filter.receiver]
+  }
+
+  prometheus.relabel "host_filter" {
+    rule {
+      action        = "keep"
+      source_labels = ["__name__"]
+      regex         = "(node_cpu_seconds_total|node_memory_MemAvailable_bytes|node_memory_MemTotal_bytes|node_network_receive_bytes_total|node_network_transmit_bytes_total|node_filesystem_avail_bytes|node_filesystem_size_bytes|node_disk_read_bytes_total|node_disk_written_bytes_total|node_load1|node_load5|node_load15|up|node_exporter_build_info)"
+    }
     forward_to = [prometheus.remote_write.grafanacloud.receiver]
   }
+
   prometheus.scrape "smartctl_scraper" {
+    scrape_interval = "60s"
     targets = [
       {"__address__" = "localhost:9633"},
     ]

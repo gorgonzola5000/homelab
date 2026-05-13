@@ -36,7 +36,17 @@ data:
     prometheus.exporter.self "alloy" {}
 
     prometheus.scrape "alloy_internal" {
+      scrape_interval = "60s"
       targets    = prometheus.exporter.self.alloy.targets
+      forward_to      = [prometheus.relabel.alloy_filter.receiver]
+    }
+
+    prometheus.relabel "alloy_filter" {
+      rule {
+        action        = "keep"
+        source_labels = ["__name__"]
+        regex         = "(alloy_build_info|up)"
+      }
       forward_to = [prometheus.remote_write.grafanacloud.receiver]
     }
 
@@ -45,11 +55,21 @@ data:
     }
 
     prometheus.scrape "kubelet" {
+      scrape_interval = "60s"
       targets    = discovery.kubernetes.nodes.targets
       scheme     = "https"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       tls_config {
         insecure_skip_verify = true
+      }
+      forward_to = [prometheus.relabel.kubelet_filter.receiver]
+    }
+
+    prometheus.relabel "kubelet_filter" {
+      rule {
+        action        = "keep"
+        source_labels = ["__name__"]
+        regex         = "(kubelet_running_pods|kubelet_running_containers|kubelet_node_name|up|process_cpu_seconds_total|process_resident_memory_bytes)"
       }
       forward_to = [prometheus.remote_write.grafanacloud.receiver]
     }
@@ -64,11 +84,28 @@ data:
     }
 
     prometheus.scrape "cadvisor" {
+      scrape_interval = "60s"
       targets    = discovery.relabel.cadvisor.output
       scheme     = "https"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       tls_config {
         insecure_skip_verify = true
       }
+      forward_to = [prometheus.relabel.cadvisor_filter.receiver]
+    }
+
+    prometheus.relabel "cadvisor_filter" {
+      rule {
+        action        = "keep"
+        source_labels = ["__name__"]
+        regex         = "(container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_network_receive_bytes_total|container_network_transmit_bytes_total|container_fs_usage_bytes|container_fs_limit_bytes|machine_cpu_cores|machine_memory_bytes)"
+      }
+
+      rule {
+        action        = "drop"
+        source_labels = ["container"]
+        regex         = "(^$|POD)"
+      }
+
       forward_to = [prometheus.remote_write.grafanacloud.receiver]
     }
