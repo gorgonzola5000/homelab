@@ -2,17 +2,14 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: envoy-gateway
-  namespace: flux-system
+  namespace: envoy-gateway-system
 spec:
-  interval: 1m0s
-  targetNamespace: envoy-gateway-system
-  install:
-    createNamespace: true
-  chart:
-    spec:
-      chart: gateway-helm
-      reconcileStrategy: ChartVersion
-      version: "1.7.x"
-      sourceRef:
-        kind: HelmRepository
-        name: envoy-gateway
+  interval: 5m
+  releaseName: eg
+  chartRef:
+    kind: OCIRepository
+    name: gateway-helm
+  upgrade:
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 5m
