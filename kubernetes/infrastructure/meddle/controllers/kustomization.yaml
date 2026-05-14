@@ -9,6 +9,8 @@ resources:
   - ../../base/controllers/intel-device-plugins-operator
   - ../../base/controllers/alloy
   - alloy-secret.enc.yaml
+  - ../../base/controllers/external-dns
+  - external-dns-secret.enc.yaml
 
 patches:
   - path: ipam.yaml
