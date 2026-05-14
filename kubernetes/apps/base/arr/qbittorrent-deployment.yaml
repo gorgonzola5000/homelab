@@ -29,7 +29,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       initContainers:
         - name: gluetun-sidecar
-          image: qmcgaw/gluetun@sha256:53c63cf35260ddd58da322ce1e1d87cb14358bbb011fba100676692be97be970
+          image: ghcr.io/home-operations/transmission:4.1.1@sha256:3236ca32a6bc7d4d04386876a2bb785a72cdd8385512c63ee1af0f1cf8d9b830
           restartPolicy: Always
           securityContext:
             runAsUser: 0
@@ -118,7 +118,7 @@ spec:
 
       containers:
         - name: qbittorrent
-          image: ghcr.io/home-operations/qbittorrent:rolling@sha256:788796013c3da75f2dba568c5319975a5c41f555586dfd13987be4631181e00e
+          image: ghcr.io/home-operations/qbittorrent:5.2.0@sha256:788796013c3da75f2dba568c5319975a5c41f555586dfd13987be4631181e00e
           volumeMounts:
             - name: data
               mountPath: /data

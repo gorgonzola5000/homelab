@@ -21,7 +21,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: jellyfin
-          image: ghcr.io/jellyfin/jellyfin:latest@sha256:93227545077893cc9516f28b3adb733b67bc4691f41b6167428a2a0e3220b81c
+          image: ghcr.io/jellyfin/jellyfin:10.11.8@sha256:93227545077893cc9516f28b3adb733b67bc4691f41b6167428a2a0e3220b81c
           securityContext:
             seccompProfile:
               type: RuntimeDefault

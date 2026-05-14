@@ -33,7 +33,7 @@ spec:
               mountPath: /data
       containers:
         - name: radarr
-          image: ghcr.io/home-operations/radarr:rolling@sha256:be596a2f896fdf15077af027f44500f73e1f6fb7b450a6494b37dd25b7cc5927
+          image: ghcr.io/home-operations/radarr:6.2.0@sha256:be596a2f896fdf15077af027f44500f73e1f6fb7b450a6494b37dd25b7cc5927
           env:
             - name: RADARR__AUTH__APIKEY
               valueFrom:
@@ -63,7 +63,7 @@ spec:
               mountPath: /config
 
         - name: sonarr
-          image: ghcr.io/home-operations/sonarr:rolling@sha256:4ff5667a371e08b098858fa2457a99a5fef5f6a32640eb8567efe979d13ac9fc
+          image: ghcr.io/home-operations/sonarr:4.0.17@sha256:4ff5667a371e08b098858fa2457a99a5fef5f6a32640eb8567efe979d13ac9fc
           env:
             - name: SONARR__AUTH__APIKEY
               valueFrom:
@@ -93,7 +93,7 @@ spec:
               mountPath: /config
 
         - name: prowlarr
-          image: ghcr.io/home-operations/prowlarr:rolling@sha256:b9557d772c974901aed9285189d904b613f1f07750fca930eecfe78544bd3d48
+          image: ghcr.io/home-operations/prowlarr:2.3.7@sha256:b9557d772c974901aed9285189d904b613f1f07750fca930eecfe78544bd3d48
           env:
             - name: PROWLARR__AUTH__APIKEY
               valueFrom:
