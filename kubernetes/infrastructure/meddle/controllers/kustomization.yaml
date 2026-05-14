@@ -13,4 +13,5 @@ resources:
   - external-dns-secret.enc.yaml
 
 patches:
-  - path: ipam.yaml
+  - path: ipam-patch.yaml
+  - path: external-dns-path.yaml
