@@ -6,7 +6,7 @@ resource "cloudflare_dns_record" "icloud_mx01" {
   zone_id  = data.cloudflare_zones.email.result[0].id
   name     = "@"
   type     = "MX"
-  content  = "mx01.mail.icloud.com."
+  content  = "mx01.mail.icloud.com"
   priority = 10
   ttl      = 1
 }
@@ -15,7 +15,7 @@ resource "cloudflare_dns_record" "icloud_mx02" {
   zone_id  = data.cloudflare_zones.email.result[0].id
   name     = "@"
   type     = "MX"
-  content  = "mx02.mail.icloud.com."
+  content  = "mx02.mail.icloud.com"
   priority = 10
   ttl      = 1
 }
@@ -40,7 +40,7 @@ resource "cloudflare_dns_record" "icloud_dkim" {
   zone_id = data.cloudflare_zones.email.result[0].id
   name    = "sig1._domainkey"
   type    = "CNAME"
-  content = "sig1.dkim.example.com.at.icloudmailadmin.com."
+  content = "sig1.dkim.${data.cloudflare_zones.email.name}.at.icloudmailadmin.com"
   proxied = false
   ttl     = 1
 }
