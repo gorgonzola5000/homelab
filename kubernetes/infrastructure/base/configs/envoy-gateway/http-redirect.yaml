@@ -3,8 +3,6 @@ kind: HTTPRoute
 metadata:
   name: http-to-https-redirect
   namespace: envoy-gateway-system
-  annotations:
-    external-dns.kubernetes.io/controller: "noop"
 spec:
   parentRefs:
     - name: eg
