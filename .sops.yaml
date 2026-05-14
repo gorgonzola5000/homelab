@@ -38,7 +38,7 @@ creation_rules:
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
 
   # opentofu secrets
-  - path_regex: sops/opentofu-secrets/secrets.enc.yaml$
+  - path_regex: sops/opentofu-secrets/.*enc.*
     key_groups:
       - age:
           - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
