@@ -5,6 +5,10 @@ resources:
   - ../../base/configs/cert-manager
   - ../../base/configs/envoy-gateway
   - ../../base/configs/openebs
+  - ../../base/configs/keycloak
+  - keycloak-pv.yaml
 
 patches:
   - path: lets-encrypt.yaml
+  - path: keycloak-httproute-patch.yaml
+  - path: keycloak-cr-patch.yaml
