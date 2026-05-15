@@ -11,6 +11,7 @@ resources:
   - alloy-secret.enc.yaml
   - ../../base/controllers/external-dns
   - external-dns-secret.enc.yaml
+  - ../../base/controllers/cloudnativepg/
 
 patches:
   - path: ipam-patch.yaml
