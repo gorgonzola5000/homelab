@@ -4,4 +4,4 @@ resources:
   - certificate.yaml
   - gateway.yaml
   - gateway-class.yaml
-#  - http-redirect.yaml
+  - http-redirect.yaml
