@@ -10,7 +10,9 @@ resources:
   - jellyfin-httproute.yaml
   - jellyfin-svc.yaml
   - namespace.yaml
+  - prowlarr-httproute.yaml
   - qbittorrent-config.yaml
   - qbittorrent-deployment.yaml
   - qbittorrent-svc.yaml
+  - radarr-httproute.yaml
   - sonarr-httproute.yaml

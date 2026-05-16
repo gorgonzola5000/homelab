@@ -18,7 +18,9 @@ spec:
               directAccessGrantsEnabled: true
               publicClient: false
               redirectUris:
-                - https://*.home.parents-basement.win/*
+                - https://sonarr.home.parents-basement.win/*
+                - https://radarr.home.parents-basement.win/*
+                - https://prowlarr.home.parents-basement.win/*
               webOrigins:
                 - +
         users:
@@ -73,6 +75,6 @@ sops:
             -----END AGE ENCRYPTED FILE-----
           recipient: age1uvccut3fganrx0uztudlujeeenv3mhpa4y3pgd8dstagcqknnp3q5p4zhm
     encrypted_regex: ^(data|stringData|secret|value)$
-    lastmodified: "2026-05-16T16:08:05Z"
-    mac: ENC[AES256_GCM,data:QjoWxYV4bQFyJEs3heWmKYpXJvvw/RJnXaorH0IR/wRxJueh4dJbwQqHw7VUek5frfH8x8A+PdTvuJkCS5FXcnIvVifUQUU+v58SblCrIsQNJFTd3HOvie30MJyPbUL/BViMK084j0+1viwbDdR8wmxcjLO6apJF3wt/wMuxjeo=,iv:HohEnx7pAYwLqRcuThn3kruT1zrXu4NHDJimuKp9cng=,tag:QJFTWMlziNdgL8mSJrCTWQ==,type:str]
+    lastmodified: "2026-05-16T18:52:41Z"
+    mac: ENC[AES256_GCM,data:a0745+JXFuAp7l1H3yCm/uARBMntjImvhw8k29iRexstoun/keH6UzZaHCL0qDYdVwmXP4aWff/Vtduglj1bsIBIwCg4gObOO0kAMaKitZE//gbWMVclqFHEuBThmtQ8XwusyCDxjMFBI7E0c0F8EIcZ61TzuA9jTPLcgw0MAkU=,iv:jh1/bdZd3m4D2kf7UblXyG+FTtDScS64zu4fTqugd6w=,tag:LmSYM4u1UHGc42wWmIS9rw==,type:str]
     version: 3.13.0

@@ -1,3 +1,4 @@
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -6,3 +7,21 @@ metadata:
 spec:
   hostnames:
     - sonarr.home.parents-basement.win
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: radarr
+  namespace: arr
+spec:
+  hostnames:
+    - radarr.home.parents-basement.win
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: prowlarr
+  namespace: arr
+spec:
+  hostnames:
+    - prowlarr.home.parents-basement.win
