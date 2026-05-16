@@ -10,6 +10,7 @@
     ]
   },
   "prConcurrentLimit": 0,
+  "prHourlytLimit": 0,
   "customManagers": [
     {
       "customType": "regex",
@@ -20,6 +21,15 @@
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+?:\\s+[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ]
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)kustomization\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>[a-z-]+)\\s*depName=(?<depName>[^\\s]+)\\s*\\n\\s*-.*?(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
       ]
     }
   ]
