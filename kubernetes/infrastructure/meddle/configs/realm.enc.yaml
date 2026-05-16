@@ -1,0 +1,78 @@
+apiVersion: k8s.keycloak.org/v2beta1
+kind: KeycloakRealmImport
+metadata:
+    name: homelab-realm
+    namespace: keycloak
+spec:
+    keycloakCRName: keycloak
+    realm:
+        realm: homelab
+        enabled: true
+        displayName: Meddle Single Sign-On
+        clients:
+            - clientId: envoy-gateway
+              secret: ENC[AES256_GCM,data:/547UnzbG7qADouOOJHRF/eL6cIj89dB83IVhzCa2zsPLrZwn7dEpn4Fb4cSCq7SAC4dtEjLqkOTu+3Ogr7bLg==,iv:73zyvuOlzj7pDfBXJ73HG8iFYLKBsf9nGd9tsfF+ufo=,tag:c1QXefH2sneU8FFKZH4AVQ==,type:str]
+              enabled: true
+              clientAuthenticatorType: client-secret
+              standardFlowEnabled: true
+              directAccessGrantsEnabled: true
+              publicClient: false
+              redirectUris:
+                - https://*.home.parents-basement.win/*
+              webOrigins:
+                - +
+        users:
+            - username: gorgonzola5000
+              enabled: true
+              email: gorgonzola5000@michalek.sh
+              firstName: gorgonzola5000
+              lastName: Admin
+              emailVerified: true
+              credentials:
+                - type: password
+                  value: ENC[AES256_GCM,data:o57bpR4kvXLbSf8e2ZxiBUAVDAhwVlScTMZ4KMeu4BNxIEYNnaMnG+nfFi9pN0HS/jHQyeBb4AxDFWO1oIpqkA==,iv:LY3M0m9NPZ7DfBBu+IbZJ4zdXn+YpXp+nAR0bgr+6D4=,tag:fV+5dRIUhwpYARKiAd2Iog==,type:str]
+                  temporary: true
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHNzaC1lZDI1NTE5IDdkRkorZyBwcldI
+            eEs3ajMyVi9TNW9QOUxYaCtReHhZSEtjOExHVVVsV1pxU0lyK1NZCkhtTFpDN0Jl
+            QUFkVWhZdmduUUZlSFc0a2F4RkNUc08vMnlGUDM5eFp4a2MKLS0tIGk5d2Rqc0Ey
+            c3pSdU8rSHRnbzliSWJRYlc3c21wM05uY0orNTZQMGNMM0kKtnTN62HRhPKgEk1R
+            PCRkhSP/drZy42AD1lqH6ldf0VQ+3H/2xTpoyX/Xf04C/Zlz1vtKP/QIeuYn3avq
+            Fk5bBg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBqVGJMQnhGWXZpMFk0VWJJ
+            bzJMVDFoUm9LbW56QlhaMXVoazhLS0JIK1cwCmRlNHhqNzNFUnlJbXNHSXQydnVL
+            dmxyRkNSTkF1bmw2UDVhSEtlcnVldHMKLS0tIFRIcFhCQjdHQWwyTU1MWlJGUS9P
+            aWZvSUhERW1qQVZlcHlOby9WY2lJVWMKFUynzgIZd2/ozo4Ri5N01ghjBuBmxXrB
+            4sBe34FlUBDGSUF7n5Op5WUfR+Q8t0aBzRiFHbNBxi22S2xVXXJpPg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHNzaC1lZDI1NTE5IGNnVERGUSBibjFi
+            K2MzbjNZMjZuTEVpVytGMmM5a1hORFpIS1orU1VzaVVDYWE0ZkFvCjFpNlBBdGQv
+            bDV3RWg5TXQzYURUbmNKdjhQeTlxb0cySDJoMHdJcWowQVUKLS0tIFFkV2pHLzd6
+            UzA3VXRZajc4T1JwTVRLdEVmZG9ObGU3NXd5ZTBaaVBXYkUKTT/yy0QWZQlISnxI
+            hIjbHunUaD6ZeAaA39OoMEIKDBouxjwa1pgjIZbK7+rt02vDCY6mKDNtH3z8I37Y
+            j1oorA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBReEMyaXFoMFQyUWU3bms1
+            OTRYZkU4dXNld09NbUVnR2lCcFNxTDViUlhrCk9FSXlFT2lEeHQwOFhWT1YwY1ox
+            ZDFteGdIVG9SSHdzdVJtVEdqd0RRUTAKLS0tIFBUcWhUc3VwUlpuSnlITWQ5Y0FU
+            K3JzYVVZbTNFdVRtWklvN3VteVJiT1EKEl+Wzq/mwWCAXebIiYTJksDdBoV1q9+1
+            twK/lQ6zFYbl3PnMK7ovPdLYW/kn2q+0coFLPyAIeVEn/zbe5/Mu7g==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1uvccut3fganrx0uztudlujeeenv3mhpa4y3pgd8dstagcqknnp3q5p4zhm
+    encrypted_regex: ^(data|stringData|secret|value)$
+    lastmodified: "2026-05-16T16:08:05Z"
+    mac: ENC[AES256_GCM,data:QjoWxYV4bQFyJEs3heWmKYpXJvvw/RJnXaorH0IR/wRxJueh4dJbwQqHw7VUek5frfH8x8A+PdTvuJkCS5FXcnIvVifUQUU+v58SblCrIsQNJFTd3HOvie30MJyPbUL/BViMK084j0+1viwbDdR8wmxcjLO6apJF3wt/wMuxjeo=,iv:HohEnx7pAYwLqRcuThn3kruT1zrXu4NHDJimuKp9cng=,tag:QJFTWMlziNdgL8mSJrCTWQ==,type:str]
+    version: 3.13.0

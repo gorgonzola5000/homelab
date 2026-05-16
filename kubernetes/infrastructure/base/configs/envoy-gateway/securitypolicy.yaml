@@ -1,0 +1,19 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: sso-policy
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: sso-eg
+  oidc:
+    provider:
+      issuer: "https://keycloak.home.parents-basement.win/realms/homelab"
+    clientID: "envoy-gateway"
+    clientSecret:
+      name: centralized-oidc-secret
+    scopes:
+      - openid
+      - profile
+      - email

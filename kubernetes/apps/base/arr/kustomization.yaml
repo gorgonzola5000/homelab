@@ -13,3 +13,4 @@ resources:
   - qbittorrent-config.yaml
   - qbittorrent-deployment.yaml
   - qbittorrent-svc.yaml
+  - sonarr-httproute.yaml

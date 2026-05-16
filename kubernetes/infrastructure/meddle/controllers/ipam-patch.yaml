@@ -1,3 +1,4 @@
+---
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumLoadBalancerIPPool
 metadata:
@@ -5,3 +6,11 @@ metadata:
 spec:
   blocks:
     - cidr: "10.2.137.21/32"
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "envoy-sso-lb-pool"
+spec:
+  blocks:
+    - cidr: "10.2.137.22/32"

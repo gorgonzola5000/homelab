@@ -15,3 +15,4 @@ patches:
   - path: redmanager-navidrome-httproute-patch.yaml
   - path: arr-jellyfin-httproute-patch.yaml
   - path: arr-jellyfin-transcoding.yaml
+  - path: arr-httproute-patch.yaml

@@ -1,0 +1,11 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "envoy-sso-lb-pool"
+spec:
+  blocks:
+    - cidr: _
+  serviceSelector:
+    matchLabels:
+      gateway.envoyproxy.io/owning-gateway-name: sso-eg
+      gateway.envoyproxy.io/owning-gateway-namespace: envoy-gateway-system
