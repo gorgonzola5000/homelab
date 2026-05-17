@@ -25,7 +25,7 @@ prod:
       hosts:
         dogs.home.parents-basement.win:
           root_password_hash: "{{ vault_dogs_root_password | password_hash }}"
-          clevis_bind_device: /dev/nvme0n1p3
+          clevis_bind_device: /dev/sda3
           zpool:
             physical_disks:
               - /dev/disk/by-id/wwn-0x5000cca028253590

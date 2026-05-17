@@ -10,6 +10,7 @@
     - syncoid
     - rke2
     - dac
+    - alloy
   vars:
     sanoid_conf: |
       # Filesystem Backups
