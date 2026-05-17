@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: terraform-bootstrap-admin
+    namespace: keycloak
+stringData:
+    client-id: ENC[AES256_GCM,data:X9h0Iu9wAI9i1UP0jnwj2XeGJw==,iv:U6cWPZ7x5iA2LQ94LFC+wqnnnX49mXqZ2EcfBAGVtnA=,tag:W99qOb2X3w7x6XIeotLEsw==,type:str]
+    client-secret: ENC[AES256_GCM,data:l6fTgzvhWZ+5PrIJOQ2kvnFsR4JCMcsIZ5qljxUbrEriAaUd/vAPEgId/7jr4+5JKUN0mrgBjThxcfEt2/WKdg==,iv:ujuM2LbWuuVDzDIVUksj5XHzG3WV4taMl0iK6tXk09s=,tag:iBOfMMVRdTjLN5r2GQfpNw==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHNzaC1lZDI1NTE5IDdkRkorZyBwMkRE
+            ejlua1ZFb2Y3NWVrbmhLcnlralFNWW1lVU4rV0VSa21JNnFkQzJNCmh3NFl1S0NW
+            MUVXUS9EN2oxdnp2eWdsWGgxT3RtVk8zUVJBTW55WE54a1kKLS0tIEVXY3lZVTlK
+            YVpqcEhpY2JEeER4RUUwK3ozS1crOVFvRTVHKzlWdXh5dTQKzJ0o6XUYDvE+tqYn
+            b/YvrlInd63MH/TP/O4pBQJPEwvjsXrhyux+U9hFX8Wkn51kzR277pNwyJCOICQw
+            BuF6iQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAYine9qQWjvBhbxoEP5OFz7bWzuMwUZVPR+7VgfZd1X
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBCOUFFZkxFVzBiQTV0cEw0
+            M0thK2hZQTJUUzZYN0JESVdQQjg2d1Y0T1dJCnpRMmZvdVpnbEVaaE0xTWFLZE1N
+            RTNjVjNPTC80Y1YwYUNkcTZDTjFWNVUKLS0tIFh3VGprRHpjVXlPb3NBc3VpWmkx
+            cktvZVpNbkFsY0hKOUxldXcrMjlac1UKwaNPtBtDgsdOaE+sbhHJWUbrLQ+GDOCL
+            KHIoiFxlTThXz18QnoLFFB380kcJpKveNZJSkXXpM9QwISuc7w45IQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHNzaC1lZDI1NTE5IGNnVERGUSB1SEVq
+            L0ErR3duNHF2VzR1UTFaUEVDY0h5cW9HbWNjN3VHMjVYdld2YmtZCm1yR3NrU1Iz
+            YkdIRHJ6aW1YRXV5MHVOZ2hMdDBuMmJqdk1qMXdSNExBY2cKLS0tIG5LUXZGWXk4
+            YjVxSFNWOEFBM2hrR2sya3Z3dXcyaHdsa0RldjVCZEl4SmcKJHkoXoDnPSoDeCxd
+            uPG6TcocgXO3QsGHKXEHC7xWnDx3a4UWzAPT7bPE0DDBWmO1TgRheQOyTm1QTYFr
+            DPBTPg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA0UFJ5QTlxSjA4aUxMaHhh
+            UDVtUHFhQ01XSzFTQ2FsTGhSeEFBZjZJYlVrCng4OXNxVjV5a21kU28rY0ZTYkY5
+            NGtaaTI4YWN5R09CS3JuamdOaW10TnMKLS0tIE44TEUvUWIzNGZ0OG82MXE5cDll
+            WjFzYktPMFhsTGdpbmRlSSs1M01RdGsK7w+Dt1yDE4Oruz3j2G1cR8WTfPgIsR/H
+            7D1SHT/wOQQ5wUzD889ndgm7XcYyYmHUiO3eXdFM3Hiqn1p2jfeAkQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1uvccut3fganrx0uztudlujeeenv3mhpa4y3pgd8dstagcqknnp3q5p4zhm
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-05-17T01:59:30Z"
+    mac: ENC[AES256_GCM,data:b6iEL0zZJB25afQQxus558X+QdJWHUfE+qD+Zr6WEqfJXFIEulazaT4m88Bp289eyQ9b/p70pj0FWKFXg/iEufOyyyCU5EUOta7Tgp+pyabomqffKJ20MvSvXkyG9FD4gq0XPJfEdP2KhPXGjaUfREmbjulqO0kdulcrxUoxHx8=,iv:MiRMccz77Xafjr+ilvCMaNetQGXeaHMVCLjGSKh+fAc=,tag:ggqrtZ4JzFbI9VAMhGSHwQ==,type:str]
+    version: 3.13.0

@@ -8,9 +8,10 @@ resources:
   - cloudflare-secret.enc.yaml
   - eg-sso-secret.enc.yaml
   - keycloak-pv.yaml
-  - realm.enc.yaml
+  - keycloak-terraform-admin.enc.yaml
+  - keycloak-terraform-bootstrap-admin.enc.yaml
 
 patches:
-  - path: lets-encrypt.yaml
-  - path: keycloak-httproute-patch.yaml
-  - path: keycloak-cr-patch.yaml
+  - path: patch-keycloak-cr.yaml
+  - path: patch-keycloak-httproute.yaml
+  - path: patch-lets-encrypt.yaml

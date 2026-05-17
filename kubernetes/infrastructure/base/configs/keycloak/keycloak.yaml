@@ -20,3 +20,6 @@ spec:
     hostname: keycloak-base.home.parents-basement.win
   proxy:
     headers: xforwarded
+  bootstrapAdmin:
+    service:
+      secret: terraform-bootstrap-admin
