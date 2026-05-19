@@ -43,7 +43,7 @@ provider "kubernetes" {
 
 provider "keycloak" {
   client_id     = var.use_bootstrap ? "terraform-bootstrap" : "terraform-admin"
-  client_secret = var.use_bootstrap ? data.kubernetes_secret.terraform_bootstrap.data["client-secret"] : data.kubernetes_secret.terraform_admin.data["client-secret"]
+  client_secret = var.use_bootstrap ? data.kubernetes_secret_v1.terraform_bootstrap.data["client-secret"] : data.kubernetes_secret_v1.terraform_admin.data["client-secret"]
   url           = "https://keycloak.home.parents-basement.win"
   realm         = "master"
 }
