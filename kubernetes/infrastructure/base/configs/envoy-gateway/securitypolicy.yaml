@@ -7,6 +7,7 @@ spec:
     group: gateway.networking.k8s.io
     kind: Gateway
     name: sso-eg
+    sectionName: https
   oidc:
     provider:
       issuer: "https://keycloak.home.parents-basement.win/realms/homelab"
