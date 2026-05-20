@@ -29,7 +29,7 @@ spec:
         fsGroupChangePolicy: "OnRootMismatch"
       initContainers:
         - name: gluetun-sidecar
-          image: ghcr.io/home-operations/transmission:4.1.1@sha256:3236ca32a6bc7d4d04386876a2bb785a72cdd8385512c63ee1af0f1cf8d9b830
+          image: ghcr.io/qdm12/gluetun:v3.41.1@sha256:1a5bf4b4820a879cdf8d93d7ef0d2d963af56670c9ebff8981860b6804ebc8ab
           restartPolicy: Always
           securityContext:
             runAsUser: 0
@@ -68,12 +68,21 @@ spec:
               value: on
             - name: DNS_SERVER
               value: off
+          volumeMounts:
+            # port forward script in the future
+            #- name: transmission-scripts
+            #  mountPath: /usr/local/bin/transmission-port-update.sh
+            #  subPath: transmission-port-update.sh
+            - name: healthcheck
+              mountPath: /usr/local/bin/healthcheck.sh
+              subPath: healthcheck.sh
+          ports:
+            - containerPort: 8080
+              protocol: TCP
           readinessProbe:
             exec:
               command:
-                - /bin/sh
-                - -c
-                - "nslookup google.com"
+                - /usr/local/bin/healthcheck.sh
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
@@ -81,15 +90,12 @@ spec:
           livenessProbe:
             exec:
               command:
-                - /bin/sh
-                - -c
-                - "nslookup google.com"
-            initialDelaySeconds: 600
+                - /usr/local/bin/healthcheck.sh
+            initialDelaySeconds: 300
             periodSeconds: 30
             timeoutSeconds: 10
-          ports:
-            - containerPort: 8080
-              protocol: TCP
+            failureThreshold: 3
+
         - name: gomplate-qbittorrent-config
           image: hairyhenderson/gomplate:alpine@sha256:f3c26b405e402236b6835be781cb064aa56a5a686669e553717361079479439e
           env:
@@ -135,3 +141,7 @@ spec:
         - name: config-map-tmpl
           configMap:
             name: qbittorrent-config-tmpl
+        - name: healthcheck
+          configMap:
+            name: healthcheck
+            defaultMode: 0744

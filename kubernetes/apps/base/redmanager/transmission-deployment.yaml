@@ -128,6 +128,7 @@ spec:
               mountPath: /config
             - name: redmanager-transmission-shared
               mountPath: /redmanager-transmission-shared
+
       volumes:
         - name: redmanager-download
           persistentVolumeClaim:

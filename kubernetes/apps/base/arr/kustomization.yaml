@@ -13,6 +13,7 @@ resources:
   - namespace.yaml
   - prowlarr-httproute.yaml
   - qbittorrent-config.yaml
+  - qbittorrent-healthcheck-configmap.yaml
   - qbittorrent-deployment.yaml
   - qbittorrent-httproute.yaml
   - qbittorrent-svc.yaml
