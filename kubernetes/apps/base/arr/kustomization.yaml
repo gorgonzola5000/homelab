@@ -14,6 +14,7 @@ resources:
   - prowlarr-httproute.yaml
   - qbittorrent-config.yaml
   - qbittorrent-deployment.yaml
+  - qbittorrent-httproute.yaml
   - qbittorrent-svc.yaml
   - radarr-httproute.yaml
   - sonarr-httproute.yaml

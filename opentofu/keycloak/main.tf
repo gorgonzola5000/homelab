@@ -16,7 +16,8 @@ resource "keycloak_openid_client" "envoy_gateway" {
   valid_redirect_uris = [
     "https://sonarr.home.parents-basement.win/*",
     "https://radarr.home.parents-basement.win/*",
-    "https://prowlarr.home.parents-basement.win/*"
+    "https://prowlarr.home.parents-basement.win/*",
+    "https://qbittorrent.home.parents-basement.win/*"
   ]
   web_origins = [
     "+"
