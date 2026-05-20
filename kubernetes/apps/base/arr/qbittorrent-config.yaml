@@ -67,7 +67,7 @@ data:
     MailNotification\req_auth=true
     WebUI\Address=*
     WebUI\AuthSubnetWhitelist=10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
-    WebUI\AuthSubnetWhitelistEnabled=false
+    WebUI\AuthSubnetWhitelistEnabled=true
     WebUI\CSRFProtection=true
     WebUI\ClickjackingProtection=true
     WebUI\HostHeaderValidation=false
