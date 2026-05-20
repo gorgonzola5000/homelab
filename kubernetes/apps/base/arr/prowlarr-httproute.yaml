@@ -11,7 +11,9 @@ spec:
   hostnames:
     - prowlarr-base.home.parents-basement.win
   rules:
-    - matches:
+    - timeouts:
+        request: 120s
+      matches:
         - path:
             type: PathPrefix
             value: /
