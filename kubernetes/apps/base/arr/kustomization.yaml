@@ -4,6 +4,7 @@ namespace: arr
 resources:
   - arr-deployment.yaml
   - arr-svc.yaml
+  - ciliumnetworkpolicy.yaml
   - configarr-config.yaml
   - configarr-job.yaml
   - jellyfin-deployment.yaml
