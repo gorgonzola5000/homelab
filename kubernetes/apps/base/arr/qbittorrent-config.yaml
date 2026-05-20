@@ -22,6 +22,7 @@ data:
     Session\AsyncIOThreadsCount=10
     Session\DHTEnabled=false
     Session\DefaultSavePath=/data/torrents
+    Session\DisableAutoTMMByDefault=false
     Session\DiskCacheSize=-1
     Session\DiskIOReadMode=DisableOSCache
     Session\DiskIOType=SimplePreadPwrite
