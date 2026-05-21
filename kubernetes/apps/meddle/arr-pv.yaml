@@ -5,7 +5,7 @@ metadata:
   name: arr-data
 spec:
   capacity:
-    storage: 1Ti
+    storage: 2Ti
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce

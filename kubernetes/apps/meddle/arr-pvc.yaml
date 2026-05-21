@@ -11,7 +11,7 @@ spec:
   volumeName: arr-data
   resources:
     requests:
-      storage: 1Ti
+      storage: 2Ti
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
