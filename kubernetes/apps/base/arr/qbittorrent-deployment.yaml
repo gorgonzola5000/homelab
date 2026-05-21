@@ -37,6 +37,10 @@ spec:
             capabilities:
               add: ["NET_ADMIN"]
           env:
+            - name: VPN_PORT_FORWARDING_UP_COMMAND
+              value: "/usr/local/bin/qbittorrent-port-update.sh --port {{PORT}} --iface {{VPN_INTERFACE}}"
+            - name: VPN_PORT_FORWARDING_DOWN_COMMAND
+              value: "/usr/local/bin/qbittorrent-port-update.sh --port 0 --iface lo"
             - name: FIREWALL_INPUT_PORTS
               value: "8080"
             - name: SERVER_COUNTRIES
@@ -69,11 +73,10 @@ spec:
             - name: DNS_SERVER
               value: off
           volumeMounts:
-            # port forward script in the future
-            #- name: transmission-scripts
-            #  mountPath: /usr/local/bin/transmission-port-update.sh
-            #  subPath: transmission-port-update.sh
-            - name: healthcheck
+            - name: qbittorrent-scripts
+              mountPath: /usr/local/bin/qbittorrent-port-update.sh
+              subPath: qbittorrent-port-update.sh
+            - name: qbittorrent-scripts
               mountPath: /usr/local/bin/healthcheck.sh
               subPath: healthcheck.sh
           ports:
@@ -141,7 +144,7 @@ spec:
         - name: config-map-tmpl
           configMap:
             name: qbittorrent-config-tmpl
-        - name: healthcheck
+        - name: qbittorrent-scripts
           configMap:
-            name: healthcheck
+            name: qbittorrent-scripts
             defaultMode: 0744

@@ -13,9 +13,9 @@ resources:
   - namespace.yaml
   - prowlarr-httproute.yaml
   - qbittorrent-config.yaml
-  - qbittorrent-healthcheck-configmap.yaml
   - qbittorrent-deployment.yaml
   - qbittorrent-httproute.yaml
+  - qbittorrent-scripts-configmap.yaml
   - qbittorrent-svc.yaml
   - radarr-httproute.yaml
   - sonarr-httproute.yaml
