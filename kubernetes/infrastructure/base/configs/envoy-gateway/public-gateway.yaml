@@ -1,19 +1,21 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: eg
+  name: public-eg
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "hkj0ah4db6f.sn.mynetname.net"
 spec:
   gatewayClassName: eg
   listeners:
     - name: http
-      hostname: "*.home.parents-basement.win"
+      hostname: "*.parents-basement.win"
       protocol: HTTP
       port: 80
       allowedRoutes:
         namespaces:
           from: Same
     - name: https
-      hostname: "*.home.parents-basement.win"
+      hostname: "*.parents-basement.win"
       protocol: HTTPS
       port: 443
       allowedRoutes:

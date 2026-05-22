@@ -14,3 +14,11 @@ metadata:
 spec:
   blocks:
     - cidr: "10.2.137.22/32"
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "envoy-public-lb-pool"
+spec:
+  blocks:
+    - cidr: "10.2.137.23/32"

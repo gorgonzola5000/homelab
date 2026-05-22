@@ -5,10 +5,9 @@ metadata:
   namespace: arr
   annotations:
     external-dns.kubernetes.io/cloudflare-proxied: "false"
-    external-dns.alpha.kubernetes.io/target: "hkj0ah4db6f.sn.mynetname.net"
 spec:
   parentRefs:
-    - name: eg
+    - name: eg-public
       namespace: envoy-gateway-system
   hostnames:
     - jellyfin.parents-basement.win

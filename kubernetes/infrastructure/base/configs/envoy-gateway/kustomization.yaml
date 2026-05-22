@@ -3,8 +3,9 @@ kind: Kustomization
 namespace: envoy-gateway-system
 resources:
   - certificate.yaml
-  - gateway.yaml
   - gateway-class.yaml
+  - gateway.yaml
   - http-redirect.yaml
+  - public-gateway.yaml
   - securitypolicy.yaml
   - sso-gateway.yaml
