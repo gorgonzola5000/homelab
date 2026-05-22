@@ -12,8 +12,12 @@ spec:
     - name: sso-eg
       namespace: envoy-gateway-system
       sectionName: http
+    - name: public-eg
+      namespace: envoy-gateway-system
+      sectionName: http
   hostnames:
     - "*.home.parents-basement.win"
+    - "*.parents-basement.win"
   rules:
     - filters:
         - type: RequestRedirect
