@@ -23,3 +23,21 @@ spec:
         mode: Terminate
         certificateRefs:
           - name: wildcard-tls-secret
+    - name: http-public
+      hostname: "*.parents-basement.win"
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https-public
+      hostname: "*.parents-basement.win"
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-tls-secret

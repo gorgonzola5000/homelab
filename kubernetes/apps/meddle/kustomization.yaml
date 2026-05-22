@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../base/arr
   - ../base/redmanager
+  - arr-jellyfin-public-httproute.yaml
   - arr-pvc.yaml
   - arr-pv.yaml
   - arr-secret.enc.yaml
