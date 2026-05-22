@@ -24,4 +24,4 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - name: wildcard-tls-secret
+          - name: public-wildcard-tls-secret
