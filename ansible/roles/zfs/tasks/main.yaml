@@ -14,9 +14,9 @@
     state: present
 
 - name: Ensure keyfile file exists
-  ansible.builtin.template:
+  ansible.builtin.copy:
     dest: /root/tank_keyfile
-    src: tank_keyfile.j2
+    content: "{{ zpool.tank_keyfile_contents | trim }}"
     owner: root
     group: root
     mode: '0400'
@@ -40,7 +40,7 @@
       ExecStart=/usr/sbin/zfs load-key -a
 
       [Install]
-      WantedBy=zfs-mount.service
+      RequiredBy=zfs-mount.service
 
 - name: Enable zfs-load-key systemd service
   ansible.builtin.systemd:
@@ -121,6 +121,7 @@
     - /tank/static/arr/sonarr-config
     - /tank/static/keycloak/keycloak-db-1
     - /tank/static/keycloak/keycloak-db-2
+    - /tank/openebs
 
 - name: Enable monthly ZFS scrub timer for 'tank'
   ansible.builtin.systemd:
