@@ -17,5 +17,5 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: seerr
-          port: 5055
+        - name: seerr-seerr-chart
+          port: 80

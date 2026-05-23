@@ -2,6 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: seerr
 resources:
+  - externalnameservice-arr.yaml
+  - externalnameservice-jellyfin.yaml
   - httproute.yaml
   - namespace.yaml
   - release.yaml

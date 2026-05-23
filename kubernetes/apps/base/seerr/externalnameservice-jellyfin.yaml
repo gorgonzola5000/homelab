@@ -1,0 +1,9 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: jellyfin
+spec:
+  type: ExternalName
+  externalName: jellyfin.arr.svc.cluster.local
+  ports:
+    - port: 8096

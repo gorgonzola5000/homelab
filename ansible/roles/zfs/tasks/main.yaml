@@ -121,7 +121,6 @@
     - /tank/static/arr/sonarr-config
     - /tank/static/keycloak/keycloak-db-1
     - /tank/static/keycloak/keycloak-db-2
-    - /tank/openebs
 
 - name: Enable monthly ZFS scrub timer for 'tank'
   ansible.builtin.systemd:
