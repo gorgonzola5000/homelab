@@ -11,7 +11,7 @@ resources:
   - redmanager-pvc.yaml
   - redmanager-pv.yaml
   - redmanager-secret.enc.yaml
-  #  - seerr-public-httproute.yaml
+  - seerr-public-httproute.yaml
   - seerr-pv.yaml
 
 patches:
