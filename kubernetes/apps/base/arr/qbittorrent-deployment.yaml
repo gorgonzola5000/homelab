@@ -100,7 +100,7 @@ spec:
             failureThreshold: 3
 
         - name: gomplate-qbittorrent-config
-          image: hairyhenderson/gomplate:alpine@sha256:f3c26b405e402236b6835be781cb064aa56a5a686669e553717361079479439e
+          image: hairyhenderson/gomplate:alpine@sha256:0551ea7fa4a3d2977b62ddb700dff5368901481a4be59ae47b9a75cbbed82cad
           env:
             - name: QBITTORRENT_PASS_HASH
               valueFrom:
