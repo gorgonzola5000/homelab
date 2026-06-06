@@ -19,7 +19,7 @@ terraform {
   required_providers {
     grafana = {
       source  = "grafana/grafana"
-      version = "4.36.2"
+      version = "4.37.0"
     }
     sops = {
       source  = "carlpett/sops"
