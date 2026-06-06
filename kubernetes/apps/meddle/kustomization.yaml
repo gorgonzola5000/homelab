@@ -2,12 +2,14 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../base/arr
+  - ../base/nfsserver
   - ../base/redmanager
   - ../base/seerr
   - arr-jellyfin-public-httproute.yaml
   - arr-pvc.yaml
   - arr-pv.yaml
   - arr-secret.enc.yaml
+  - nfsserver-secret.enc.yaml
   - redmanager-pvc.yaml
   - redmanager-pv.yaml
   - redmanager-secret.enc.yaml
@@ -19,6 +21,7 @@ patches:
   - path: patch-arr-jellyfin-httproute.yaml
   - path: patch-arr-jellyfin.yaml
   - path: patch-arr-qbittorrent-httproute.yaml
+  - path: patch-nfsserver-service.yaml
   - path: patch-redmanager-httproute.yaml
   - path: patch-redmanager-navidrome-httproute.yaml
   - path: patch-seerr-httproute.yaml

@@ -3,7 +3,9 @@ kind: Kustomization
 resources:
   - eg-announcement.yaml
   - ipam-eg.yaml
+  - ipam-nfs.yaml
   - ipam-public-eg.yaml
   - ipam-sso-eg.yaml
+  - nfs-announcement.yaml
   - public-eg-announcement.yaml
   - sso-eg-announcement.yaml

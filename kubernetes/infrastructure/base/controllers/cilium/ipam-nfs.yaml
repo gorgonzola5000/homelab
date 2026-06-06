@@ -1,0 +1,10 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "nfs-lb-pool"
+spec:
+  blocks:
+    - cidr: _
+  serviceSelector:
+    matchLabels:
+      app: nfsserver

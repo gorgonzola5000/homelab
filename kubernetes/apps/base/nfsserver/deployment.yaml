@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfsserver
+  labels:
+    app: nfsserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfsserver
+  template:
+    metadata:
+      labels:
+        app: nfsserver
+    spec:
+      containers:
+        - name: nfsserver
+          image: registry.gitlab.com/starfruit6000/nfsserver:v1.0.5@sha256:308512bd9a094d49ad4814b1c97c0512a0087d17567aaf22183574dd27c3c127
+          securityContext:
+            privileged: true
+          ports:
+            - containerPort: 2049
+              name: nfs-tcp
+              protocol: TCP
+            - containerPort: 2049
+              name: nfs-udp
+              protocol: UDP
+          volumeMounts:
+            - name: nfs-storage
+              mountPath: /nfsshare
+            - name: tls-certs
+              mountPath: /etc/tlshd
+      volumes:
+        - name: nfs-storage
+          persistentVolumeClaim:
+            claimName: nfs-storage
+        - name: tls-certs
+          secret:
+            secretName: nfs-tls-certs

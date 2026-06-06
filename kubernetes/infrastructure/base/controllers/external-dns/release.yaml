@@ -22,5 +22,8 @@ spec:
             key: apiKey
     sources:
       - gateway-httproute
+      - gateway-tcproute
+      - gateway-udproute
+      - service
     domainFilters:
       - parents-basement.win
