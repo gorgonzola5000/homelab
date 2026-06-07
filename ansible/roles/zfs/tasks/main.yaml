@@ -130,3 +130,6 @@
 
 - name: Import smartctl tasks
   ansible.builtin.import_tasks: smart.yaml
+
+- name: Import k8s_zfs_tags tasks
+  ansible.builtin.import_tasks: k8s_zfs_tags.yaml

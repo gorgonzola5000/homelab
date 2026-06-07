@@ -1,0 +1,13 @@
+[Unit]
+Description=Tag ZFS datasets with Kubernetes PVC metadata
+After=rke2-server.service
+Requisite=rke2-server.service
+
+[Service]
+Type=oneshot
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/lib/rancher/rke2/bin"
+Environment="KUBECONFIG=/etc/rancher/rke2/rke2.yaml"
+ExecStart=/usr/local/bin/tag-zfs-pvcs.sh
+
+[Install]
+WantedBy=multi-user.target

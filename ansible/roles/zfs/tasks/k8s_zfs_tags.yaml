@@ -1,0 +1,31 @@
+---
+- name: Copy ZFS PVC tagging script
+  ansible.builtin.copy:
+    src: tag-zfs-pvcs.sh
+    dest: /usr/local/bin/tag-zfs-pvcs.sh
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy ZFS PVC tagging systemd service
+  ansible.builtin.copy:
+    src: tag-zfs-pvcs.service
+    dest: /etc/systemd/system/tag-zfs-pvcs.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy ZFS PVC tagging systemd timer
+  ansible.builtin.copy:
+    src: tag-zfs-pvcs.timer
+    dest: /etc/systemd/system/tag-zfs-pvcs.timer
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable and start ZFS PVC tagging timer
+  ansible.builtin.systemd:
+    name: tag-zfs-pvcs.timer
+    enabled: true
+    state: started
+    daemon_reload: true

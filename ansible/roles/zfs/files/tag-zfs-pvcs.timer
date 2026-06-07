@@ -1,0 +1,10 @@
+[Unit]
+Description=Run ZFS PVC tagging script every hour
+
+[Timer]
+OnCalendar=*-*-* *:55:00
+Persistent=true
+RandomizedDelaySec=10
+
+[Install]
+WantedBy=timers.target
