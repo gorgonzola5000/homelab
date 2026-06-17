@@ -18,3 +18,5 @@ collections:
     version: 2.4.0
   - name: grafana.grafana
     version: 6.1.0
+  - name: kubernetes.core
+    version: 6.4.0

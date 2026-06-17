@@ -1,0 +1,258 @@
+---
+- name: Configure host money
+  hosts: money
+  become: true
+  vars:
+    target_user: "{{ vault_admin_username }}"
+    wine_prefix: "/home/{{ target_user }}/.wine32-eac"
+    eac_installer_url: "https://www.exactaudiocopy.de/eac-1.8.exe"
+  roles:
+    - common
+    - ansible_managed
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Enable i386 architecture for 32-bit Wine
+      ansible.builtin.command: dpkg --add-architecture i386
+      changed_when: false
+
+    - name: Update apt cache and install Wine32
+      ansible.builtin.apt:
+        name:
+          - wine
+          - wine32:i386
+          - winetricks
+          - cabextract
+          - wget
+          - unzip
+          - xvfb
+        state: present
+        update_cache: true
+
+    - name: Add user to the cdrom group for direct drive access
+      ansible.builtin.user:
+        name: "{{ target_user }}"
+        groups: cdrom
+        append: true
+
+    - name: Configure Wine and Install EAC
+      become: true
+      become_user: "{{ target_user }}"
+      environment:
+        WINEPREFIX: "{{ wine_prefix }}"
+        WINEARCH: "win32"
+      block:
+        - name: Create Wine prefix directory
+          ansible.builtin.file:
+            path: "{{ wine_prefix }}"
+            state: directory
+            owner: "{{ target_user }}"
+            group: "{{ target_user }}"
+            mode: "0755"
+
+        - name: Initialize native 32-bit Wine prefix
+          ansible.builtin.command: wineboot -u
+          become: true
+          become_user: "{{ target_user }}"
+          environment:
+            WINEPREFIX: "{{ wine_prefix }}"
+            WINEARCH: "win32"
+
+        - name: Install Noto Sans CJK (Identical to Source Han Sans)
+          ansible.builtin.apt:
+            name: fonts-noto-cjk
+            state: present
+
+        - name: Create fonts.reg registry file
+          ansible.builtin.copy:
+            dest: "/tmp/fonts.reg"
+            content: |
+              Windows Registry Editor Version 5.00
+              [HKEY_CURRENT_USER\Software\Wine\Fonts\Replacements]
+              "MS Shell Dlg"="Noto Sans CJK JP"
+              "MS UI Gothic"="Noto Sans CJK JP"
+            owner: "{{ target_user }}"
+
+        - name: Apply CJK Font Registry Fix
+          ansible.builtin.command: wine regedit /tmp/fonts.reg
+          become: true
+          become_user: "{{ target_user }}"
+
+        - name: Reload Wine to apply font changes
+          ansible.builtin.command: wineboot
+          become: true
+          become_user: "{{ target_user }}"
+
+        - name: Install .NET frameworks sequentially for Metadata Plugins
+          ansible.builtin.command: xvfb-run -a winetricks -q {{ item.pkg }}
+          args:
+            creates: "{{ wine_prefix }}/drive_c/windows/Microsoft.NET/Framework/{{ item.folder }}"
+          loop:
+            - { pkg: "dotnet20", folder: "v2.0.50727" }
+            - { pkg: "dotnet48", folder: "v4.0.30319" }
+          async: 3600
+          poll: 15
+
+        - name: Download EAC Installer
+          ansible.builtin.get_url:
+            url: "{{ eac_installer_url }}"
+            dest: "/tmp/eac-installer.exe"
+            owner: "{{ target_user }}"
+            mode: "0755"
+
+        - name: Install EAC Silently
+          ansible.builtin.command: wine /tmp/eac-installer.exe /S
+          become: true
+          become_user: "{{ target_user }}"
+
+        - name: Delete CDRDAO to prevent Wine startup errors
+          ansible.builtin.file:
+            path: "{{ wine_prefix }}/drive_c/Program Files/Exact Audio Copy/cdrdao.exe"
+            state: absent
+
+        - name: Add optimized EAC bash function to .bashrc
+          ansible.builtin.blockinfile:
+            path: "/home/{{ target_user }}/.bashrc"
+            marker: "# {mark} ANSIBLE MANAGED BLOCK: EAC WRAPPER"
+            block: |
+              function eac {
+                export WINEPREFIX="{{ wine_prefix }}"
+                export WINEARCH="win32"
+                export WINEDEBUG="-all"
+                local eacdir="${WINEPREFIX}/drive_c/Program Files/Exact Audio Copy/Microsoft.VC80.CRT"
+                cd "$eacdir" && wine "${WINEPREFIX}/drive_c/Program Files/Exact Audio Copy/EAC.exe"
+              }
+
+    - name: Fetch NFS Server Certificate from Kubernetes natively
+      kubernetes.core.k8s_info:
+        kind: Secret
+        name: nfs-tls-certs
+        namespace: nfsserver
+      delegate_to: localhost
+      become: false
+      register: k8s_secret_output
+
+    - name: Install NFS client and Kernel TLS utilities
+      ansible.builtin.apt:
+        name:
+          - nfs-common
+          - ktls-utils
+        state: present
+
+    - name: Inject Kubernetes TLS certificate into system trust store
+      ansible.builtin.copy:
+        content: "{{ k8s_secret_output.resources[0].data['tls.crt'] | b64decode }}"
+        dest: /usr/local/share/ca-certificates/homelab-nfs.crt
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Update CA Certificates
+
+    - name: Ensure tlshd service is enabled and running
+      ansible.builtin.systemd:
+        name: tlshd
+        enabled: true
+        state: started
+
+    - name: Ensure secure NFS mount point directory exists
+      ansible.builtin.file:
+        path: /mnt/secure-nfs
+        state: directory
+        mode: "0777"
+
+    - name: Configure secure NFS share in fstab
+      ansible.posix.mount:
+        src: nfs.home.parents-basement.win:/
+        path: /mnt/secure-nfs
+        fstype: nfs
+        opts: vers=4.2,port=2049,xprtsec=tls,_netdev,x-systemd.automount,x-systemd.requires=tlshd.service
+        state: mounted
+
+    - name: Configure x11vnc to mirror the physical display
+      block:
+        - name: Install x11vnc
+          ansible.builtin.apt:
+            name: x11vnc
+            state: present
+
+        - name: Create systemd service for x11vnc
+          ansible.builtin.copy:
+            dest: /etc/systemd/system/x11vnc.service
+            owner: root
+            group: root
+            mode: "0644"
+            content: |
+              [Unit]
+              Description=Mirror physical display to VNC
+              After=multi-user.target
+
+              [Service]
+              Type=simple
+              # Attaches to the physical screen (:0), restricts to localhost, auto-guesses X11 authority
+              ExecStart=/usr/bin/x11vnc -display :0 -auth guess -localhost -nopw -forever -loop -repeat
+              Restart=on-failure
+              RestartSec=2
+
+              [Install]
+              WantedBy=multi-user.target
+          notify: Restart x11vnc
+
+        - name: Enable and start x11vnc service
+          ansible.builtin.systemd:
+            name: x11vnc
+            enabled: true
+            state: started
+            daemon_reload: true
+
+    - name: Configure continuous always-on display and power settings
+      block:
+        - name: Purge screen locking software
+          ansible.builtin.apt:
+            name:
+              - light-locker
+              - xscreensaver
+            state: absent
+
+        - name: Ensure X11 configuration directory exists
+          ansible.builtin.file:
+            path: /etc/X11/xorg.conf.d
+            state: directory
+            mode: "0755"
+
+        - name: Disable X11 screen blanking and DPMS permanently
+          ansible.builtin.copy:
+            dest: /etc/X11/xorg.conf.d/10-disable-dpms.conf
+            owner: root
+            group: root
+            mode: "0644"
+            content: |
+              Section "ServerFlags"
+                  Option "BlankTime" "0"
+                  Option "StandbyTime" "0"
+                  Option "SuspendTime" "0"
+                  Option "OffTime" "0"
+              EndSection
+
+        - name: Prevent system sleep when the laptop lid is closed
+          ansible.builtin.lineinfile:
+            path: /etc/systemd/logind.conf
+            regexp: "^#?HandleLidSwitch="
+            line: "HandleLidSwitch=ignore"
+          notify: Restart systemd-logind
+
+  handlers:
+    - name: Update CA Certificates
+      ansible.builtin.command: update-ca-certificates
+
+    - name: Restart x11vnc
+      ansible.builtin.systemd:
+        name: x11vnc
+        state: restarted
+        daemon_reload: true
+
+    - name: Restart systemd-logind
+      ansible.builtin.systemd:
+        name: systemd-logind
+        state: restarted

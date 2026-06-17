@@ -12,6 +12,9 @@ ansible-navigator:
         dest: "/sops"
       - src: "../.sops.yaml"
         dest: "/.sops.yaml"
+      - src: "~/.kube/config"
+        dest: "/root/.kube/config"
+        options: "Z"
   logging:
     level: critical
     append: False

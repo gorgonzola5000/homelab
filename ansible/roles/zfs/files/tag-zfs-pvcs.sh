@@ -15,7 +15,13 @@ kubectl get pv --request-timeout=5s -o jsonpath='{range .items[?(@.spec.claimRef
     fi
   fi
   if [ -n "$dataset" ] && zfs list "$dataset" >/dev/null 2>&1; then
-    zfs set k8s:namespace="$ns" "$dataset"
-    zfs set k8s:pvc="$pvc" "$dataset"
+    current_ns=$(zfs get -H -o value k8s:namespace "$dataset")
+    current_pvc=$(zfs get -H -o value k8s:pvc "$dataset")
+    if [ "$current_ns" != "$ns" ]; then
+      zfs set k8s:namespace="$ns" "$dataset"
+    fi
+    if [ "$current_pvc" != "$pvc" ]; then
+      zfs set k8s:pvc="$pvc" "$dataset"
+    fi
   fi
 done
