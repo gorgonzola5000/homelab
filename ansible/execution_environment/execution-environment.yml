@@ -1,7 +1,7 @@
 version: 3
 images:
   base_image:
-    name: registry.fedoraproject.org/fedora:42
+    name: registry.fedoraproject.org/fedora:44
 dependencies:
   python_interpreter:
     package_system: python3
@@ -12,6 +12,7 @@ dependencies:
   system:
     - openssh-clients
     - sshpass
+    - helm
   galaxy: requirements.yml
   python: requirements.txt
 options:

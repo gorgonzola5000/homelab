@@ -6,7 +6,7 @@ To create the .iso for bootstrap
 
 To bootstrap
 
-1. Flash the preseeded .iso to a flash drive
+1. Flash the preseeded .iso to a flash drive or add it to the VM as a boot option
 2. Boot the target host using the new .iso
 3. Install the preseeded Debian. Select the regular 'Install'
 4. After the installation is done, run the Ansible playbook for the host

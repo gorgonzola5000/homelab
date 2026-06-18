@@ -1,4 +1,9 @@
 ---
+- name: Ensure parent backup dataset exists
+  community.general.zfs:
+    name: "{{ syncoid_dest_parent_dataset }}"
+    state: present
+
 - name: Ensure root SSH key exists on destination
   ansible.builtin.user:
     name: root
@@ -18,7 +23,7 @@
     state: present
   loop: "{{ source_host_keys.stdout_lines | reject('search', '^#') | list }}"
 
-- name: Read root public key from dogs
+- name: Read root public key from destination
   ansible.builtin.slurp:
     src: /root/.ssh/id_ed25519.pub
   register: dest_pub_key

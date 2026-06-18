@@ -48,6 +48,18 @@
     enabled: true
     daemon_reload: true
 
+- name: Check for available exported zpools
+  ansible.builtin.command: zpool import
+  register: available_exported_pools
+  changed_when: false
+  failed_when: false
+
+- name: Import existing 'tank' zpool if not imported yet
+  ansible.builtin.command: zpool import -f tank
+  when: "'tank' in available_exported_pools.stdout"
+  register: import_tank
+  changed_when: true
+
 - name: Check if zpool 'tank' already exists
   ansible.builtin.command: zpool status tank
   register: zpool_status
@@ -92,35 +104,16 @@
     state: restarted
   when: "'tank' not in zfs_mounted_filesystems.stdout"
 
-- name: Load key zpool tank key
+- name: Try to mount zpool
   ansible.builtin.systemd:
     name: zfs-mount.service
     state: restarted
   when: "'tank' not in zfs_mounted_filesystems.stdout"
 
-- name: Ensure filetree exists for Local StorageClass
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-  loop:
-    - /tank/static/redmanager/music
-    - /tank/static/redmanager/navidrome-data
-    - /tank/static/redmanager/pgdata
-    - /tank/static/redmanager/redmanager-download
-    - /tank/static/redmanager/redmanager-transmission-shared
-    - /tank/static/redmanager/transmission-config
-    - /tank/static/arr/configarr-cache
-    - /tank/static/arr/data
-    - /tank/static/arr/jellyfin-config
-    - /tank/static/arr/prowlarr-config
-    - /tank/static/arr/qbittorrent-config
-    - /tank/static/arr/radarr-config
-    - /tank/static/arr/sonarr-config
-    - /tank/static/keycloak/keycloak-db-1
-    - /tank/static/keycloak/keycloak-db-2
+- name: Ensure target ZFS dataset exists
+  community.general.zfs:
+    name: tank/openebs
+    state: present
 
 - name: Enable monthly ZFS scrub timer for 'tank'
   ansible.builtin.systemd:

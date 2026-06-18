@@ -1,0 +1,93 @@
+stages:
+  - publish
+
+publish-fleet:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/fleet/**/*
+        - .gitlab-ci.yml
+      variables:
+        ARTIFACT_TAG: "latest"
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/fleet"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/fleet"
+          skip_reconcile: true
+
+publish-cert-manager:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/cert-manager/**/*
+        - .gitlab-ci.yml
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/cert-manager"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/infra/components/cert-manager"
+          skip_reconcile: true
+#.publish-oci-template:
+#  stage: publish
+#  image:
+#    name: registry.gitlab.com/components/fluxcd/fluxcd:0.4.0@sha256:bb9dcc7923dd8233b09e87da63a90f59698e46c94bc3ba0c7270882a5f79df8f
+#    entrypoint: [""]
+#  id_tokens:
+#    SIGSTORE_ID_TOKEN:
+#      aud: sigstore
+#  variables:
+#    ARTIFACT_TAG: "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+#  before_script:
+#    - cosign login ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
+#  script:
+#    - echo "Packaging and pushing OCI artifact for ${COMPONENT_NAME}..."
+#    - |
+#      digest_url=$(flux push artifact ${OCI_REPO}:${ARTIFACT_TAG} \
+#        --path="${COMPONENT_PATH}" \
+#        --source="${CI_PROJECT_URL}" \
+#        --revision="${CI_COMMIT_SHA}" \
+#        --creds="${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
+#        --annotations="org.opencontainers.image.url=$CI_PROJECT_URL" \
+#        --annotations="com.gitlab.job.id=$CI_JOB_ID" \
+#        --annotations="com.gitlab.job.url=$CI_JOB_URL" \
+#        --output json | jq -r '. | .repository + "@" + .digest')
+#      echo "Successfully pushed artifact. Digest URL: ${digest_url}"
+#    - echo "Signing the OCI artifact digest with Cosign..."
+#    - cosign sign --yes "${digest_url}"
+#
+#publish-fleet:
+#  extends: .publish-oci-template
+#  variables:
+#    COMPONENT_NAME: "fleet"
+#    OCI_REPO: "oci://${CI_REGISTRY_IMAGE}/fleet"
+#    COMPONENT_PATH: "./kubernetes/fleet"
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+#      changes:
+#        - kubernetes/fleet/**/*
+#        - .gitlab-ci.yml
+#
+#publish-cert-manager:
+#  extends: .publish-oci-template
+#  variables:
+#    COMPONENT_NAME: "cert-manager"
+#    OCI_REPO: "oci://${CI_REGISTRY_IMAGE}/infra/cert-manager"
+#    COMPONENT_PATH: "./kubernetes/infra/components/cert-manager"
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+#      changes:
+#        - kubernetes/infra/components/cert-manager/**/*
+#        - .gitlab-ci.yml

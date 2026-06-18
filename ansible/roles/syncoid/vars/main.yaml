@@ -1,2 +1,4 @@
 ---
-syncoid_dataset: tank/static
+syncoid_source_dataset: tank
+syncoid_dest_parent_dataset: tank/backup
+syncoid_dest_dataset: "{{ syncoid_dest_parent_dataset }}/{{ syncoid_dataset }}"
