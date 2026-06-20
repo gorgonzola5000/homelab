@@ -29,7 +29,7 @@
         "/(^|/)kustomization\\.ya?ml$/"
       ],
       "matchStrings": [
-        "#\\s*renovate:\\s*datasource=(?<datasource>[a-z-]+)\\s*depName=(?<depName>[^\\s]+)\\s*\\n\\s*-.*?(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+        "#\\s*renovate:\\s*datasource=(?<datasource>[a-z-]+)\\s*depName=(?<depName>[^\\s]+)\\s*\\n\\s*-.*?(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ]
     }
   ]
