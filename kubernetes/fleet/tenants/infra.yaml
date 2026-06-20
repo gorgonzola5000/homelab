@@ -17,6 +17,9 @@ spec:
     - tenant: "cert-manager"
       tag: "${ARTIFACT_TAG}"
       environment: "${ENVIRONMENT}"
+    - tenant: "openebs"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
   resources:
     - apiVersion: v1
       kind: Namespace
