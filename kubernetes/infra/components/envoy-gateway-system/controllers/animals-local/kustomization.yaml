@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+patches:
+  - path: patch-envoy-lb-pool.yaml
+  - path: patch-envoy-public-lb-pool.yaml
+  - path: patch-envoy-sso-lb-pool.yaml
+  - path: patch-nfs-lb-pool.yaml

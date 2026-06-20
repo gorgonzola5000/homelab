@@ -59,3 +59,41 @@ publish-openebs:
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/openebs"
           skip_reconcile: true
+
+publish-envoy-gateway-system:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/envoy-gateway-system/**/*
+        - .gitlab-ci.yml
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/envoy-gateway-system"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/infra/components/envoy-gateway-system"
+          skip_reconcile: true
+
+publish-cnpg-system:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/cnpg-system/**/*
+        - .gitlab-ci.yml
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/cnpg-system"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/infra/components/cnpg-system"
+          skip_reconcile: true

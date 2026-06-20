@@ -1,0 +1,10 @@
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: envoy-l2announcement
+spec:
+  serviceSelector:
+    matchLabels:
+      gateway.envoyproxy.io/owning-gateway-name: eg
+      gateway.envoyproxy.io/owning-gateway-namespace: envoy-gateway-system
+  loadBalancerIPs: true
