@@ -32,6 +32,9 @@ spec:
     - tenant: "external-secrets"
       tag: "${ARTIFACT_TAG}"
       environment: "${ENVIRONMENT}"
+    - tenant: "keycloak"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
   resources:
     - apiVersion: v1
       kind: Namespace

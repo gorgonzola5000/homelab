@@ -14,3 +14,6 @@ data:
   CLUSTER_NAME: meddle-local
   CLUSTER_DOMAIN: cluster.local
   ARTIFACT_SUBJECT_GIT_REF: refs/heads/main
+  ROUTE_SUFFIX: "-meddle-local"
+  HOMELAB_DOMAIN: "parents-basement.win"
+  HOMELAB_INTERNAL_SUBDOMAIN: "home.parents-basement.win"
