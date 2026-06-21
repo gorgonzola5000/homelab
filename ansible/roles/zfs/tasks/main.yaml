@@ -13,6 +13,23 @@
       - zfsutils-linux
     state: present
 
+- name: Safely load ZFS kernel module
+  block:
+    - name: Try loading ZFS kernel module
+      community.general.modprobe:
+        name: zfs
+        state: present
+  rescue:
+    - name: Reboot
+      ansible.builtin.reboot:
+        msg: "Rebooting to apply kernel updates before loading ZFS"
+        reboot_timeout: 600
+
+    - name: Retry loading ZFS kernel module after reboot
+      community.general.modprobe:
+        name: zfs
+        state: present
+
 - name: Ensure keyfile file exists
   ansible.builtin.copy:
     dest: /root/tank_keyfile

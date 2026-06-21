@@ -41,6 +41,13 @@ spec:
         labels:
           reconcile.fluxcd.io/watch: Enabled
     - apiVersion: v1
+      kind: Secret
+      metadata:
+        name: flux-sops
+        namespace: << inputs.tenant >>
+        annotations:
+          fluxcd.controlplane.io/copyFrom: "flux-system/flux-sops"
+    - apiVersion: v1
       kind: ServiceAccount
       metadata:
         name: flux
@@ -79,6 +86,10 @@ spec:
         name: infra-controllers
         namespace: << inputs.tenant >>
       spec:
+        decryption:
+          provider: sops
+          secretRef:
+            name: flux-sops
         targetNamespace: << inputs.tenant >>
         serviceAccountName: flux
         interval: 30m
@@ -100,6 +111,10 @@ spec:
         name: infra-configs
         namespace: << inputs.tenant >>
       spec:
+        decryption:
+          provider: sops
+          secretRef:
+            name: flux-sops
         dependsOn:
           - name: infra-controllers
         targetNamespace: << inputs.tenant >>
