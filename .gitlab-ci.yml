@@ -116,3 +116,22 @@ publish-external-dns:
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/external-dns"
           skip_reconcile: true
+
+publish-external-secrets:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/external-secrets/**/*
+        - .gitlab-ci.yml
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/external-secrets"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/infra/components/external-secrets"
+          skip_reconcile: true
