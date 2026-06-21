@@ -53,7 +53,7 @@ creation_rules:
           - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
           - "age1uvccut3fganrx0uztudlujeeenv3mhpa4y3pgd8dstagcqknnp3q5p4zhm"
-  - path_regex: kubernetes/[^/]+/meddle/.*\.enc\.yaml$
+  - path_regex: kubernetes/.*/meddle/.*\.enc\.yaml$
     encrypted_regex: "^(data|stringData)$"
     key_groups:
       - age:
@@ -71,7 +71,7 @@ creation_rules:
           - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
           - "age1ttrfgxxjy2ww7kurs6qpl7tv3vsypp323zln7ye2y23scyt48eqqvnuj6n"
-  - path_regex: kubernetes/[^/]+/meddle-local/.*\.enc\.yaml$
+  - path_regex: kubernetes/.*/meddle-local/.*\.enc\.yaml$
     encrypted_regex: "^(data|stringData)$"
     key_groups:
       - age:
@@ -89,7 +89,7 @@ creation_rules:
           - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
           - "age1uzp73yjss0c5gap9k5ye96cl7z86affv86209xllpuc3n896hces8mhtmx"
-  - path_regex: kubernetes/[^/]+/animals/.*\.enc\.yaml$
+  - path_regex: kubernetes/.*/animals/.*\.enc\.yaml$
     encrypted_regex: "^(data|stringData)$"
     key_groups:
       - age:
@@ -107,7 +107,7 @@ creation_rules:
           - "age1zkersaavam0z9fq6a8p5xwkw504csvel7gw5csm49vvvfyk6x9ksw2t49m" # masterkey
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
           - "age1dqkegdud54tzus44czqltxukjuumefejyhn5zlzxqmyuvnnj4d3qte4u0d"
-  - path_regex: kubernetes/[^/]+/animals-local/.*\.enc\.yaml$
+  - path_regex: kubernetes/.*/animals-local/.*\.enc\.yaml$
     encrypted_regex: "^(data|stringData)$"
     key_groups:
       - age:
