@@ -3,3 +3,12 @@ variable "use_bootstrap" {
   type        = bool
   default     = false
 }
+
+variable "is_local" {
+  type    = bool
+  default = false
+}
+
+variable "cluster_name" {
+  type = string
+}

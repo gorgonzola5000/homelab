@@ -38,18 +38,19 @@ variable "state_passphrase" {
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  config_path = "../../sops/${var.cluster_name}/kube_config"
 }
 
 provider "keycloak" {
-  client_id     = var.use_bootstrap ? "terraform-bootstrap" : "terraform-admin"
-  client_secret = var.use_bootstrap ? data.kubernetes_secret_v1.terraform_bootstrap.data["client-secret"] : data.kubernetes_secret_v1.terraform_admin.data["client-secret"]
-  url           = "https://keycloak.home.parents-basement.win"
-  realm         = "master"
+  client_id                = var.use_bootstrap ? "bootstrap" : "terraform"
+  client_secret            = var.use_bootstrap ? data.kubernetes_secret_v1.terraform_bootstrap.data["client-secret"] : data.kubernetes_secret_v1.terraform_admin.data["client-secret"]
+  url                      = "https://keycloak${local.route_suffix}.${local.homelab_internal_subdomain}"
+  realm                    = "master"
+  tls_insecure_skip_verify = var.is_local
 }
 
 provider "sops" {}
 
 data "sops_file" "keycloak_secrets" {
-  source_file = "../../sops/opentofu-secrets/keycloak-secrets.enc.yaml"
+  source_file = "../../sops/${var.cluster_name}/keycloak-opentofu.enc.yaml"
 }
