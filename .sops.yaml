@@ -17,7 +17,7 @@ creation_rules:
           - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPOqLcTHDmSWixB1H74ZayWiExXBPmEzfWC90I8Nh1Lb" # personal SSH key
 
   # global secrets
-  - path_regex: sops/global/secret.enc.yaml$
+  - path_regex: kubernetes/.*/base/.*\.enc\.yaml$
     encrypted_regex: "^(data|stringData)$"
     key_groups:
       - age:

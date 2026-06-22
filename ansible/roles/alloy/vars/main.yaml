@@ -1,4 +1,11 @@
 ---
+_alloy_base_secret_yaml: "{{ lookup('community.sops.sops', '/kubernetes/infra/components/alloy/controllers/base/secret.enc.yaml') | from_yaml }}"
+_alloy_cluster_secret_yaml: "{{ lookup('community.sops.sops', '/kubernetes/infra/components/alloy/controllers/' ~ cluster_name ~ '/secret.enc.yaml') | from_yaml }}"
+grafana_cloud_prometheus_url: "{{ _alloy_base_secret_yaml.stringData.GRAFANA_CLOUD_PROMETHEUS_URL }}"
+grafana_cloud_prometheus_user: "{{ _alloy_base_secret_yaml.stringData.GRAFANA_CLOUD_PROMETHEUS_USER }}"
+grafana_cloud_loki_url: "{{ _alloy_base_secret_yaml.stringData.GRAFANA_CLOUD_LOKI_URL }}"
+grafana_cloud_loki_user: "{{ _alloy_base_secret_yaml.stringData.GRAFANA_CLOUD_LOKI_USER }}"
+grafana_cloud_token: "{{ _alloy_cluster_secret_yaml.stringData.GRAFANA_CLOUD_TOKEN }}"
 alloy_user_groups:
   - systemd-journal
 alloy_config: |
