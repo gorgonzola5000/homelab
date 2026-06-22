@@ -6,14 +6,14 @@ spec:
   gatewayClassName: eg
   listeners:
     - name: http
-      hostname: "*.home.parents-basement.win"
+      hostname: "*.${HOMELAB_INTERNAL_SUBDOMAIN}"
       protocol: HTTP
       port: 80
       allowedRoutes:
         namespaces:
           from: Same
     - name: https
-      hostname: "*.home.parents-basement.win"
+      hostname: "*.${HOMELAB_INTERNAL_SUBDOMAIN}"
       protocol: HTTPS
       port: 443
       allowedRoutes:

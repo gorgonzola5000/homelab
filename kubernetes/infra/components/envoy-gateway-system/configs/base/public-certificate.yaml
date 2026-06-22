@@ -8,5 +8,5 @@ spec:
     kind: ClusterIssuer
     group: cert-manager.io
   dnsNames:
-    - "*.parents-basement.win"
+    - "*.${HOMELAB_DOMAIN}"
   secretName: public-wildcard-tls-secret

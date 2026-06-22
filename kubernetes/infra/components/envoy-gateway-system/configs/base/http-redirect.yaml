@@ -16,8 +16,8 @@ spec:
       namespace: envoy-gateway-system
       sectionName: http
   hostnames:
-    - "*.home.parents-basement.win"
-    - "*.parents-basement.win"
+    - "*.${HOMELAB_INTERNAL_SUBDOMAIN}"
+    - "*.${HOMELAB_DOMAIN}"
   rules:
     - filters:
         - type: RequestRedirect
