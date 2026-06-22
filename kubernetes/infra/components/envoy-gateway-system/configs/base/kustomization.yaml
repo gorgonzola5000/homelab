@@ -1,12 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: envoy-gateway-system
 resources:
-  - certificate.yaml
-  - gateway-class.yaml
-  - gateway.yaml
-  - http-redirect.yaml
-  - public-certificate.yaml
-  - public-gateway.yaml
-  - securitypolicy.yaml
-  - sso-gateway.yaml
+- certificate.yaml
+- externalsecret.yaml
+- gateway-class.yaml
+- gateway.yaml
+- http-redirect.yaml
+- password.yaml
+- public-certificate.yaml
+- public-gateway.yaml
+- securitypolicy.yaml
+- sso-gateway.yaml
