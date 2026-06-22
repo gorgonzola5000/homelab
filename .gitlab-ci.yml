@@ -173,3 +173,41 @@ publish-alloy:
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/alloy"
           skip_reconcile: true
+
+publish-node-feature-discovery:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/node-feature-discovery/**/*
+        - .gitlab-ci.yml
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/node-feature-discovery"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/infra/components/node-feature-discovery"
+          skip_reconcile: true
+
+publish-inteldeviceplugins-system:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/inteldeviceplugins-system/**/*
+        - .gitlab-ci.yml
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/inteldeviceplugins-system"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/infra/components/inteldeviceplugins-system"
+          skip_reconcile: true

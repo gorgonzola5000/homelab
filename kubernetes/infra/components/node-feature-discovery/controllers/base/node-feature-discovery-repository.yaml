@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: node-feature-discovery
+spec:
+  interval: 1h
+  url: https://github.com/kubernetes-sigs/node-feature-discovery
+  ref:
+    tag: v0.18.3
