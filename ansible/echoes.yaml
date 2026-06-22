@@ -22,7 +22,7 @@
   vars:
     sanoid_conf: |
       # Filesystem Backups
-      [tank/static]
+      [tank]
         use_template = primary
         recursive = yes
 
