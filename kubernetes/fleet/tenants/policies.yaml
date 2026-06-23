@@ -18,8 +18,7 @@ spec:
         sources: >-
           https://github.com/controlplaneio-fluxcd/
           oci://ghcr.io/controlplaneio-fluxcd/
-          oci://ghcr.io/stefanprodan/charts/
-          oci://registry-1.docker.io/bitnamicharts/
+          oci://registry.gitlab.com/starfruit6000/homelab/
     - apiVersion: admissionregistration.k8s.io/v1
       kind: ValidatingAdmissionPolicy
       metadata:
@@ -32,10 +31,11 @@ spec:
         failurePolicy: Fail
         matchConstraints:
           resourceRules:
-            - apiGroups: [ "source.toolkit.fluxcd.io" ]
-              apiVersions: [ "*" ]
-              operations: [ "CREATE", "UPDATE" ]
-              resources: [ "gitrepositories", "ocirepositories", "helmrepositories" ]
+            - apiGroups: ["source.toolkit.fluxcd.io"]
+              apiVersions: ["*"]
+              operations: ["CREATE", "UPDATE"]
+              resources:
+                ["gitrepositories", "ocirepositories", "helmrepositories"]
         matchConditions:
           - name: "exclude-source-controller-finalizer"
             expression: >
@@ -60,7 +60,7 @@ spec:
         name: flux-tenant-sources
       spec:
         policyName: "source.policy.fluxcd.controlplane.io"
-        validationActions: [ "Deny" ]
+        validationActions: ["Deny"]
         paramRef:
           name: flux-allowlist
           namespace: flux-system

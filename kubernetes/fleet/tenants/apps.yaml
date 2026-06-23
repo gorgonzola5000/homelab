@@ -10,7 +10,19 @@ spec:
     - apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
       name: infra-configs
-      namespace: monitoring
+      namespace: openebs
+      ready: true
+      readyExpr: status.observedGeneration >= 0
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      name: infra-configs
+      namespace: inteldeviceplugins-system
+      ready: true
+      readyExpr: status.observedGeneration >= 0
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      name: infra-configs
+      namespace: external-secrets
       ready: true
       readyExpr: status.observedGeneration >= 0
   inputs:

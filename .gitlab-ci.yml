@@ -211,3 +211,41 @@ publish-inteldeviceplugins-system:
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/inteldeviceplugins-system"
           skip_reconcile: true
+
+publish-rbac:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/rbac/**/*
+        - .gitlab-ci.yml
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/rbac"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/infra/components/rbac"
+          skip_reconcile: true
+
+publish-arr:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/apps/components/arr/**/*
+        - .gitlab-ci.yml
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/arr"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/apps/components/arr"
+          skip_reconcile: true

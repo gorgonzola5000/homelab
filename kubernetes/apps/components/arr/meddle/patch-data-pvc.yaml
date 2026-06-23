@@ -1,0 +1,11 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeName: arr-data
+  resources:
+    requests:
+      storage: 2Ti
