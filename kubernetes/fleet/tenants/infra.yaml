@@ -47,6 +47,9 @@ spec:
     - tenant: "rbac"
       tag: "${ARTIFACT_TAG}"
       environment: "${ENVIRONMENT}"
+    - tenant: "gitlab-agent"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
   resources:
     - apiVersion: v1
       kind: Namespace

@@ -7,9 +7,15 @@ publish-fleet:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/fleet/**/*
-        - .gitlab-ci.yml
       variables:
         ARTIFACT_TAG: "latest"
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -20,7 +26,9 @@ publish-fleet:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/fleet"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/fleet"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "fleet"
+          flux_oci_namespace_name: "flux-system"
 
 publish-cert-manager:
   stage: publish
@@ -28,7 +36,13 @@ publish-cert-manager:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/cert-manager/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -39,7 +53,9 @@ publish-cert-manager:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/cert-manager"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/cert-manager"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "cert-manager"
 
 publish-openebs:
   stage: publish
@@ -47,7 +63,13 @@ publish-openebs:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/openebs/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -58,7 +80,9 @@ publish-openebs:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/openebs"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/openebs"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "openebs"
 
 publish-envoy-gateway-system:
   stage: publish
@@ -66,7 +90,13 @@ publish-envoy-gateway-system:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/envoy-gateway-system/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -77,7 +107,9 @@ publish-envoy-gateway-system:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/envoy-gateway-system"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/envoy-gateway-system"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "envoy-gateway-system"
 
 publish-cnpg-system:
   stage: publish
@@ -85,7 +117,13 @@ publish-cnpg-system:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/cnpg-system/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -96,7 +134,9 @@ publish-cnpg-system:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/cnpg-system"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/cnpg-system"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "cnpg-system"
 
 publish-external-dns:
   stage: publish
@@ -104,7 +144,13 @@ publish-external-dns:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/external-dns/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -115,7 +161,9 @@ publish-external-dns:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/external-dns"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/external-dns"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "external-dns"
 
 publish-external-secrets:
   stage: publish
@@ -123,7 +171,13 @@ publish-external-secrets:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/external-secrets/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -134,7 +188,9 @@ publish-external-secrets:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/external-secrets"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/external-secrets"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "external-secrets"
 
 publish-keycloak:
   stage: publish
@@ -142,7 +198,13 @@ publish-keycloak:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/keycloak/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -153,7 +215,9 @@ publish-keycloak:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/keycloak"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/keycloak"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "keycloak"
 
 publish-alloy:
   stage: publish
@@ -161,7 +225,13 @@ publish-alloy:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/alloy/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -172,7 +242,9 @@ publish-alloy:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/alloy"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/alloy"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "alloy"
 
 publish-node-feature-discovery:
   stage: publish
@@ -180,7 +252,13 @@ publish-node-feature-discovery:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/node-feature-discovery/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -191,7 +269,9 @@ publish-node-feature-discovery:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/node-feature-discovery"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/node-feature-discovery"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "node-feature-discovery"
 
 publish-inteldeviceplugins-system:
   stage: publish
@@ -199,7 +279,13 @@ publish-inteldeviceplugins-system:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/inteldeviceplugins-system/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -210,7 +296,9 @@ publish-inteldeviceplugins-system:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/inteldeviceplugins-system"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/inteldeviceplugins-system"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "inteldeviceplugins-system"
 
 publish-rbac:
   stage: publish
@@ -218,7 +306,13 @@ publish-rbac:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/infra/components/rbac/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -229,7 +323,36 @@ publish-rbac:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/rbac"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/infra/components/rbac"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "rbac"
+
+publish-gitlab-agent:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/gitlab-agent/**/*
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/gitlab-agent"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/infra/components/gitlab-agent"
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "gitlab-agent"
 
 publish-arr:
   stage: publish
@@ -237,7 +360,13 @@ publish-arr:
     - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
       changes:
         - kubernetes/apps/components/arr/**/*
-        - .gitlab-ci.yml
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
   trigger:
     forward:
       pipeline_variables: true
@@ -248,4 +377,6 @@ publish-arr:
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/arr"
           image_tag: "$ARTIFACT_TAG"
           manifest_path: "./kubernetes/apps/components/arr"
-          skip_reconcile: true
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "apps"
+          flux_oci_namespace_name: "arr"
