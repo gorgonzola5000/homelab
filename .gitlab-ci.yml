@@ -20,7 +20,7 @@ publish-fleet:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/fleet"
@@ -47,7 +47,7 @@ publish-cert-manager:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/cert-manager"
@@ -74,7 +74,7 @@ publish-openebs:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/openebs"
@@ -101,7 +101,7 @@ publish-envoy-gateway-system:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/envoy-gateway-system"
@@ -128,7 +128,7 @@ publish-cnpg-system:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/cnpg-system"
@@ -155,7 +155,7 @@ publish-external-dns:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/external-dns"
@@ -182,7 +182,7 @@ publish-external-secrets:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/external-secrets"
@@ -209,7 +209,7 @@ publish-keycloak:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/keycloak"
@@ -236,7 +236,7 @@ publish-alloy:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/alloy"
@@ -263,7 +263,7 @@ publish-node-feature-discovery:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/node-feature-discovery"
@@ -290,7 +290,7 @@ publish-inteldeviceplugins-system:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/inteldeviceplugins-system"
@@ -317,7 +317,7 @@ publish-rbac:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/rbac"
@@ -344,7 +344,7 @@ publish-gitlab-agent:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/gitlab-agent"
@@ -371,7 +371,7 @@ publish-arr:
     forward:
       pipeline_variables: true
     include:
-      - component: $CI_SERVER_FQDN/components/fluxcd/oci-artifact@0.4.0
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
         inputs:
           version: "0.4.0"
           registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/arr"
@@ -380,3 +380,30 @@ publish-arr:
           kubernetes_agent_reference: "$TARGET_AGENT"
           flux_oci_repo_name: "apps"
           flux_oci_namespace_name: "arr"
+
+publish-seerr:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/apps/components/seerr/**/*
+  parallel:
+    matrix:
+      - TARGET_AGENT:
+          # - "starfruit6000/homelab:meddle"
+          - "starfruit6000/homelab:meddle-local"
+          # - "starfruit6000/homelab:animals"
+          # - "starfruit6000/homelab:animals-local"
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/components/fluxcd/fluxcd@0.4.1
+        inputs:
+          version: "0.4.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/seerr"
+          image_tag: "$ARTIFACT_TAG"
+          manifest_path: "./kubernetes/apps/components/seerr"
+          kubernetes_agent_reference: "$TARGET_AGENT"
+          flux_oci_repo_name: "apps"
+          flux_oci_namespace_name: "seerr"

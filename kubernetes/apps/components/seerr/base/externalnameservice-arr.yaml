@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: arr
+spec:
+  type: ExternalName
+  externalName: arr.arr.svc.cluster.local
+  ports:
+    - name: radarr
+      port: 7878
+    - name: sonarr
+      port: 8989
