@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redmanager
+  labels:
+    app: redmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redmanager
+  template:
+    metadata:
+      labels:
+        app: redmanager
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: redmanager
+          image: registry.gitlab.com/starfruit6000/redmanager:v1.2.3@sha256:5fc013b18ddc2f0f2b728ed17e9e2c39a1a8d8f78ddda74ff0b3409690c37dd2
+          env:
+            - name: RED_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-secret
+                  key: RED_API_KEY
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-db-app
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-db-app
+                  key: password
+            - name: DB_HOST
+              value: "redmanager-db-rw"
+            - name: DB_NAME
+              value: "redmanager"
+            - name: TRANSMISSION_HOST
+              value: "transmission:9091"
+            - name: TRANSMISSION__RPC_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: transmission
+                  key: TRANSMISSION_USER
+            - name: TRANSMISSION_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-generated-secret
+                  key: TRANSMISSION_PASS
+            - name: REDMANAGER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-generated-secret
+                  key: REDMANAGER_API_KEY
+            - name: WRTAG_WEB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: redmanager-generated-secret
+                  key: WRTAG_WEB_API_KEY
+            - name: WRTAG_URL
+              value: "http://wrtag:7373"
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: redmanager-transmission-shared
+              mountPath: /redmanager-transmission-shared
+      volumes:
+        - name: redmanager-transmission-shared
+          persistentVolumeClaim:
+            claimName: redmanager-transmission-shared
