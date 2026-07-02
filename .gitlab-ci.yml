@@ -17,6 +17,8 @@ child-pipeline:
   stage: trigger
   needs:
     - jsonnet-build
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
   trigger:
     include:
       - artifact: generated-config.yml

@@ -10,7 +10,7 @@ local clusters = [
 local makeComp(repo, name, ns=null) = {
   name: name,
   repo: repo,
-  path: if repo == 'fleet' then './kubernetes/fleet' else './kubernetes/' + repo + '/components/' + name,
+  path: if repo == 'fleet' then 'kubernetes/fleet' else 'kubernetes/' + repo + '/components/' + name,
   reg_path: if repo == 'fleet' then 'fleet' else repo + '/' + name,
   ns: if ns != null then ns else name,
 };
@@ -43,7 +43,12 @@ local components = {
 local generateBuildJob(comp) = {
   stage: 'build-artifact',
   rules: [
-    { 'if': '$CI_COMMIT_BRANCH == "' + branch + '"', changes: [comp.path + '/**/*'] }
+    {
+      changes: [
+        comp.path + '/**/*',
+        comp.path + '/*'
+      ]
+    }
   ],
   trigger: {
     strategy: 'depend',
@@ -71,7 +76,12 @@ local generateReconcileJob(comp) = {
   needs: ['build-trigger-' + comp.name], 
   allow_failure: true,
   rules: [
-    { 'if': '$CI_COMMIT_BRANCH == "' + branch + '"', changes: [comp.path + '/**/*'] }
+    {
+      changes: [
+        comp.path + '/**/*',
+        comp.path + '/*'
+      ]
+    }
   ],
   parallel: {
     matrix: [ { TARGET_AGENT: clusters } ]

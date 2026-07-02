@@ -6,6 +6,6 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 User=root
-ExecStart=/usr/sbin/syncoid -r --sendoptions="w" --no-sync-snap --no-privilege-elevation zfsbackup@{{ syncoid_source_host }}:{{ syncoid_source_dataset }} {{ syncoid_dest_dataset }}
+ExecStart=/usr/sbin/syncoid -r --sendoptions="wp" --no-sync-snap --no-privilege-elevation zfsbackup@{{ syncoid_source_host }}:{{ syncoid_source_dataset }} {{ syncoid_dest_dataset }}
 StandardOutput=append:/var/log/syncoid_pull.log
 StandardError=append:/var/log/syncoid_pull.log
