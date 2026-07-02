@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: transmission
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 data:
   TRANSMISSION_USER: redmanager
   transmission-port-update.sh: |
