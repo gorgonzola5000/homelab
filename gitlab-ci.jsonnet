@@ -50,16 +50,16 @@ local generateBuildJob(comp) = {
     forward: { pipeline_variables: true },
     include: [
       {
-        component: '$CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.4.2',
+        component: '$CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0',
         inputs: {
           as: 'build-' + comp.name,
           stage: 'build',
-          version: '0.4.2',
-          job_image_name: '$CI_REGISTRY/starfruit6000/fluxcd/fluxcd',
+          version: '0.5.0',
           registry_image_url: 'oci://$CI_REGISTRY_IMAGE/' + comp.reg_path,
           manifest_path: comp.path,
           image_tag: 'latest',
-          skip_reconcile: true
+          skip_reconcile: true,
+          job_image_name: '$CI_REGISTRY/starfruit6000/fluxcd/fluxcd', // needed for forks
         }
       }
     ]
@@ -81,16 +81,16 @@ local generateReconcileJob(comp) = {
     forward: { pipeline_variables: true },
     include: [
       {
-        component: '$CI_SERVER_FQDN/starfruit6000/fluxcd/reconcile@0.4.2',
+        component: '$CI_SERVER_FQDN/starfruit6000/fluxcd/reconcile@0.5.0',
         inputs: {
           as: 'reconcile-' + comp.name,
           stage: 'build',
-          version: '0.4.2',
-          job_image_name: '$CI_REGISTRY/starfruit6000/fluxcd/fluxcd',
-          flux_object_name: comp.repo,
+          version: '0.5.0',
+          flux_source_type: 'oci',
+          flux_source_name: comp.repo,
           flux_source_namespace: comp.ns,
-          flux_object_type: 'oci',
-          kubernetes_agent_reference: '$TARGET_AGENT'
+          kubernetes_agent_reference: '$TARGET_AGENT',
+          job_image_name: '$CI_REGISTRY/starfruit6000/fluxcd/fluxcd', // needed for forks
         }
       }
     ]
