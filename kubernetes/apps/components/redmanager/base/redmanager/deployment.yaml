@@ -44,7 +44,7 @@ spec:
               value: "redmanager"
             - name: TRANSMISSION_HOST
               value: "transmission:9091"
-            - name: TRANSMISSION__RPC_USERNAME
+            - name: TRANSMISSION_USER
               valueFrom:
                 configMapKeyRef:
                   name: transmission
