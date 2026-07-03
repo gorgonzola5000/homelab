@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: aggregate-cnpg-to-admin
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+rules:
+  - apiGroups:
+      - "postgresql.cnpg.io"
+    resources:
+      - "clusters"
+      - "pools"
+      - "scheduledbackups"
+      - "backups"
+    verbs:
+      - "*"
