@@ -11,6 +11,9 @@
       - linux-image-generic
       - zfs-dkms
       - zfsutils-linux
+      - mbuffer
+      - jq
+      - python3-kubernetes
     state: present
 
 - name: Safely load ZFS kernel module
@@ -32,11 +35,11 @@
 
 - name: Ensure keyfile file exists
   ansible.builtin.copy:
-    dest: /root/tank_keyfile
-    content: "{{ zpool.tank_keyfile_contents | trim }}"
+    dest: "/root/{{ zfs_zpool }}_keyfile"
+    content: "{{ zfs_zpool_keyfile_contents | trim }}"
     owner: root
     group: root
-    mode: '0400'
+    mode: "0400"
 
 - name: Create zfs-load-key systemd service
   ansible.builtin.copy:
@@ -71,24 +74,23 @@
   changed_when: false
   failed_when: false
 
-- name: Import existing 'tank' zpool if not imported yet
-  ansible.builtin.command: zpool import -f tank
-  when: "'tank' in available_exported_pools.stdout"
-  register: import_tank
+- name: "Import existing {{ zfs_zpool }} zpool if not imported yet"
+  ansible.builtin.command: "zpool import -f {{ zfs_zpool }}"
+  when: "zfs_zpool in available_exported_pools.stdout"
   changed_when: true
 
-- name: Check if zpool 'tank' already exists
-  ansible.builtin.command: zpool status tank
+- name: "Check if zpool '{{ zfs_zpool }}' already exists"
+  ansible.builtin.command: "zpool status {{ zfs_zpool }}"
   register: zpool_status
   failed_when: false
   changed_when: false
 
-- name: Setup tank zpool
+- name: "Setup {{ zfs_zpool }} zpool"
   when: zpool_status.rc != 0
   block:
     - name: Create zpool
       community.general.zpool:
-        name: tank
+        name: "{{ zfs_zpool }}"
         state: present
         pool_properties:
           ashift: 12
@@ -96,10 +98,10 @@
           compression: lz4
           encryption: aes-256-gcm
           keyformat: passphrase
-          keylocation: file:///root/tank_keyfile
+          keylocation: "file:///root/{{ zfs_zpool }}_keyfile"
         vdevs:
           - type: raidz2
-            disks: "{{ zpool.physical_disks }}"
+            disks: "{{ zfs_zpool_physical_disks }}"
       register: this_sometimes_fails
   rescue:
     - name: Zpool creation debug
@@ -115,31 +117,54 @@
   changed_when: false
   register: zfs_mounted_filesystems
 
-- name: Load key zpool tank key
+- name: "Load key zpool {{ zfs_zpool }} key"
   ansible.builtin.systemd:
     name: zfs-load-key.service
     state: restarted
-  when: "'tank' not in zfs_mounted_filesystems.stdout"
+  when: "zfs_zpool not in zfs_mounted_filesystems.stdout"
 
 - name: Try to mount zpool
   ansible.builtin.systemd:
     name: zfs-mount.service
     state: restarted
-  when: "'tank' not in zfs_mounted_filesystems.stdout"
+  when: "zfs_zpool not in zfs_mounted_filesystems.stdout"
 
-- name: Ensure target ZFS dataset exists
-  community.general.zfs:
-    name: tank/openebs
-    state: present
-
-- name: Enable monthly ZFS scrub timer for 'tank'
+- name: "Enable monthly ZFS scrub timer for '{{ zfs_zpool }}'"
   ansible.builtin.systemd:
-    name: zfs-scrub-monthly@tank.timer
+    name: "zfs-scrub-monthly@{{ zfs_zpool }}.timer"
     enabled: true
     state: started
+
+- name: Ensure symmetrical ZFS dataset skeleton exists on all nodes
+  community.general.zfs:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "{{ zfs_active_dataset }}"
+    - "{{ zfs_active_openebs_dataset }}"
+    - "{{ zfs_passive_dataset }}"
+    - "{{ zfs_passive_openebs_dataset }}"
 
 - name: Import smartctl tasks
   ansible.builtin.import_tasks: smart.yaml
 
 - name: Import k8s_zfs_tags tasks
   ansible.builtin.import_tasks: k8s_zfs_tags.yaml
+
+- name: Import sanoid role
+  ansible.builtin.import_role:
+    name: geerlingguy.sanoid
+
+- name: Deploy dr_promote.py script
+  ansible.builtin.copy:
+    src: dr_promote.py
+    dest: /usr/local/bin/dr_promote.py
+    mode: '0700'
+
+- name: Import Primary cluster tasks
+  ansible.builtin.import_tasks: primary.yaml
+  when: zfs_host_type == 'primary'
+
+- name: Import Secondary cluster tasks
+  ansible.builtin.import_tasks: secondary.yaml
+  when: zfs_host_type == 'secondary'

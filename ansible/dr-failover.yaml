@@ -1,0 +1,26 @@
+---
+- name: Disaster Recovery - Failover
+  hosts: dogs
+  become: true
+  gather_facts: false
+
+  vars_prompt:
+    - name: confirm_failover
+      prompt: "Are you sure you want to start failover? Type 'YES' to confirm"
+      default: "NO"
+      private: false
+
+  pre_tasks:
+    - name: Abort if not explicitly confirmed
+      ansible.builtin.fail:
+        msg: "Failover aborted"
+      when: confirm_failover != "YES"
+
+  tasks:
+    - name: Execute failover script
+      ansible.builtin.command: /usr/local/bin/dr-failover.sh
+      register: failover_output
+
+    - name: Display Failover Log
+      ansible.builtin.debug:
+        var: failover_output.stdout_lines

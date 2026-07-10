@@ -1,0 +1,51 @@
+---
+- name: Ensure root SSH key exists on secondary host
+  ansible.builtin.user:
+    name: root
+    generate_ssh_key: true
+    ssh_key_type: ed25519
+
+- name: Scan the primary host's SSH keys over the DAC link
+  ansible.builtin.command: ssh-keyscan -t rsa,ed25519 {{ zfs_primary_host }}
+  register: primary_host_keys
+  changed_when: false
+
+- name: Ensure primary host is trusted in known_hosts
+  ansible.builtin.known_hosts:
+    path: /root/.ssh/known_hosts
+    name: "{{ zfs_primary_host }}"
+    key: "{{ item }}"
+    state: present
+  loop: "{{ primary_host_keys.stdout_lines | reject('search', '^#') | list }}"
+
+- name: Read root public key from secondary host
+  ansible.builtin.slurp:
+    src: /root/.ssh/id_ed25519.pub
+  register: secondary_pub_key
+
+- name: Authorize key on the primary host for zfsbackup
+  ansible.posix.authorized_key:
+    user: zfsbackup
+    state: present
+    key: "{{ secondary_pub_key['content'] | b64decode }}"
+  delegate_to: "{{ zfs_primary_host_fqdn }}"
+
+- name: Deploy Syncoid Systemd Service
+  ansible.builtin.template:
+    src: syncoid-pull.service.j2
+    dest: /etc/systemd/system/syncoid-pull.service
+    mode: '0644'
+  notify: Reload Systemd
+
+- name: Deploy Syncoid Systemd Timer
+  ansible.builtin.copy:
+    src: syncoid-pull.timer
+    dest: /etc/systemd/system/syncoid-pull.timer
+    mode: '0644'
+  notify: Reload Systemd
+
+- name: Enable and start Syncoid Timer
+  ansible.builtin.systemd:
+    name: syncoid-pull.timer
+    enabled: true
+    state: started

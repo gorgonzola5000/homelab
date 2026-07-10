@@ -7,7 +7,6 @@
     - common
     - ansible_managed
     - zfs
-    - syncoid
     - rke2
     - dac
     - alloy
@@ -20,20 +19,4 @@
           - intel-gpu-tools
         state: present
   vars:
-    sanoid_conf: |
-      # Filesystem Backups
-      [tank]
-        use_template = primary
-        recursive = yes
-
-      # Templates
-      [template_primary]
-        frequently = 0
-        hourly = 24
-        daily = 30
-        weekly = 4
-        monthly = 3
-        yearly = 0
-        autosnap = yes
-        autoprune = yes
-    syncoid_type: source
+    zfs_host_type: primary

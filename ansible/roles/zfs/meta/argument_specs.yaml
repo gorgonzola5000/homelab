@@ -1,0 +1,16 @@
+---
+argument_specs:
+  main:
+    options:
+      zfs_host_type:
+        type: str
+        required: true
+        choices:
+          - primary
+          - secondary
+      zfs_primary_host:
+        type: str
+        required: true
+      zfs_primary_host_fqdn:
+        type: str
+        required: true

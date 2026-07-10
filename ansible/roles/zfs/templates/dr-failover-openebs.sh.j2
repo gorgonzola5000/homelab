@@ -1,0 +1,117 @@
+#!/bin/bash
+set -euo pipefail
+
+BACKUP_POOL="{{ zfs_passive_openebs_dataset }}"
+TARGET_POOL="{{ zfs_active_openebs_dataset }}"
+RKE2_KUBECTL="{{ rke2_kubectl_path }}"
+RKE2_KUBECONFIG="{{ rke2_kubeconfig_path }}"
+
+k_exec() { "$RKE2_KUBECTL" --kubeconfig="$RKE2_KUBECONFIG" "$@"; }
+
+echo "===================================================="
+echo "1. Wait until all Flux Kustomizations are reconciled"
+echo "===================================================="
+# We wait for Flux to finish its run, ensuring the dummy PVCs are created
+k_exec wait --for=condition=Ready kustomization --all -A --timeout=300s || true
+
+echo "===================================================="
+echo "2. Suspend all Flux Kustomizations"
+echo "===================================================="
+KUST_NAMESPACES=$(k_exec get kustomization -A -o jsonpath='{range .items[*]}{.metadata.namespace}{"\n"}{end}' | sort -u)
+for ns in $KUST_NAMESPACES; do
+  k_exec patch kustomization --all -n "$ns" --type='merge' -p '{"spec":{"suspend":true}}' || true
+done
+
+echo "===================================================="
+echo "3. Get a list of namespace-pvc datasets from passive"
+echo "===================================================="
+declare -A MIGRATION_MAP
+declare -A SAVED_PV
+declare -A SAVED_ZV
+declare -A SAVED_PVC
+
+# Find tagged datasets in the passive pool
+BACKUP_DATASETS=$(zfs list -H -o name -r "$BACKUP_POOL" | grep -v "^$BACKUP_POOL$" || true)
+
+for b_ds in $BACKUP_DATASETS; do
+  NS=$(zfs get -H -o value k8s:namespace "$b_ds" || echo "-")
+  PVC=$(zfs get -H -o value k8s:pvc "$b_ds" || echo "-")
+  if [ "$NS" == "-" ] || [ "$PVC" == "-" ]; then continue; fi
+
+  MIGRATION_MAP["$b_ds"]="${NS}|${PVC}"
+
+  # Wait for the dummy PVC to be bound so we can capture its boilerplate JSON
+  while true; do
+    PHASE=$(k_exec get pvc "$PVC" -n "$NS" -o jsonpath='{.status.phase}' 2>/dev/null || true)
+    if [ "$PHASE" == "Bound" ]; then
+      break
+    fi
+    sleep 2
+  done
+
+  DUMMY_PV_NAME=$(k_exec get pvc "$PVC" -n "$NS" -o jsonpath='{.spec.volumeName}')
+  echo "  -> Discovered passive backup: $NS / $PVC. Capturing template from dummy PV $DUMMY_PV_NAME"
+
+  SAVED_PV["$b_ds"]=$(k_exec get pv "$DUMMY_PV_NAME" -o json | jq 'del(.metadata.uid, .metadata.resourceVersion, .metadata.creationTimestamp, .metadata.finalizers, .metadata.annotations["pv.kubernetes.io/bind-completed"], .metadata.annotations["pv.kubernetes.io/bound-by-controller"], .metadata.annotations["pv.kubernetes.io/provisioned-by"], .status, .spec.claimRef.uid, .spec.claimRef.resourceVersion)')
+  SAVED_ZV["$b_ds"]=$(k_exec get zv "$DUMMY_PV_NAME" -n openebs -o json | jq 'del(.metadata.uid, .metadata.resourceVersion, .metadata.creationTimestamp, .metadata.generation, .status)')
+  SAVED_PVC["$b_ds"]=$(k_exec get pvc "$PVC" -n "$NS" -o json | jq 'del(.metadata.uid, .metadata.resourceVersion, .metadata.creationTimestamp, .metadata.finalizers, .metadata.annotations["pv.kubernetes.io/bind-completed"], .metadata.annotations["pv.kubernetes.io/bound-by-controller"], .metadata.annotations["volume.kubernetes.io/selected-node"], .metadata.annotations["volume.beta.kubernetes.io/storage-provisioner"], .status)')
+done
+
+echo "===================================================="
+echo "4, 5, 6. Delete the dummy PVCs, ZFSVolumes, and PVs"
+echo "===================================================="
+for b_ds in "${!MIGRATION_MAP[@]}"; do
+  IFS='|' read -r NS PVC <<<"${MIGRATION_MAP[$b_ds]}"
+  DUMMY_PV_NAME=$(k_exec get pvc "$PVC" -n "$NS" -o jsonpath='{.spec.volumeName}' 2>/dev/null || true)
+
+  if [ -n "$DUMMY_PV_NAME" ]; then
+    echo "  -> Deleting PVC $PVC in $NS"
+    k_exec delete pvc "$PVC" -n "$NS" --ignore-not-found --wait=false
+
+    echo "  -> Deleting ZFSVolume $DUMMY_PV_NAME"
+    k_exec delete zv "$DUMMY_PV_NAME" -n openebs --ignore-not-found --wait=false
+
+    echo "  -> Deleting PV $DUMMY_PV_NAME"
+    k_exec delete pv "$DUMMY_PV_NAME" --ignore-not-found --wait=false
+  fi
+done
+
+# Give the CSI driver a moment to finalize deletions and destroy the dummy datasets from disk
+echo "Waiting 10s for OpenEBS to clean up dummy datasets..."
+sleep 10
+
+echo "===================================================="
+echo "7. Import the ZFSVolumes using the list"
+echo "===================================================="
+# Ensure the target parent dataset exists
+zfs list "$TARGET_POOL" >/dev/null 2>&1 || zfs create -p "$TARGET_POOL"
+
+for b_ds in "${!MIGRATION_MAP[@]}"; do
+  IFS='|' read -r NS PVC <<<"${MIGRATION_MAP[$b_ds]}"
+  VOL_NAME="${b_ds##*/}"
+  TARGET_DS="$TARGET_POOL/$VOL_NAME"
+
+  echo "----------------------------------------------------"
+  echo "Importing dataset for $NS/$PVC to $TARGET_DS"
+
+  # This physically moves the backup dataset into the active pool
+  zfs rename "$b_ds" "$TARGET_DS"
+
+  zfs set k8s:namespace="$NS" "$TARGET_DS"
+  zfs set k8s:pvc="$PVC" "$TARGET_DS"
+  zfs set mountpoint=legacy "$TARGET_DS"
+
+  echo "  -> Reapplying mapped Kubernetes objects..."
+  echo "${SAVED_PV[$b_ds]}" | jq --arg vol "$VOL_NAME" '.metadata.name = $vol | .spec.csi.volumeHandle = $vol' | k_exec apply -f -
+  echo "${SAVED_ZV[$b_ds]}" | jq --arg vol "$VOL_NAME" '.metadata.name = $vol' | k_exec apply -f -
+  echo "${SAVED_PVC[$b_ds]}" | jq --arg vol "$VOL_NAME" '.spec.volumeName = $vol' | k_exec apply -f -
+done
+
+echo "===================================================="
+echo "8. Re-enable Flux Reconciliation"
+echo "===================================================="
+for ns in $KUST_NAMESPACES; do
+  k_exec patch kustomization --all -n "$ns" --type='merge' -p '{"spec":{"suspend":false}}' || true
+done
+
+echo "Failover Complete!"
