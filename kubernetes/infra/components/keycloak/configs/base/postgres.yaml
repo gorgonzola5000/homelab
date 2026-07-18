@@ -3,11 +3,13 @@ kind: Cluster
 metadata:
   name: keycloak-db
 spec:
-  instances: 2
+  instances: 1
+  enablePDB: false
   storage:
     pvcTemplate:
       accessModes:
         - ReadWriteOnce
+      storageClassName: zfstank-non-failover
       resources:
         requests:
           storage: 10Gi

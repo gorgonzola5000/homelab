@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: zfstank-non-failover
+allowVolumeExpansion: true
+parameters:
+  fstype: "zfs"
+  shared: "yes"
+  poolname: "tank/non-failover/${CLUSTER_NAME}/openebs"
+  compression: "lz4"
+provisioner: zfs.csi.openebs.io
+reclaimPolicy: Retain
