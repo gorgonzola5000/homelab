@@ -15,3 +15,8 @@ spec:
     config:
       kasAddress: "wss://kas.gitlab.com"
       secretName: gitlab-agent-token
+    rbac:
+      create: false
+    serviceAccount:
+      create: true
+      name: gitlab-agent
