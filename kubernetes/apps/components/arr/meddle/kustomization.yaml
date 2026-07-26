@@ -4,5 +4,3 @@ resources:
   - ../base
   - jellyfin-public-httproute.yaml
   - qbittorrent-secret.enc.yaml
-patches:
-  - path: patch-data-pvc.yaml

@@ -11,6 +11,8 @@ spec:
   hostnames:
     - keycloak${ROUTE_SUFFIX}.${HOMELAB_INTERNAL_SUBDOMAIN}
   rules:
+    - timeouts:
+        request: 120s
     - matches:
         - path:
             type: PathPrefix
