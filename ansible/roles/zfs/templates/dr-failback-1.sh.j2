@@ -1,9 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-TARGET_POOL="{{ syncoid_source_dataset_openebs }}"
-STAGING_POOL="{{ syncoid_source_dataset_staging }}/openebs"
-REMOTE_HOST="zfsbackup@{{ syncoid_source_host }}"
-
-# Push only the delta change to meddle staging
-syncoid --no-privilege-elevation -r "$TARGET_POOL" "${REMOTE_HOST}:${STAGING_POOL}"

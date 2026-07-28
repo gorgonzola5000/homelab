@@ -16,6 +16,7 @@ try:
     config.load_kube_config(config_file=RKE2_KUBECONFIG)
     core_api = client.CoreV1Api()
     crd_api = client.CustomObjectsApi()
+    apps_api = client.AppsV1Api()
     api_client = client.ApiClient()
 except Exception as e:
     print(f"CRITICAL: Failed to load Kubeconfig: {e}")
@@ -27,6 +28,7 @@ FLUX_PLURAL = "kustomizations"
 ZFS_GROUP = "zfs.openebs.io"
 ZFS_VERSION = "v1"
 ZFS_PLURAL = "zfsvolumes"
+saved_manifests = {}
 
 
 def run_zfs(cmd, check=True):
@@ -72,6 +74,108 @@ def clean_manifest(obj_instance):
         claim.pop("resourceVersion", None)
 
     return obj
+
+
+def drain_node():
+    print("\n=== Draining the Node(s) via K8s API ===")
+    try:
+        nodes = core_api.list_node().items
+    except Exception as e:
+        print(f"CRITICAL: Failed to list nodes: {e}")
+        sys.exit(1)
+
+    for node in nodes:
+        node_name = node.metadata.name
+        print(f"  -> Cordoning node: {node_name}")
+        try:
+            core_api.patch_node(node_name, {"spec": {"unschedulable": True}})
+        except ApiException as e:
+            print(f"CRITICAL: Failed to cordon node {node_name}: {e}")
+            sys.exit(1)
+
+        print(f"  -> Evicting application workloads from {node_name}...")
+        try:
+            pods = core_api.list_pod_for_all_namespaces(
+                field_selector=f"spec.nodeName={node_name}"
+            ).items
+        except ApiException as e:
+            print(f"CRITICAL: Failed to list pods for node {node_name}: {e}")
+            sys.exit(1)
+
+        pods_to_evict = []
+        for pod in pods:
+            is_daemonset = False
+            if pod.metadata.owner_references:
+                for owner in pod.metadata.owner_references:
+                    if owner.kind == "DaemonSet":
+                        is_daemonset = True
+                        break
+            if is_daemonset:
+                continue
+
+            if pod.metadata.annotations and pod.metadata.annotations.get(
+                "kubernetes.io/config.mirror"
+            ):
+                continue
+
+            if pod.metadata.deletion_timestamp:
+                continue
+
+            pods_to_evict.append(pod)
+
+        if not pods_to_evict:
+            print(f"  -> No pods require eviction on {node_name}.")
+            continue
+
+        for pod in pods_to_evict:
+            ns = pod.metadata.namespace
+            name = pod.metadata.name
+            print(f"     Evicting {ns}/{name}...")
+
+            eviction = client.V1Eviction(
+                metadata=client.V1ObjectMeta(name=name, namespace=ns),
+                delete_options=client.V1DeleteOptions(),
+            )
+            try:
+                core_api.create_namespaced_pod_eviction(name, ns, body=eviction)
+            except ApiException as e:
+                print(
+                    f"     Failed to gracefully evict {ns}/{name} (HTTP {e.status}). Forcing deletion..."
+                )
+                try:
+                    core_api.delete_namespaced_pod(name, ns, grace_period_seconds=0)
+                except ApiException as del_err:
+                    print(f"     Could not force delete {ns}/{name}: {del_err}")
+
+        max_wait = 120
+        start_wait = time.time()
+        print(f"  -> Waiting up to {max_wait}s for pods to terminate on {node_name}...")
+
+        while time.time() - start_wait < max_wait:
+            try:
+                remaining_pods = core_api.list_pod_for_all_namespaces(
+                    field_selector=f"spec.nodeName={node_name}"
+                ).items
+            except ApiException:
+                time.sleep(5)
+                continue
+
+            still_terminating = False
+            for pod in remaining_pods:
+                if any(p.metadata.uid == pod.metadata.uid for p in pods_to_evict):
+                    still_terminating = True
+                    break
+
+            if not still_terminating:
+                print(f"  -> Successfully drained {node_name}.")
+                break
+
+            time.sleep(5)
+        else:
+            print(
+                f"\nCRITICAL: Timed out waiting for pods to terminate on {node_name}."
+            )
+            sys.exit(1)
 
 
 def wait_for_k8s(max_retries=30, delay=10):
@@ -188,6 +292,7 @@ def promote_openebs():
     except ApiException as e:
         print(f"Warning: Could not list Flux Kustomizations: {e}")
         kust_items = []
+        sys.exit(1)
 
     for item in kust_items:
         ns = item["metadata"]["namespace"]
@@ -197,29 +302,39 @@ def promote_openebs():
             FLUX_GROUP, FLUX_VERSION, ns, FLUX_PLURAL, name, {"spec": {"suspend": True}}
         )
 
-    out = run_zfs(["list", "-H", "-o", "name", "-r", PASSIVE_OPENEBS], check=False)
-    backup_datasets = [
-        line for line in out.splitlines() if line and line != PASSIVE_OPENEBS
-    ]
-
     claimed_pvcs = {}
-    valid_datasets = []
+    passive_datasets = []
 
-    for b_ds in backup_datasets:
-        ns = run_zfs(
-            ["get", "-H", "-p", "-o", "value", "k8s:namespace", b_ds], check=False
-        )
-        pvc_name = run_zfs(
-            ["get", "-H", "-p", "-o", "value", "k8s:pvc", b_ds], check=False
-        )
+    out = run_zfs(
+        ["list", "-H", "-o", "name,k8s:namespace,k8s:pvc", "-r", PASSIVE_OPENEBS],
+        check=False,
+    )
+    for line in out.splitlines():
+        if not line:
+            continue
+        parts = line.split("\t")
+        if len(parts) != 3:
+            continue
+
+        b_ds, ns, pvc_name = parts
+
+        if b_ds == PASSIVE_OPENEBS:
+            continue
 
         if ns in ["-", ""] or pvc_name in ["-", ""]:
-            continue
+            print(f"ERROR: Missing Kubernetes mapping properties on dataset")
+            print(f"  -> Dataset: {b_ds}")
+            print(f"  -> k8s:namespace: '{ns}'")
+            print(f"  -> k8s:pvc: '{pvc_name}'")
+            print("  -> Halting DR sequence BEFORE making any changes to the cluster.")
+            print("  -> Please ensure all datasets have proper k8s tags and run again.")
+            sys.exit(1)
 
         pvc_identifier = f"{ns}/{pvc_name}"
 
         if pvc_identifier in claimed_pvcs:
             conflicting_ds = claimed_pvcs[pvc_identifier]
+            print(f"ERROR: Duplicate PVC claim detected for {pvc_identifier}!")
             print(f"  -> Dataset 1: {conflicting_ds}")
             print(f"  -> Dataset 2: {b_ds}")
             print("  -> Halting DR sequence BEFORE making any changes to the cluster.")
@@ -229,20 +344,28 @@ def promote_openebs():
             sys.exit(1)
 
         claimed_pvcs[pvc_identifier] = b_ds
-        valid_datasets.append({"ds": b_ds, "ns": ns, "pvc": pvc_name})
+        passive_datasets.append({"ds": b_ds, "ns": ns, "pvc": pvc_name})
+
+    if not passive_datasets:
+        print(f"\nCRITICAL ERROR: No datasets found in {PASSIVE_OPENEBS}!")
+        print(
+            "  -> Either the replication failed, or datasets are missing their k8s properties."
+        )
+        print("  -> Halting DR sequence BEFORE making any changes to the cluster.")
+        sys.exit(1)
 
     migration_map = {}
-    saved_manifests = {}
 
-    for item in valid_datasets:
+    for item in passive_datasets:
         b_ds = item["ds"]
         ns = item["ns"]
         pvc_name = item["pvc"]
 
         migration_map[b_ds] = {"ns": ns, "pvc": pvc_name}
-        print(
-            f"  -> Discovered passive backup: {ns}/{pvc_name}. Waiting for dummy PVC to bind..."
-        )
+        print("----------------------------------------------------")
+        print(f"Discovered Passive Dataset: {b_ds}")
+        print(f"  -> Mapped to K8s PVC: {ns}/{pvc_name}")
+        print("  -> Waiting for dummy PVC to bind to capture template...")
 
         dummy_pv_name = None
         max_pvc_wait_loops = 60
@@ -352,6 +475,7 @@ def promote_openebs():
         target_ds = f"{ACTIVE_OPENEBS}/{vol_name}"
 
         print(f"----------------------------------------------------")
+        print(f"Promoting Dataset: {b_ds}")
         print(f"Importing dataset for {ns}/{pvc_name} to {target_ds}")
 
         run_zfs(["rename", b_ds, target_ds])
@@ -359,7 +483,9 @@ def promote_openebs():
         run_zfs(["set", f"k8s:pvc={pvc_name}", target_ds])
         run_zfs(["set", "mountpoint=legacy", target_ds])
 
-        print("  -> Recreating mapped Kubernetes objects via API...")
+        print(
+            f"  -> Recreating K8s objects for {ns}/{pvc_name} using the captured template..."
+        )
         manifests = saved_manifests[b_ds]
 
         manifests["pv"]["metadata"]["name"] = vol_name
@@ -390,6 +516,7 @@ def promote_openebs():
 
 
 if __name__ == "__main__":
-    promote_non_openebs()
+    drain_node()
     promote_openebs()
+    promote_non_openebs()
     print("Done.")

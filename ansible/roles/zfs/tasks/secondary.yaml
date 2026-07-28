@@ -37,6 +37,13 @@
     mode: '0644'
   notify: Reload Systemd
 
+- name: Deploy fix-passive-datasets-keylocation.sh
+  ansible.builtin.template:
+    src: fix-passive-datasets-keylocation.sh.j2
+    dest: /usr/local/bin/fix-passive-datasets-keylocation.sh
+    mode: '0755'
+  notify: Reload Systemd
+
 - name: Deploy Syncoid Systemd Timer
   ansible.builtin.copy:
     src: syncoid-pull.timer

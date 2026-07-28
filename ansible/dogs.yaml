@@ -10,5 +10,3 @@
     - rke2
     - dac
     - alloy
-  vars:
-    zfs_host_type: secondary

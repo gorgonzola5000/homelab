@@ -7,5 +7,6 @@ Wants=network-online.target
 Type=oneshot
 User=root
 ExecStart=/usr/sbin/syncoid -r --sendoptions="wp" --no-sync-snap --no-privilege-elevation zfsbackup@{{ zfs_primary_host }}:{{ zfs_active_dataset }} {{ zfs_passive_dataset }}
+ExecStartPost=/usr/local/bin/fix-passive-datasets-keylocation.sh
 StandardOutput=append:/var/log/syncoid_pull.log
 StandardError=append:/var/log/syncoid_pull.log

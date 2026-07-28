@@ -1,39 +1,27 @@
 ---
-- name: Disaster Recovery - Failback - Phase 1
-  hosts: animals
+- name: ZFS Disaster Recovery - Failback
+  hosts: k8s_clusters
   become: true
   gather_facts: false
 
   vars_prompt:
     - name: confirm_failback
-      prompt: "Are you sure you want to start failback? Type 'YES' to confirm"
+      prompt: "CRITICAL: Are you sure you want to start FAILBACK? Type 'YES' to confirm"
       default: "NO"
       private: false
 
   pre_tasks:
     - name: Abort if not explicitly confirmed
       ansible.builtin.fail:
-        msg: "Failback aborted"
+        msg: "Failback aborted by user."
       when: confirm_failback != "YES"
 
   tasks:
-    - name: Execute failback script phase 1
-      ansible.builtin.command: /usr/local/bin/dr-failback-freeze-push.sh
-      register: phase1_output
+    - name: Execute ZFS Failback Sequence
+      ansible.builtin.include_role:
+        name: zfs
+        tasks_from: failback.yaml
 
-    - name: Display Freeze & Push Log
+    - name: Display Failback Log
       ansible.builtin.debug:
-        var: phase1_output.stdout_lines
-
-- name: Disaster Recovery - Failback - Phase 2
-  hosts: echoes
-  become: true
-  gather_facts: false
-  tasks:
-    - name: Execute failback script phase 2
-      ansible.builtin.command: /usr/local/bin/dr-failback-adopt.sh
-      register: phase2_output
-
-    - name: Display Failback Adoption Log
-      ansible.builtin.debug:
-        var: phase2_output.stdout_lines
+        var: failback_script.stdout_lines

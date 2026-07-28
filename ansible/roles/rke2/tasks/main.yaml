@@ -133,6 +133,14 @@
         namespace: flux-system
         definition: "{{ flux_secret_content | from_yaml }}"
 
+    - name: Check if Flux Operator is already installed
+      kubernetes.core.k8s_info:
+        api_version: apps/v1
+        kind: Deployment
+        name: flux-operator
+        namespace: flux-system
+      register: existing_flux_operator
+
     - name: Install Flux Operator
       kubernetes.core.helm:
         name: flux-operator
@@ -140,9 +148,11 @@
         release_namespace: flux-system
         create_namespace: true
         wait: true
+      when: existing_flux_operator.resources | length == 0
 
     - name: Apply flux-system kustomization
       kubernetes.core.k8s:
         state: present
         namespace: flux-system
         definition: "{{ lookup('kubernetes.core.kustomize', dir='/kubernetes/fleet/clusters/' ~ cluster_name ~ '/flux-system') }}"
+      when: existing_flux_operator.resources | length == 0

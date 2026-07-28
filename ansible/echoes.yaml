@@ -18,5 +18,3 @@
           - intel-media-va-driver-non-free
           - intel-gpu-tools
         state: present
-  vars:
-    zfs_host_type: primary

@@ -35,7 +35,7 @@
 
 - name: Ensure keyfile file exists
   ansible.builtin.copy:
-    dest: "/root/{{ zfs_zpool }}_keyfile"
+    dest: "{{ zfs_zpool_keyfile_path }}"
     content: "{{ zfs_zpool_keyfile_contents | trim }}"
     owner: root
     group: root
@@ -135,15 +135,11 @@
     enabled: true
     state: started
 
-- name: Ensure symmetrical ZFS dataset skeleton exists on all nodes
+- name: Ensure ZFS dataset tree exists
   community.general.zfs:
     name: "{{ item }}"
     state: present
-  loop:
-    - "{{ zfs_active_dataset }}"
-    - "{{ zfs_active_openebs_dataset }}"
-    - "{{ zfs_passive_dataset }}"
-    - "{{ zfs_passive_openebs_dataset }}"
+  loop: "{{ zfs_dataset_tree }}"
 
 - name: Import smartctl tasks
   ansible.builtin.import_tasks: smart.yaml
