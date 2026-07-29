@@ -10,7 +10,7 @@ spec:
     sectionName: https
   oidc:
     provider:
-      issuer: "https://keycloak${ROUTE_SUFFIX}.${HOMELAB_INTERNAL_SUBDOMAIN}"
+      issuer: "https://keycloak${ROUTE_SUFFIX}.${HOMELAB_INTERNAL_SUBDOMAIN}/realms/homelab"
     clientID: "envoy-gateway"
     clientSecret:
       name: centralized-oidc-secret
