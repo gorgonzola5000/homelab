@@ -1,0 +1,10 @@
+apiVersion: k8s.keycloak.org/v2beta1
+kind: KeycloakRealmImport
+metadata:
+  name: homelab-realm
+spec:
+  keycloakCRName: keycloak
+  realm:
+    id: homelab
+    realm: homelab
+    enabled: true

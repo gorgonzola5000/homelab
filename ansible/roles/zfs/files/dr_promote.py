@@ -355,6 +355,7 @@ def promote_openebs():
         sys.exit(1)
 
     migration_map = {}
+    failed_mappings = []
 
     for item in passive_datasets:
         b_ds = item["ds"]
@@ -368,7 +369,7 @@ def promote_openebs():
         print("  -> Waiting for dummy PVC to bind to capture template...")
 
         dummy_pv_name = None
-        max_pvc_wait_loops = 60
+        max_pvc_wait_loops = 5
 
         for i in range(max_pvc_wait_loops):
             print(f"Trying to map {b_ds}")
@@ -383,7 +384,7 @@ def promote_openebs():
             time.sleep(2)
         else:
             print(f"  -> WARNING: Timed out waiting for PVC {ns}/{pvc_name} to bind.")
-            print(f"  -> Skipping dataset {b_ds} to prevent DR deadlock.")
+            failed_mappings.append(f"{ns}/{pvc_name} (Dataset: {b_ds})")
             del migration_map[b_ds]
             continue
 
@@ -400,6 +401,16 @@ def promote_openebs():
             "pvc": clean_manifest(pvc_obj),
             "dummy_pv": dummy_pv_name,
         }
+
+    if failed_mappings:
+        print("\nCRITICAL ERROR: NOT ALL DATASETS HAVE A CORRESPONDING PVC")
+        print(
+            f"  -> {len(failed_mappings)} PVC(s) failed to bind. Aborting DR sequence."
+        )
+        for failed in failed_mappings:
+            print(f"     - {failed}")
+        print("  -> No dummy PVCs were deleted and no ZFS datasets were renamed.")
+        sys.exit(1)
 
     pending_deletions = {}
     for b_ds, data in migration_map.items():

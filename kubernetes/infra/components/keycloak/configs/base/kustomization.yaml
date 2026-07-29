@@ -8,3 +8,4 @@ resources:
 - postgres.yaml
 - terraform-client-secret-password.yaml
 - terraform-externalsecret.yaml
+- keycloakrealmimport.yaml

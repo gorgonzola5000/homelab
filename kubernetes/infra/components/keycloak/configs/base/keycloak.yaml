@@ -21,7 +21,7 @@ spec:
   proxy:
     headers: xforwarded
   bootstrapAdmin:
-    service:
+    user:
       secret: bootstrap
   resources:
     requests:
