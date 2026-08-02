@@ -318,6 +318,7 @@ reconcile-arr:
           flux_source_name: "apps"
           flux_source_namespace: "arr"
           kubernetes_agent_reference: "$CI_PROJECT_PATH:$CLUSTER"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
 
 publish-seerr:
   stage: publish
@@ -362,6 +363,7 @@ reconcile-seerr:
           flux_source_name: "apps"
           flux_source_namespace: "seerr"
           kubernetes_agent_reference: "$CI_PROJECT_PATH:$CLUSTER"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
 
 publish-redmanager:
   stage: publish
@@ -406,3 +408,4 @@ reconcile-redmanager:
           flux_source_name: "apps"
           flux_source_namespace: "redmanager"
           kubernetes_agent_reference: "$CI_PROJECT_PATH:$CLUSTER"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
