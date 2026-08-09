@@ -13,7 +13,7 @@ spec:
   rules:
     - timeouts:
         request: 120s
-    - matches:
+      matches:
         - path:
             type: PathPrefix
             value: /
