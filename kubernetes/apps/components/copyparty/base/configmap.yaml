@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: copyparty-configmap
+data:
+  copyparty.conf: |
+    [global]
+      e2dsa  # enable file indexing and filesystem scanning
+      e2ts   # enable multimedia indexing
+      ansi   # enable colors in log messages (both in logfiles and stdout)
+      acao: *
+
+      vc-exit  # panic and shutdown instead of just showing the warning
+
+      xff-hdr: x-forwarded-for
+      xff-src: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+      rproxy: -1
+
+
+    [accounts]
+      ed: wark  # username: password
+
+
+    [/]            # create a volume at "/" (the webroot), which will
+      /w           # share /w (the docker data volume)
+      accs:
+        rw: *      # everyone gets read-write access, but
+        rwmda: ed  # the user "ed" gets read-write-move-delete-admin
+      flags:
+        e2ds       # enable filesystem-scanning for this volume only

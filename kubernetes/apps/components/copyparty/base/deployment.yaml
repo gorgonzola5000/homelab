@@ -37,6 +37,9 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /cfg
+            - name: copyparty-configmap
+              mountPath: /cfg/copyparty.conf
+              subPath: copyparty.conf
             - name: data
               mountPath: /w
 
@@ -47,3 +50,6 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: config
+        - name: copyparty-configmap
+          configMap:
+            name: copyparty-configmap
