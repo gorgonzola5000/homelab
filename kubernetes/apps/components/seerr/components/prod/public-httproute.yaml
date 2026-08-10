@@ -4,6 +4,7 @@ metadata:
   name: seerr-public
   annotations:
     external-dns.kubernetes.io/cloudflare-proxied: "false"
+    external-dns.alpha.kubernetes.io/controller: "disabled"
 spec:
   parentRefs:
     - name: public-eg
@@ -16,5 +17,5 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: jellyfin
-          port: 8096
+        - name: seerr-seerr-chart
+          port: 80
