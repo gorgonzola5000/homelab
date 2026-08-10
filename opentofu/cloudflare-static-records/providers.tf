@@ -19,7 +19,7 @@ terraform {
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "5.19.1"
+      version = "5.23.0"
     }
     sops = {
       source  = "carlpett/sops"
