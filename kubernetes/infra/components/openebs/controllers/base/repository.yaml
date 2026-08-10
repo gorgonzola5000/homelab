@@ -10,3 +10,4 @@ spec:
     operation: copy
   ref:
     tag: "2.10.1"
+    digest: sha256:ab24c12ea33d0fccfe2db6f16d778f0fc213bf31f154f09f45732532c4143d71
