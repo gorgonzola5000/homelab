@@ -98,7 +98,7 @@ spec:
             - name: PROWLARR__AUTH__APIKEY
               valueFrom:
                 secretKeyRef:
-                  name: arr-stack-secret
+                  name: arr-stack-static-secret
                   key: PROWLARR__AUTH__APIKEY
             - name: PROWLARR__AUTH__REQUIRED
               value: DisabledForLocalAddresses
