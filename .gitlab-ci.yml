@@ -5,7 +5,7 @@ stages:
 publish-fleet:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/fleet/**/*
   trigger:
@@ -26,7 +26,7 @@ publish-fleet:
 publish-cert-manager:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/cert-manager/**/*
   trigger:
@@ -47,7 +47,7 @@ publish-cert-manager:
 publish-openebs:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/openebs/**/*
   trigger:
@@ -68,7 +68,7 @@ publish-openebs:
 publish-envoy-gateway-system:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/envoy-gateway-system/**/*
   trigger:
@@ -89,7 +89,7 @@ publish-envoy-gateway-system:
 publish-cnpg-system:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/cnpg-system/**/*
   trigger:
@@ -110,7 +110,7 @@ publish-cnpg-system:
 publish-external-dns:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/external-dns/**/*
   trigger:
@@ -131,7 +131,7 @@ publish-external-dns:
 publish-external-secrets:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/external-secrets/**/*
   trigger:
@@ -152,7 +152,7 @@ publish-external-secrets:
 publish-keycloak:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/keycloak/**/*
   trigger:
@@ -173,7 +173,7 @@ publish-keycloak:
 publish-alloy:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/alloy/**/*
   trigger:
@@ -194,7 +194,7 @@ publish-alloy:
 publish-node-feature-discovery:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/node-feature-discovery/**/*
   trigger:
@@ -215,7 +215,7 @@ publish-node-feature-discovery:
 publish-inteldeviceplugins-system:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/inteldeviceplugins-system/**/*
   trigger:
@@ -236,7 +236,7 @@ publish-inteldeviceplugins-system:
 publish-rbac:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/rbac/**/*
   trigger:
@@ -257,7 +257,7 @@ publish-rbac:
 publish-gitlab-agent:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/infra/components/gitlab-agent/**/*
   trigger:
@@ -278,7 +278,7 @@ publish-gitlab-agent:
 publish-arr:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/apps/components/arr/**/*
   trigger:
@@ -301,7 +301,7 @@ reconcile-arr:
   needs: ["publish-arr"]
   allow_failure: true
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/apps/components/arr/**/*
   parallel:
@@ -323,7 +323,7 @@ reconcile-arr:
 publish-seerr:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/apps/components/seerr/**/*
   trigger:
@@ -346,7 +346,7 @@ reconcile-seerr:
   needs: ["publish-seerr"]
   allow_failure: true
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/apps/components/seerr/**/*
   parallel:
@@ -368,7 +368,7 @@ reconcile-seerr:
 publish-redmanager:
   stage: publish
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/apps/components/redmanager/**/*
   trigger:
@@ -391,7 +391,7 @@ reconcile-redmanager:
   needs: ["publish-redmanager"]
   allow_failure: true
   rules:
-    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       changes:
         - kubernetes/apps/components/redmanager/**/*
   parallel:
