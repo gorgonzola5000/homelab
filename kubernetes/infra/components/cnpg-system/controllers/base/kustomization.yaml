@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: cnpg-system
 resources:
   # renovate: datasource=github-releases depName=cloudnative-pg/cloudnative-pg
-  - https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.29/releases/cnpg-1.29.1.yaml
+  - https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.29/releases/cnpg-1.30.0.yaml
 patches:
   - target:
       kind: CustomResourceDefinition
