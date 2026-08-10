@@ -3,3 +3,4 @@ kind: Component
 resources:
   - arr-secret.enc.yaml
   - qbittorrent-secret.enc.yaml
+  - jellyfin-public-httproute.yaml

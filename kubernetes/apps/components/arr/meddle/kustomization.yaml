@@ -2,6 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../base
-  - jellyfin-public-httproute.yaml
 components:
   - ../components/prod
+patches:
+  - target:
+      kind: HTTPRoute
+      name: jellyfin-public
+    patch: |-
+      - op: remove
+        path: /metadata/annotations/external-dns.alpha.kubernetes.io~1controller
