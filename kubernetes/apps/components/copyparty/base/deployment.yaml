@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: copyparty
+  labels:
+    app: copyparty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: copyparty
+  template:
+    metadata:
+      labels:
+        app: copyparty
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: copyparty
+          image: docker.io/copyparty/dj:1.20.20@sha256:fe8f998e346d40d89c7c353ccd366e3dee81d274dd7df96a5e2a2b290522ea53
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 3923
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /cfg
+            - name: data
+              mountPath: /w
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data
+        - name: config
+          persistentVolumeClaim:
+            claimName: config
