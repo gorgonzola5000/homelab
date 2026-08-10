@@ -33,26 +33,6 @@
     owner: root
     group: root
 
-- name: Copy Flux secret
-  ansible.builtin.copy:
-    content: "{{ flux_secret_content }}"
-    dest: /var/lib/rancher/rke2/server/manifests/01-flux-system-secret.yaml
-    mode: '0600'
-    owner: root
-    group: root
-
-- name: Template Flux Operator manifests
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "/var/lib/rancher/rke2/server/manifests/{{ item }}"
-    mode: '0644'
-    owner: root
-    group: root
-  loop:
-    - 00-flux-system-namespace.yaml
-    - 02-flux-operator.yaml
-    - 03-flux-instance.yaml
-
 - name: Check currently installed RKE2 version
   ansible.builtin.command: /usr/local/bin/rke2 --version
   register: rke2_current_version
@@ -124,3 +104,55 @@
 
     - name: Encrypt kube_config.enc
       ansible.builtin.command: 'sops --config /.sops.yaml encrypt -i /sops/{{ cluster_name }}/kube_config.enc'
+
+- name: Bootstrap RKE2 cluster
+  delegate_to: localhost
+  environment:
+    K8S_AUTH_KUBECONFIG: "/sops/{{ cluster_name }}/kube_config"
+  block:
+    - name: Wait for Kubernetes API to become reachable
+      kubernetes.core.k8s_info:
+        kind: Node
+      register: k8s_nodes
+      until: k8s_nodes.resources is defined and (k8s_nodes.resources | length > 0)
+      retries: 24
+      delay: 10
+
+    - name: Ensure flux-system namespace exists
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: flux-system
+
+    - name: Apply Flux SOPS secret
+      kubernetes.core.k8s:
+        state: present
+        namespace: flux-system
+        definition: "{{ flux_secret_content | from_yaml }}"
+
+    - name: Check if Flux Operator is already installed
+      kubernetes.core.k8s_info:
+        api_version: apps/v1
+        kind: Deployment
+        name: flux-operator
+        namespace: flux-system
+      register: existing_flux_operator
+
+    - name: Install Flux Operator
+      kubernetes.core.helm:
+        name: flux-operator
+        chart_ref: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
+        release_namespace: flux-system
+        create_namespace: true
+        wait: true
+      when: existing_flux_operator.resources | length == 0
+
+    - name: Apply flux-system kustomization
+      kubernetes.core.k8s:
+        state: present
+        namespace: flux-system
+        definition: "{{ lookup('kubernetes.core.kustomize', dir='/kubernetes/fleet/clusters/' ~ cluster_name ~ '/flux-system') }}"
+      when: existing_flux_operator.resources | length == 0

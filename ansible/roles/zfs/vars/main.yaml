@@ -1,0 +1,35 @@
+---
+rke2_kubectl_path: /var/lib/rancher/rke2/bin/kubectl
+rke2_kubeconfig_path: /etc/rancher/rke2/rke2.yaml
+zfs_zpool: tank
+zfs_active_dataset: "{{ zfs_zpool }}/active"
+zfs_active_openebs_dataset: "{{ zfs_active_dataset }}/openebs"
+zfs_passive_dataset: "{{ zfs_zpool }}/passive"
+zfs_passive_openebs_dataset: "{{ zfs_passive_dataset }}/openebs"
+zfs_non_failover_dataset: "{{ zfs_zpool }}/non-failover"
+zfs_all_cluster_names: "{{ groups['k8s_clusters'] | map('extract', hostvars, 'cluster_name') | select('defined') | unique | list }}"
+zfs_non_failover_datasets: "{{ zfs_all_cluster_names | map('regex_replace', '^(.*)$', zfs_non_failover_dataset + '/\\1') | list }}"
+zfs_non_failover_openebs_datasets: "{{ zfs_all_cluster_names | map('regex_replace', '^(.*)$', zfs_non_failover_dataset + '/\\1/openebs') | list }}"
+zfs_non_failover_openebs_dataset: "{{ zfs_non_failover_dataset }}/openebs"
+# due to syncoid, passive datasets cannot be present. They need to be created by syncoid itself
+zfs_dataset_tree: "{{ [zfs_active_dataset, zfs_active_openebs_dataset] + zfs_non_failover_datasets + zfs_non_failover_openebs_datasets }}"
+zfs_zpool_keyfile_path: "/root/{{ zfs_zpool }}_keyfile"
+sanoid_conf: |
+  # Filesystem Backups
+  [{{ zfs_active_dataset }}]
+    use_template = default
+    recursive = yes
+
+  [{{ zfs_non_failover_dataset }}/{{ cluster_name }}]
+    use_template = default
+    recursive = yes
+
+  # Templates
+  [template_default]
+    frequently = 0
+    hourly = 24
+    daily = 30
+    monthly = 3
+    yearly = 0
+    autosnap = yes
+    autoprune = yes

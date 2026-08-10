@@ -1,0 +1,27 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: public-eg
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "hkj0ah4db6f.sn.mynetname.net"
+spec:
+  gatewayClassName: eg
+  listeners:
+    - name: http
+      hostname: "*.${HOMELAB_DOMAIN}"
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      hostname: "*.${HOMELAB_DOMAIN}"
+      protocol: HTTPS
+      port: 443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: public-wildcard-tls-secret

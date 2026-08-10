@@ -1,0 +1,7 @@
+#!/bin/bash
+zfs list -H -o name,keylocation -r {{ zfs_passive_dataset }} 2>/dev/null | while read -r ds keyloc; do
+  if [ "$keyloc" = "prompt" ]; then
+    zfs load-key -L "file:///root/tank_keyfile" "$ds"
+    zfs change-key -o keylocation="file://{{ zfs_zpool_keyfile_path }}" "$ds"
+  fi
+done

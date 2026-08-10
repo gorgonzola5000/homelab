@@ -1,0 +1,22 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab-agent
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: gitlab-agent
+      version: "2.28.0"
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+  values:
+    config:
+      kasAddress: "wss://kas.gitlab.com"
+      secretName: gitlab-agent-token
+    rbac:
+      create: false
+    serviceAccount:
+      create: true
+      name: gitlab-agent

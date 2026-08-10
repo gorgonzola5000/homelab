@@ -1,0 +1,171 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: infra
+  namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "5m"
+spec:
+  dependsOn:
+    - apiVersion: fluxcd.controlplane.io/v1
+      kind: ResourceSet
+      name: policies
+      namespace: flux-system
+      ready: true
+      readyExpr: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
+  inputs:
+    - tenant: "cert-manager"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "openebs"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "envoy-gateway-system"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "cnpg-system"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "external-dns"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "external-secrets"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "keycloak"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "alloy"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "node-feature-discovery"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "inteldeviceplugins-system"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "rbac"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+    - tenant: "gitlab-agent"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
+  resources:
+    - apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: << inputs.tenant >>
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: flux-runtime-info
+        namespace: << inputs.tenant >>
+        annotations:
+          fluxcd.controlplane.io/copyFrom: "flux-system/flux-runtime-info"
+        labels:
+          reconcile.fluxcd.io/watch: Enabled
+    - apiVersion: v1
+      kind: Secret
+      metadata:
+        name: flux-sops
+        namespace: << inputs.tenant >>
+        annotations:
+          fluxcd.controlplane.io/copyFrom: "flux-system/flux-sops"
+    - apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: flux
+        namespace: << inputs.tenant >>
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: flux-infra-<< inputs.tenant >>
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cluster-admin
+      subjects:
+        - kind: ServiceAccount
+          name: flux
+          namespace: << inputs.tenant >>
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: OCIRepository
+      metadata:
+        name: infra
+        namespace: << inputs.tenant >>
+      spec:
+        interval: 5m
+        serviceAccountName: flux
+        url: "oci://registry.gitlab.com/starfruit6000/homelab/infra/<< inputs.tenant >>"
+        ref:
+          tag: << inputs.tag >>
+        verify:
+          provider: cosign
+          matchOIDCIdentity:
+            - issuer: ^https://gitlab\.com$
+              subject: ^https://gitlab\.com/starfruit6000/homelab//\.gitlab-ci\.yml@refs/(heads|tags)/.*$
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: infra-controllers
+        namespace: << inputs.tenant >>
+      spec:
+        decryption:
+          provider: sops
+          secretRef:
+            name: flux-sops
+        targetNamespace: << inputs.tenant >>
+        serviceAccountName: flux
+        interval: 30m
+        retryInterval: 5m
+        wait: true
+        timeout: 5m
+        sourceRef:
+          kind: OCIRepository
+          name: infra
+        path: "./controllers/<< inputs.environment >>"
+        prune: true
+        postBuild:
+          substituteFrom:
+            - kind: ConfigMap
+              name: flux-runtime-info
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: infra-configs
+        namespace: << inputs.tenant >>
+      spec:
+        decryption:
+          provider: sops
+          secretRef:
+            name: flux-sops
+        dependsOn:
+          - name: infra-controllers
+        targetNamespace: << inputs.tenant >>
+        serviceAccountName: flux
+        interval: 30m
+        retryInterval: 5m
+        wait: true
+        timeout: 5m
+        sourceRef:
+          kind: OCIRepository
+          name: infra
+        path: "./configs/<< inputs.environment >>"
+        prune: true
+        postBuild:
+          substituteFrom:
+            - kind: ConfigMap
+              name: flux-runtime-info
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: RoleBinding
+      metadata:
+        name: gitlab-agent-flux-reconciler
+        namespace: << inputs.tenant >>
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: gitlab-agent-flux-reconciler
+      subjects:
+        - kind: ServiceAccount
+          name: gitlab-agent
+          namespace: gitlab-agent

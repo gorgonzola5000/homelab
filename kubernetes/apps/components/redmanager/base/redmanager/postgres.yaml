@@ -1,0 +1,18 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: redmanager-db
+spec:
+  instances: 1
+  enablePDB: false
+  storage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+  bootstrap:
+    initdb:
+      database: redmanager
+      owner: redmanager

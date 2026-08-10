@@ -1,0 +1,9 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: intel-device-plugins-for-kubernetes
+spec:
+  interval: 1h
+  url: https://github.com/intel/intel-device-plugins-for-kubernetes
+  ref:
+    tag: v0.36.0

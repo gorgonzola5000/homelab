@@ -1,0 +1,96 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: policies
+  namespace: flux-system
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: "5m"
+spec:
+  resources:
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: flux-allowlist
+        namespace: flux-system
+        labels:
+          fluxcd.controlplane.io/role: "policy"
+      data:
+        sources: >-
+          https://github.com/controlplaneio-fluxcd/
+          oci://ghcr.io/controlplaneio-fluxcd/
+          oci://registry.gitlab.com/starfruit6000/homelab/
+          oci://ghcr.io/seerr-team/seerr/seerr-chart
+    - apiVersion: admissionregistration.k8s.io/v1
+      kind: ValidatingAdmissionPolicy
+      metadata:
+        name: "source.policy.fluxcd.controlplane.io"
+        annotations:
+          policy.fluxcd.controlplane.io/role: |
+            Restrict Flux access to Git repositories, OCI registries and Helm repositories,
+            based on an allowlist defined in a ConfigMap stored in the flux-system namespace.
+      spec:
+        failurePolicy: Fail
+        matchConstraints:
+          resourceRules:
+            - apiGroups: ["source.toolkit.fluxcd.io"]
+              apiVersions: ["*"]
+              operations: ["CREATE", "UPDATE"]
+              resources:
+                ["gitrepositories", "ocirepositories", "helmrepositories"]
+        matchConditions:
+          - name: "exclude-source-controller-finalizer"
+            expression: >
+              request.userInfo.username != "system:serviceaccount:flux-system:source-controller"
+        paramKind:
+          apiVersion: v1
+          kind: ConfigMap
+        variables:
+          - name: url
+            expression: object.spec.url
+          - name: sources
+            expression: params.data.sources.split(' ')
+        validations:
+          - expression: >
+              variables.sources.exists_one(prefix, variables.url.startsWith(prefix))
+            messageExpression: >
+              "Source " + variables.url + " is not allowed, must be one of " + variables.sources.join(", ")
+            reason: Invalid
+    - apiVersion: admissionregistration.k8s.io/v1
+      kind: ValidatingAdmissionPolicyBinding
+      metadata:
+        name: flux-tenant-sources
+      spec:
+        policyName: "source.policy.fluxcd.controlplane.io"
+        validationActions: ["Deny"]
+        paramRef:
+          name: flux-allowlist
+          namespace: flux-system
+          parameterNotFoundAction: "Deny"
+        matchResources:
+          namespaceSelector:
+            matchExpressions:
+              - key: toolkit.fluxcd.io/role
+                operator: In
+                values:
+                  - tenant
+    - apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: gitlab-agent-flux-reconciler
+      rules:
+        - apiGroups:
+            - source.toolkit.fluxcd.io
+            - kustomize.toolkit.fluxcd.io
+            - helm.toolkit.fluxcd.io
+            - fluxcd.controlplane.io
+          resources:
+            - gitrepositories
+            - kustomizations
+            - helmreleases
+            - fluxinstances
+          verbs:
+            - get
+            - list
+            - watch
+            - patch
+            - update

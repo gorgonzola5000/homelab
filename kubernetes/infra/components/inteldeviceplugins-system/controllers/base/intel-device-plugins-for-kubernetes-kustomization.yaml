@@ -1,0 +1,14 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: intel-device-plugins-for-kubernetes-nfd-rules
+spec:
+  interval: 1h
+  retryInterval: 2m
+  wait: true
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: intel-device-plugins-for-kubernetes
+  path: ./deployments/operator/default
+  prune: true

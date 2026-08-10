@@ -1,0 +1,20 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: sso-policy
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: sso-eg
+    sectionName: https
+  oidc:
+    provider:
+      issuer: "https://keycloak${ROUTE_SUFFIX}.${HOMELAB_INTERNAL_SUBDOMAIN}/realms/homelab"
+    clientID: "envoy-gateway"
+    clientSecret:
+      name: centralized-oidc-secret
+    scopes:
+      - openid
+      - profile
+      - email

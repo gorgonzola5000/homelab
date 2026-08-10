@@ -1,7 +1,7 @@
 resource "keycloak_realm" "homelab" {
   realm        = "homelab"
   enabled      = true
-  display_name = "Meddle Single Sign-On"
+  display_name = "Homelab Single Sign-On"
 }
 
 resource "keycloak_openid_client" "envoy_gateway" {
@@ -14,10 +14,7 @@ resource "keycloak_openid_client" "envoy_gateway" {
   standard_flow_enabled        = true
   direct_access_grants_enabled = true
   valid_redirect_uris = [
-    "https://sonarr.home.parents-basement.win/*",
-    "https://radarr.home.parents-basement.win/*",
-    "https://prowlarr.home.parents-basement.win/*",
-    "https://qbittorrent.home.parents-basement.win/*"
+    for app in local.sso_apps : "https://${app}${local.route_suffix}.${local.homelab_internal_subdomain}/*"
   ]
   web_origins = [
     "+"
@@ -76,7 +73,7 @@ resource "keycloak_user" "gorgonzola5000" {
   email_verified = true
 
   initial_password {
-    value     = data.sops_file.keycloak_secrets.data["gorgonzola5000-password"]
+    value     = data.sops_file.keycloak_secrets.data["data.gorgonzola5000-password"]
     temporary = false
   }
 }
@@ -88,7 +85,7 @@ data "keycloak_role" "master_admin_role" {
 
 resource "keycloak_openid_client" "terraform_admin" {
   realm_id                 = "master"
-  client_id                = "terraform-admin"
+  client_id                = "terraform"
   name                     = "Permanent Terraform Admin"
   enabled                  = true
   access_type              = "CONFIDENTIAL"
@@ -105,7 +102,7 @@ resource "keycloak_openid_client_service_account_realm_role" "terraform_admin_ro
 
 resource "keycloak_user" "master_admin" {
   realm_id       = "master"
-  username       = "keycloak" 
+  username       = "keycloak"
   enabled        = true
   email          = "keycloak-admin@michalek.sh"
   first_name     = "System"
@@ -113,8 +110,8 @@ resource "keycloak_user" "master_admin" {
   email_verified = true
 
   initial_password {
-    value     = data.sops_file.keycloak_secrets.data["keycloak-admin-password"]
-    temporary = false 
+    value     = data.sops_file.keycloak_secrets.data["data.keycloak-admin-password"]
+    temporary = false
   }
 }
 

@@ -1,0 +1,411 @@
+stages:
+  - publish
+  - reconcile
+
+publish-fleet:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/fleet/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/fleet"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/fleet"
+          flux_oci_repo_name: "fleet"
+          flux_oci_namespace_name: "flux-system"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-cert-manager:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/cert-manager/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/cert-manager"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/cert-manager"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "cert-manager"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-openebs:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/openebs/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/openebs"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/openebs"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "openebs"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-envoy-gateway-system:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/envoy-gateway-system/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/envoy-gateway-system"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/envoy-gateway-system"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "envoy-gateway-system"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-cnpg-system:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/cnpg-system/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/cnpg-system"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/cnpg-system"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "cnpg-system"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-external-dns:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/external-dns/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/external-dns"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/external-dns"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "external-dns"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-external-secrets:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/external-secrets/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/external-secrets"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/external-secrets"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "external-secrets"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-keycloak:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/keycloak/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/keycloak"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/keycloak"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "keycloak"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-alloy:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/alloy/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/alloy"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/alloy"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "alloy"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-node-feature-discovery:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/node-feature-discovery/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/node-feature-discovery"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/node-feature-discovery"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "node-feature-discovery"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-inteldeviceplugins-system:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/inteldeviceplugins-system/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/inteldeviceplugins-system"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/inteldeviceplugins-system"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "inteldeviceplugins-system"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-rbac:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/rbac/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/rbac"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/rbac"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "rbac"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-gitlab-agent:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/infra/components/gitlab-agent/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/gitlab-agent"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/gitlab-agent"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "gitlab-agent"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+publish-arr:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/apps/components/arr/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/arr"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/apps/components/arr"
+          flux_oci_repo_name: "apps"
+          flux_oci_namespace_name: "arr"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+reconcile-arr:
+  stage: reconcile
+  needs: ["publish-arr"]
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/apps/components/arr/**/*
+  parallel:
+    matrix:
+      - CLUSTER: ["meddle", "animals", "meddle-local", "animals-local"]
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/reconcile@0.5.0
+        inputs:
+          version: "0.5.0"
+          flux_source_type: "oci"
+          flux_source_name: "apps"
+          flux_source_namespace: "arr"
+          kubernetes_agent_reference: "$CI_PROJECT_PATH:$CLUSTER"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+
+publish-seerr:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/apps/components/seerr/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/seerr"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/apps/components/seerr"
+          flux_oci_repo_name: "apps"
+          flux_oci_namespace_name: "seerr"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+reconcile-seerr:
+  stage: reconcile
+  needs: ["publish-seerr"]
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/apps/components/seerr/**/*
+  parallel:
+    matrix:
+      - CLUSTER: ["meddle", "animals", "meddle-local", "animals-local"]
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/reconcile@0.5.0
+        inputs:
+          version: "0.5.0"
+          flux_source_type: "oci"
+          flux_source_name: "apps"
+          flux_source_namespace: "seerr"
+          kubernetes_agent_reference: "$CI_PROJECT_PATH:$CLUSTER"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+
+publish-redmanager:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/apps/components/redmanager/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/redmanager"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/apps/components/redmanager"
+          flux_oci_repo_name: "apps"
+          flux_oci_namespace_name: "redmanager"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
+reconcile-redmanager:
+  stage: reconcile
+  needs: ["publish-redmanager"]
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "feature/flux-d2-architecture"'
+      changes:
+        - kubernetes/apps/components/redmanager/**/*
+  parallel:
+    matrix:
+      - CLUSTER: ["meddle", "animals", "meddle-local", "animals-local"]
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/reconcile@0.5.0
+        inputs:
+          version: "0.5.0"
+          flux_source_type: "oci"
+          flux_source_name: "apps"
+          flux_source_namespace: "redmanager"
+          kubernetes_agent_reference: "$CI_PROJECT_PATH:$CLUSTER"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"

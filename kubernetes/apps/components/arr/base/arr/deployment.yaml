@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arr
+  labels:
+    app: arr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arr
+  template:
+    metadata:
+      labels:
+        app: arr
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      initContainers:
+        - name: init-directories
+          image: busybox:latest@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d
+          command:
+            [
+              "sh",
+              "-c",
+              "mkdir -p /data/torrents/radarr /data/media/movies /data/torrents/tv-sonarr /data/media/tv",
+            ]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: radarr
+          image: ghcr.io/home-operations/radarr:6.2.1@sha256:0756fffa75b30219e3dbac8d027a5389f53cbb34ae83fa4b0976c1b0524c8eb1
+          env:
+            - name: RADARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: arr-stack-static-secret
+                  key: RADARR__AUTH__APIKEY
+            - name: RADARR__AUTH__REQUIRED
+              value: DisabledForLocalAddresses
+            - name: RADARR__AUTH__METHOD
+              value: External
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 7878
+              name: radarr
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: radarr-config
+              mountPath: /config
+
+        - name: sonarr
+          image: ghcr.io/home-operations/sonarr:4.0.17@sha256:6806001ccc2ec95d941c9c0de012dbcb59c6a33932cfc17f71e300bdd48cabfe
+          env:
+            - name: SONARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: arr-stack-static-secret
+                  key: SONARR__AUTH__APIKEY
+            - name: SONARR__AUTH__REQUIRED
+              value: DisabledForLocalAddresses
+            - name: SONARR__AUTH__METHOD
+              value: External
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8989
+              name: sonarr
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: sonarr-config
+              mountPath: /config
+
+        - name: prowlarr
+          image: ghcr.io/home-operations/prowlarr:2.4.0@sha256:8a140c9104c754a272f5e0d1dfcb32a06f07946a431a45c1083a16344f531748
+          env:
+            - name: PROWLARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: arr-stack-secret
+                  key: PROWLARR__AUTH__APIKEY
+            - name: PROWLARR__AUTH__REQUIRED
+              value: DisabledForLocalAddresses
+            - name: PROWLARR__AUTH__METHOD
+              value: External
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 9696
+              name: prowlarr
+              protocol: TCP
+          volumeMounts:
+            - name: prowlarr-config
+              mountPath: /config
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data
+        - name: radarr-config
+          persistentVolumeClaim:
+            claimName: radarr-config
+        - name: sonarr-config
+          persistentVolumeClaim:
+            claimName: sonarr-config
+        - name: prowlarr-config
+          persistentVolumeClaim:
+            claimName: prowlarr-config

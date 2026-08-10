@@ -11,15 +11,35 @@
       - linux-image-generic
       - zfs-dkms
       - zfsutils-linux
+      - mbuffer
+      - jq
+      - python3-kubernetes
     state: present
+
+- name: Safely load ZFS kernel module
+  block:
+    - name: Try loading ZFS kernel module
+      community.general.modprobe:
+        name: zfs
+        state: present
+  rescue:
+    - name: Reboot
+      ansible.builtin.reboot:
+        msg: "Rebooting to apply kernel updates before loading ZFS"
+        reboot_timeout: 600
+
+    - name: Retry loading ZFS kernel module after reboot
+      community.general.modprobe:
+        name: zfs
+        state: present
 
 - name: Ensure keyfile file exists
   ansible.builtin.copy:
-    dest: /root/tank_keyfile
-    content: "{{ zpool.tank_keyfile_contents | trim }}"
+    dest: "{{ zfs_zpool_keyfile_path }}"
+    content: "{{ zfs_zpool_keyfile_contents | trim }}"
     owner: root
     group: root
-    mode: '0400'
+    mode: "0400"
 
 - name: Create zfs-load-key systemd service
   ansible.builtin.copy:
@@ -48,18 +68,29 @@
     enabled: true
     daemon_reload: true
 
-- name: Check if zpool 'tank' already exists
-  ansible.builtin.command: zpool status tank
+- name: Check for available exported zpools
+  ansible.builtin.command: zpool import
+  register: available_exported_pools
+  changed_when: false
+  failed_when: false
+
+- name: "Import existing {{ zfs_zpool }} zpool if not imported yet"
+  ansible.builtin.command: "zpool import -f {{ zfs_zpool }}"
+  when: "zfs_zpool in available_exported_pools.stdout"
+  changed_when: true
+
+- name: "Check if zpool '{{ zfs_zpool }}' already exists"
+  ansible.builtin.command: "zpool status {{ zfs_zpool }}"
   register: zpool_status
   failed_when: false
   changed_when: false
 
-- name: Setup tank zpool
+- name: "Setup {{ zfs_zpool }} zpool"
   when: zpool_status.rc != 0
   block:
     - name: Create zpool
       community.general.zpool:
-        name: tank
+        name: "{{ zfs_zpool }}"
         state: present
         pool_properties:
           ashift: 12
@@ -67,10 +98,10 @@
           compression: lz4
           encryption: aes-256-gcm
           keyformat: passphrase
-          keylocation: file:///root/tank_keyfile
+          keylocation: "file:///root/{{ zfs_zpool }}_keyfile"
         vdevs:
           - type: raidz2
-            disks: "{{ zpool.physical_disks }}"
+            disks: "{{ zfs_zpool_physical_disks }}"
       register: this_sometimes_fails
   rescue:
     - name: Zpool creation debug
@@ -86,50 +117,50 @@
   changed_when: false
   register: zfs_mounted_filesystems
 
-- name: Load key zpool tank key
+- name: "Load key zpool {{ zfs_zpool }} key"
   ansible.builtin.systemd:
     name: zfs-load-key.service
     state: restarted
-  when: "'tank' not in zfs_mounted_filesystems.stdout"
+  when: "zfs_zpool not in zfs_mounted_filesystems.stdout"
 
-- name: Load key zpool tank key
+- name: Try to mount zpool
   ansible.builtin.systemd:
     name: zfs-mount.service
     state: restarted
-  when: "'tank' not in zfs_mounted_filesystems.stdout"
+  when: "zfs_zpool not in zfs_mounted_filesystems.stdout"
 
-- name: Ensure filetree exists for Local StorageClass
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-  loop:
-    - /tank/static/redmanager/music
-    - /tank/static/redmanager/navidrome-data
-    - /tank/static/redmanager/pgdata
-    - /tank/static/redmanager/redmanager-download
-    - /tank/static/redmanager/redmanager-transmission-shared
-    - /tank/static/redmanager/transmission-config
-    - /tank/static/arr/configarr-cache
-    - /tank/static/arr/data
-    - /tank/static/arr/jellyfin-config
-    - /tank/static/arr/prowlarr-config
-    - /tank/static/arr/qbittorrent-config
-    - /tank/static/arr/radarr-config
-    - /tank/static/arr/sonarr-config
-    - /tank/static/keycloak/keycloak-db-1
-    - /tank/static/keycloak/keycloak-db-2
-
-- name: Enable monthly ZFS scrub timer for 'tank'
+- name: "Enable monthly ZFS scrub timer for '{{ zfs_zpool }}'"
   ansible.builtin.systemd:
-    name: zfs-scrub-monthly@tank.timer
+    name: "zfs-scrub-monthly@{{ zfs_zpool }}.timer"
     enabled: true
     state: started
+
+- name: Ensure ZFS dataset tree exists
+  community.general.zfs:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ zfs_dataset_tree }}"
 
 - name: Import smartctl tasks
   ansible.builtin.import_tasks: smart.yaml
 
 - name: Import k8s_zfs_tags tasks
   ansible.builtin.import_tasks: k8s_zfs_tags.yaml
+
+- name: Import sanoid role
+  ansible.builtin.import_role:
+    name: geerlingguy.sanoid
+
+- name: Deploy dr_promote.py script
+  ansible.builtin.copy:
+    src: dr_promote.py
+    dest: /usr/local/bin/dr_promote.py
+    mode: '0700'
+
+- name: Import Primary cluster tasks
+  ansible.builtin.import_tasks: primary.yaml
+  when: zfs_host_type == 'primary'
+
+- name: Import Secondary cluster tasks
+  ansible.builtin.import_tasks: secondary.yaml
+  when: zfs_host_type == 'secondary'

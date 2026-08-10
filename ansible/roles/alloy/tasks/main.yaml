@@ -23,11 +23,27 @@
     state: present
     update_cache: true
 
-# grafana.grafana.alloy does not set up an apt repo on the host
-# this would screw up unattended updates and make alloy stale fast
-- name: Configure Alloy using official Grafana role
-  ansible.builtin.include_role:
-    name: grafana.grafana.alloy
+- name: Ensure Alloy configuration directory exists
+  ansible.builtin.file:
+    path: /etc/alloy
+    state: directory
+    owner: root
+    group: alloy
+    mode: '0750'
+
+- name: Template custom Alloy configuration
+  ansible.builtin.template:
+    src: config.alloy.j2
+    dest: /etc/alloy/config.alloy
+    owner: root
+    group: alloy
+    mode: '0640'
+
+- name: Ensure Alloy service is enabled and started
+  ansible.builtin.systemd:
+    name: alloy.service
+    enabled: true
+    state: started
 
 - name: Ensure Prometheus textfile collector directory exists
   ansible.builtin.file:

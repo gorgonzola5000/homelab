@@ -18,3 +18,5 @@ ansible/execution_environment/context/*
 
 kube_config
 kube_config.orig
+
+__pycache__

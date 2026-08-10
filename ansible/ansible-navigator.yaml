@@ -12,6 +12,8 @@ ansible-navigator:
         dest: "/sops"
       - src: "../.sops.yaml"
         dest: "/.sops.yaml"
+      - src: "../kubernetes"
+        dest: "/kubernetes"
       - src: "~/.kube/config"
         dest: "/root/.kube/config"
         options: "Z"

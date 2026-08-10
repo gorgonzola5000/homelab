@@ -1,0 +1,32 @@
+apiVersion: k8s.keycloak.org/v2beta1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  instances: 1
+  db:
+    vendor: postgres
+    host: keycloak-db-rw
+    database: keycloak
+    usernameSecret:
+      name: keycloak-db-app
+      key: username
+    passwordSecret:
+      name: keycloak-db-app
+      key: password
+  http:
+    httpEnabled: true
+  hostname:
+    hostname: keycloak${ROUTE_SUFFIX}.${HOMELAB_INTERNAL_SUBDOMAIN}
+  proxy:
+    headers: xforwarded
+  bootstrapAdmin:
+    service:
+      secret: bootstrap
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1Gi"

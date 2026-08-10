@@ -1,0 +1,72 @@
+prometheus.exporter.unix "localhost" {
+  include_exporter_metrics = true
+  textfile {
+    directory = "/var/lib/prometheus/node-exporter"
+  }
+}
+
+prometheus.scrape "host_scraper" {
+  scrape_interval = "60s"
+  targets    = prometheus.exporter.unix.localhost.targets
+  forward_to = [prometheus.relabel.host_filter.receiver]
+}
+
+prometheus.relabel "host_filter" {
+  rule {
+    action        = "keep"
+    source_labels = ["__name__"]
+    regex         = "(node_cpu_seconds_total|node_memory_MemAvailable_bytes|node_memory_MemTotal_bytes|node_network_receive_bytes_total|node_network_transmit_bytes_total|node_filesystem_avail_bytes|node_filesystem_size_bytes|node_disk_read_bytes_total|node_disk_written_bytes_total|node_load1|node_load5|node_load15|up|node_exporter_build_info)"
+  }
+  forward_to = [prometheus.remote_write.grafanacloud.receiver]
+}
+
+prometheus.scrape "smartctl_scraper" {
+  scrape_interval = "60s"
+  targets = [
+    {"__address__" = "localhost:9633"},
+  ]
+  forward_to = [prometheus.remote_write.grafanacloud.receiver]
+}
+
+loki.source.journal "zed_logs" {
+  format_as_json = true
+  max_age        = "24h"
+  path           = "/var/log/journal"
+  forward_to     = [loki.write.grafanacloud.receiver]
+  labels         = {
+    job  = "systemd-journal",
+    host = "{{ inventory_hostname }}",
+  }
+}
+
+local.file_match "unattended_upgrades_logs" {
+  path_targets = [
+    {__path__ = "/var/log/unattended-upgrades/unattended-upgrades.log", job = "unattended-upgrades", host = "{{ inventory_hostname }}"},
+    {__path__ = "/var/log/unattended-upgrades/unattended-upgrades-dpkg.log", job = "unattended-upgrades-dpkg", host = "{{ inventory_hostname }}"},
+  ]
+}
+
+loki.source.file "unattended_upgrades" {
+  targets    = local.file_match.unattended_upgrades_logs.targets
+  forward_to = [loki.write.grafanacloud.receiver] 
+}
+
+prometheus.remote_write "grafanacloud" {
+  endpoint {
+    url = "{{ grafana_cloud_prometheus_url }}"
+    basic_auth {
+      username = "{{ grafana_cloud_prometheus_user }}"
+      password = "{{ grafana_cloud_token }}"
+    }
+  }
+}
+
+loki.write "grafanacloud" {
+  endpoint {
+    url = "{{ grafana_cloud_loki_url }}"
+    basic_auth {
+      username = "{{ grafana_cloud_loki_user }}"
+      password = "{{ grafana_cloud_token }}"
+    }
+  }
+}
