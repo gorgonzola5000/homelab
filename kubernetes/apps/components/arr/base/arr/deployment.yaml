@@ -38,7 +38,7 @@ spec:
             - name: RADARR__AUTH__APIKEY
               valueFrom:
                 secretKeyRef:
-                  name: arr-stack-secret
+                  name: arr-stack-static-secret
                   key: RADARR__AUTH__APIKEY
             - name: RADARR__AUTH__REQUIRED
               value: DisabledForLocalAddresses
@@ -68,7 +68,7 @@ spec:
             - name: SONARR__AUTH__APIKEY
               valueFrom:
                 secretKeyRef:
-                  name: arr-stack-secret
+                  name: arr-stack-static-secret
                   key: SONARR__AUTH__APIKEY
             - name: SONARR__AUTH__REQUIRED
               value: DisabledForLocalAddresses
