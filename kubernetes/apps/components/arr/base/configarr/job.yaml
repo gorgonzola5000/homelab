@@ -4,10 +4,12 @@ metadata:
   name: configarr
 spec:
   schedule: "0 * * * *"
+  concurrencyPolicy: Replace
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
+      activeDeadlineSeconds: 120
       template:
         spec:
           restartPolicy: Never
