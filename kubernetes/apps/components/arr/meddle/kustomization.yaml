@@ -11,3 +11,4 @@ patches:
     patch: |-
       - op: remove
         path: /metadata/annotations/external-dns.alpha.kubernetes.io~1controller
+  - path: patch-jellyfin-hardware-acceleration.yaml
