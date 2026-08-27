@@ -2,7 +2,7 @@
 - name: Disaster Recovery - Failover
   hosts: k8s_clusters
   become: true
-  gather_facts: false
+  any_errors_fatal: true
 
   vars_prompt:
     - name: confirm_failover

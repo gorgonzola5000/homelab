@@ -164,3 +164,13 @@
 - name: Import Secondary cluster tasks
   ansible.builtin.import_tasks: secondary.yaml
   when: zfs_host_type == 'secondary'
+
+- name: Download import-zfs-localpv binary from GitLab
+  ansible.builtin.get_url:
+    url: "https://gitlab.com/starfruit6000/import-zfs-localpv/-/releases/{{ binary_version }}/downloads/import-zfs-localpv"
+    dest: "/usr/local/bin/import-zfs-localpv"
+    owner: "root"
+    group: "root"
+    mode: '0755'
+  vars:
+    binary_version: "1.0.4"

@@ -20,5 +20,5 @@
 
 - name: Delegate ZFS receive permissions to zfsbackup user for failback
   ansible.builtin.command: >
-    zfs allow -u zfsbackup create,receive,mount {{ zfs_passive_dataset }}
+    zfs allow -u zfsbackup create,receive,mount,mountpoint,compression,userprop,quota {{ zfs_zpool }}
   changed_when: false
