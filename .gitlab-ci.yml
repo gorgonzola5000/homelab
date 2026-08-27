@@ -86,6 +86,27 @@ publish-seaweedfs-operator:
           job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
           skip_reconcile: true
 
+publish-velero:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - kubernetes/infra/components/velero/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/infra/velero"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/infra/components/velero"
+          flux_oci_repo_name: "infra"
+          flux_oci_namespace_name: "velero"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
+
 publish-envoy-gateway-system:
   stage: publish
   rules:

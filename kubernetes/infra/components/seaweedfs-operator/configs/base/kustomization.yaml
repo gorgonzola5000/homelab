@@ -4,3 +4,4 @@ resources:
   - httproute-filer.yaml
   - httproute-s3.yaml
   - seaweed.yaml
+  - resourcereferencegrant.yaml

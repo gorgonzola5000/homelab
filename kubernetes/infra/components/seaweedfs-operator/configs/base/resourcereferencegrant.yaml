@@ -1,0 +1,25 @@
+apiVersion: seaweed.seaweedfs.com/v1
+kind: ResourceReferenceGrant
+metadata:
+  name: allow-velero
+spec:
+  from:
+    - group: seaweed.seaweedfs.com
+      kind: Bucket
+      namespace: velero
+    - group: seaweed.seaweedfs.com
+      kind: S3Identity
+      namespace: velero
+    - group: seaweed.seaweedfs.com
+      kind: S3Credentials
+      namespace: velero
+    - group: seaweed.seaweedfs.com
+      kind: S3Policy
+      namespace: velero
+    - group: seaweed.seaweedfs.com
+      kind: S3PolicyBinding
+      namespace: velero
+  to:
+    - group: seaweed.seaweedfs.com
+      kind: Seaweed
+      name: seaweed
