@@ -4,3 +4,5 @@ resources:
   - bucket.yaml
   - release.yaml
   - repository.yaml
+  - s3credentials.yaml
+  - s3identity.yaml

@@ -19,3 +19,26 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: velero
+  values:
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.14.2
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+    credentials:
+      useSecret: true
+      existingSecret: velero-s3-credentials
+    configuration:
+      backupStorageLocation:
+        - name: default
+          provider: aws
+          bucket: velero-backups
+          credential:
+            name: velero-s3-credentials
+            key: cloud
+          config:
+            region: default
+            s3ForcePathStyle: true
+            s3Url: http://seaweedfs-s3.seaweedfs-operator.svc.cluster.local:8333

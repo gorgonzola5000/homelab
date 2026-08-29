@@ -1,0 +1,10 @@
+apiVersion: seaweed.seaweedfs.com/v1
+kind: S3Identity
+metadata:
+  name: velero
+spec:
+  seaweedRef:
+    name: seaweed
+    namespace: seaweedfs-operator
+  account:
+    displayName: Velero Backup Service
