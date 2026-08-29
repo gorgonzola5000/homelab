@@ -53,6 +53,9 @@ spec:
     - tenant: "seaweedfs-operator"
       tag: "${ARTIFACT_TAG}"
       environment: "${ENVIRONMENT}"
+    - tenant: "velero"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
   resources:
     - apiVersion: v1
       kind: Namespace

@@ -1,0 +1,8 @@
+apiVersion: seaweed.seaweedfs.com/v1
+kind: Bucket
+metadata:
+  name: velero-backups
+spec:
+  clusterRef:
+    name: seaweed
+    namespace: seaweedfs-operator
