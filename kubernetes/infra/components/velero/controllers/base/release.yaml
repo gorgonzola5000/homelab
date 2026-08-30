@@ -39,6 +39,7 @@ spec:
             name: velero-s3-credentials
             key: cloud
           config:
+            objectLockEnabled: true
             region: default
             s3ForcePathStyle: true
             s3Url: http://seaweed-s3.seaweedfs-operator.svc.cluster.local:8333

@@ -1,0 +1,8 @@
+apiVersion: seaweed.seaweedfs.com/v1
+kind: Bucket
+metadata:
+  name: backup-s3
+spec:
+  clusterRef:
+    name: seaweed
+  objectLock: false

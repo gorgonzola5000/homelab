@@ -1,0 +1,15 @@
+- op: add
+  path: /spec/backup
+  value:
+    storages:
+      backup-s3:
+        type: s3
+        s3:
+          bucket: backup-s3
+          endpoint: "https://s3-animals-local.${HOMELAB_INTERNAL_SUBDOMAIN}"
+          directory: /meddle-local
+          forcePathStyle: true
+        credentialsSecret: backup-s3-credentials
+    dataMirror:
+      - storageName: backup-s3
+        filerPath: /

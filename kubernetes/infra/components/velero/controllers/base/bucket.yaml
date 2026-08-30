@@ -8,9 +8,9 @@ spec:
     namespace: seaweedfs-operator
   adoptExisting: false
   anonymousRead: false
-  objectLock: false
+  objectLock: true
   reclaimPolicy: Retain
-  versioning: "Off"
+  versioning: Enabled
   owner: velero
   access:
     - user: velero

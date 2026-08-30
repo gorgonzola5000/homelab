@@ -1,0 +1,7 @@
+apiVersion: seaweed.seaweedfs.com/v1
+kind: S3Identity
+metadata:
+  name: backup-s3-credentials
+spec:
+  seaweedRef:
+    name: seaweed
