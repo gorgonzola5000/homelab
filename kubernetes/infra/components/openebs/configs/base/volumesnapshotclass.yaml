@@ -2,5 +2,7 @@ apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: zfstank-snapshot-class
+  labels:
+    velero.io/csi-volumesnapshot-class: true
 driver: zfs.csi.openebs.io
 deletionPolicy: Retain

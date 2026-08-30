@@ -42,3 +42,4 @@ spec:
             region: default
             s3ForcePathStyle: true
             s3Url: http://seaweedfs-s3.seaweedfs-operator.svc.cluster.local:8333
+      volumeSnapshotLocation: []
