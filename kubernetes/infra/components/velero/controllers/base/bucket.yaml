@@ -12,3 +12,6 @@ spec:
   reclaimPolicy: Retain
   versioning: "Off"
   owner: velero
+  access:
+    - user: velero
+      actions: [Read, Write, List, Admin]
