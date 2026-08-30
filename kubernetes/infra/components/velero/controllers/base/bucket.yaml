@@ -6,3 +6,9 @@ spec:
   clusterRef:
     name: seaweed
     namespace: seaweedfs-operator
+  adoptExisting: false
+  anonymousRead: false
+  objectLock: false
+  reclaimPolicy: Retain
+  versioning: "Off"
+  owner: velero
