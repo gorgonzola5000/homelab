@@ -43,3 +43,4 @@ spec:
             s3ForcePathStyle: true
             s3Url: http://seaweed-s3.seaweedfs-operator.svc.cluster.local:8333
       volumeSnapshotLocation: []
+      features: EnableCSI
