@@ -3,6 +3,9 @@ kind: Kustomization
 resources:
   - ../base
 components:
-  - ../components/prod
+  - ../components/local
 patches:
   - path: patch-seaweed-backup.yaml
+    target:
+      kind: Seaweed
+      name: seaweed

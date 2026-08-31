@@ -6,3 +6,6 @@ components:
   - ../components/prod
 patches:
   - path: patch-seaweed-backup.yaml
+    target:
+      kind: Seaweed
+      name: seaweed
