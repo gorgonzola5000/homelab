@@ -9,5 +9,7 @@ rules:
       - "seaweed.seaweedfs.com"
     resources:
       - "buckets"
+      - "s3identities"
+      - "s3credentials"
     verbs:
       - "*"
