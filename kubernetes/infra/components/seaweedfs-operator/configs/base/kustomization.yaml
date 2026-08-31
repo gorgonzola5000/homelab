@@ -3,5 +3,6 @@ kind: Kustomization
 resources:
   - httproute-filer.yaml
   - httproute-s3.yaml
+  - resourcereferencegrant-backup.yaml
+  - resourcereferencegrant-velero.yaml
   - seaweed.yaml
-  - resourcereferencegrant.yaml

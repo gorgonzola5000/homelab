@@ -1,0 +1,10 @@
+apiVersion: seaweed.seaweedfs.com/v1
+kind: S3Identity
+metadata:
+  name: backup
+spec:
+  seaweedRef:
+    name: seaweed
+    namespace: seaweedfs-operator
+  account:
+    displayName: Backup to S3

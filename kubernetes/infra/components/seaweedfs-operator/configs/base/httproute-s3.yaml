@@ -12,7 +12,7 @@ spec:
     - s3${ROUTE_SUFFIX}.${HOMELAB_INTERNAL_SUBDOMAIN}
   rules:
     - timeouts:
-        request: 120s
+        request: 14400s
       matches:
         - path:
             type: PathPrefix

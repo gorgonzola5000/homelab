@@ -1,0 +1,17 @@
+apiVersion: seaweed.seaweedfs.com/v1
+kind: Bucket
+metadata:
+  name: backup
+spec:
+  clusterRef:
+    name: seaweed
+    namespace: seaweedfs-operator
+  adoptExisting: false
+  anonymousRead: false
+  objectLock: true
+  reclaimPolicy: Retain
+  versioning: Enabled
+  owner: backup
+  access:
+    - user: backup
+      actions: [Read, Write, List, Admin]

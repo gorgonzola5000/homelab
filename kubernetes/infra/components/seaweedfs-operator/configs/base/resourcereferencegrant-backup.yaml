@@ -1,0 +1,25 @@
+apiVersion: seaweed.seaweedfs.com/v1
+kind: ResourceReferenceGrant
+metadata:
+  name: allow-backup
+spec:
+  from:
+    - group: seaweed.seaweedfs.com
+      kind: Bucket
+      namespace: backup
+    - group: seaweed.seaweedfs.com
+      kind: S3Identity
+      namespace: backup
+    - group: seaweed.seaweedfs.com
+      kind: S3Credentials
+      namespace: backup
+    - group: seaweed.seaweedfs.com
+      kind: S3Policy
+      namespace: backup
+    - group: seaweed.seaweedfs.com
+      kind: S3PolicyBinding
+      namespace: backup
+  to:
+    - group: seaweed.seaweedfs.com
+      kind: Seaweed
+      name: seaweed

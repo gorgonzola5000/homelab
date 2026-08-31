@@ -496,3 +496,24 @@ reconcile-copyparty:
           flux_source_namespace: "copyparty"
           kubernetes_agent_reference: "$CI_PROJECT_PATH:$CLUSTER"
           job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+
+publish-backup:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - kubernetes/apps/components/backup/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/backup"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/apps/components/backup"
+          flux_oci_repo_name: "apps"
+          flux_oci_namespace_name: "backup"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true
