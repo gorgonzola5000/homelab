@@ -1,6 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- ciliumnetworkpolicy-admin-aggregate.yaml
-- cnpg-admin-aggregate.yaml
-- gateway-api-admin-aggregation.yaml
+  - ciliumnetworkpolicy-admin-aggregate.yaml
+  - cnpg-admin-aggregate.yaml
+  - gateway-api-admin-aggregation.yaml
+  - seaweedfs-admin-aggregate.yaml
