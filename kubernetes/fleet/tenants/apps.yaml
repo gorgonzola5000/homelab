@@ -38,7 +38,7 @@ spec:
     - tenant: "copyparty"
       tag: "${ARTIFACT_TAG}"
       environment: "${ENVIRONMENT}"
-    - tenant: "backup"
+    - tenant: "s3"
       tag: "${ARTIFACT_TAG}"
       environment: "${ENVIRONMENT}"
   resources:

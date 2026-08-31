@@ -1,7 +1,7 @@
 apiVersion: seaweed.seaweedfs.com/v1
 kind: Bucket
 metadata:
-  name: backup
+  name: homelab
 spec:
   clusterRef:
     name: seaweed
@@ -11,7 +11,7 @@ spec:
   objectLock: true
   reclaimPolicy: Retain
   versioning: Enabled
-  owner: backup
+  owner: homelab
   access:
-    - user: backup
+    - user: homelab
       actions: [Read, Write, List, Admin]
