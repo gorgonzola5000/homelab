@@ -4,6 +4,8 @@ metadata:
   name: nfsserver-svc
   labels:
     app: nfsserver
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: nfs.home.parents-basement.win
 spec:
   selector:
     app: nfsserver

@@ -517,3 +517,24 @@ publish-s3:
           flux_oci_namespace_name: "s3"
           job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
           skip_reconcile: true
+
+publish-nfsserver:
+  stage: publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      changes:
+        - kubernetes/apps/components/nfsserver/**/*
+  trigger:
+    forward:
+      pipeline_variables: true
+    include:
+      - component: $CI_SERVER_FQDN/starfruit6000/fluxcd/oci-artifact@0.5.0
+        inputs:
+          version: "0.5.0"
+          registry_image_url: "oci://$CI_REGISTRY_IMAGE/apps/nfsserver"
+          image_tag: "latest"
+          manifest_path: "./kubernetes/apps/components/nfsserver"
+          flux_oci_repo_name: "apps"
+          flux_oci_namespace_name: "nfsserver"
+          job_image_name: "$CI_TEMPLATE_REGISTRY_HOST/starfruit6000/fluxcd/fluxcd"
+          skip_reconcile: true

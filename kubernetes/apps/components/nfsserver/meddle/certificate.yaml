@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: certificate
+spec:
+  secretName: nfs-tls-certs
+  duration: 2160h
+  renewBefore: 360h
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 4096
+  dnsNames:
+    - nfs.home.parents-basement.win
+  issuerRef:
+    name: issuer
+    kind: Issuer
+    group: cert-manager.io
