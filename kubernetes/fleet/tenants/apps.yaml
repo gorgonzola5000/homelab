@@ -41,6 +41,9 @@ spec:
     - tenant: "s3"
       tag: "${ARTIFACT_TAG}"
       environment: "${ENVIRONMENT}"
+    - tenant: "nfsserver"
+      tag: "${ARTIFACT_TAG}"
+      environment: "${ENVIRONMENT}"
   resources:
     - apiVersion: v1
       kind: Namespace
