@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ca-provider
+  annotations:
+    external-dns.kubernetes.io/cloudflare-proxied: "false"
+spec:
+  parentRefs:
+    - name: eg
+      namespace: envoy-gateway-system
+  hostnames:
+    - nfs-ca${ROUTE_SUFFIX}.${HOMELAB_INTERNAL_SUBDOMAIN}
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /ca.crt
+      backendRefs:
+        - name: ca-provider-svc
+          port: 80
