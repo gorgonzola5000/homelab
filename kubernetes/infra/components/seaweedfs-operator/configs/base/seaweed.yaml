@@ -3,7 +3,7 @@ kind: Seaweed
 metadata:
   name: seaweed
 spec:
-  image: chrislusf/seaweedfs:4.45@sha256:fc9f76fa993ad69966ffeb2f65d0318fcae39c6f8e20cf68ef7b3a5cb97769e5
+  image: chrislusf/seaweedfs:4.47@sha256:ce9e796f1fe6f06968f4c04bdaf8f678dad9c8acdfef3d244133d71bfa6bf882
   master:
     replicas: 1
     volumeSizeLimitMB: 1024
